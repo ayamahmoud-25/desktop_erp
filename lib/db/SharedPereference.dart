@@ -1,5 +1,6 @@
 import 'package:desktop_erp_4s/db/shared_prefs.dart';
 
+import '../data/models/branch_model.dart';
 import '../data/models/response/CompanyInfoResponse.dart';
 
 class SharedPreferences{
@@ -24,8 +25,39 @@ class SharedPreferences{
       //return savedInfo ;
     }
     return savedInfo;
-
-
   }
 
+  //clear company info
+  Future<void> clearCompanyInfo() async {
+    await SharedPrefs.clearCompanyInfo();
+  }
+
+  Future<void> SaveAccessToken(String? accessToken) async {
+    await SharedPrefs.saveAccessToken(accessToken);
+  }
+  // --- Loading ---
+  Future<String?> loadAccessToken() async {
+    final accessToken = await SharedPrefs.getAccessToken();
+    return accessToken;
+  }
+
+  void saveBranchesToPrefs(List<Branches>? branches) async {
+    await SharedPrefs.saveBranches(branches);
+  }
+
+  Future<List<Branches>?> loadBranchesFromPrefs() async {
+    return await SharedPrefs.getBranches();
+  }
+
+  // --- Saving ---
+  Future<void> saveSelectedBranch(Branches  selectedBranch) async {
+    await SharedPrefs.saveSelectedBranch(selectedBranch);
+  }
+  // --- Loading ---
+  Future<Branches?> loadSelectedBranch() async {
+    final selectedBranch = await SharedPrefs.getSelectedBranch();
+    return selectedBranch;
+  }
+
+  //l
 }

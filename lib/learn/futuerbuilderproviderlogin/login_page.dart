@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'auth_response.dart';
-import 'home_page.dart';
+import '../../ui/home/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override

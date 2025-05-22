@@ -1,15 +1,14 @@
 import 'package:desktop_erp_4s/data/api_state.dart';
 import 'package:desktop_erp_4s/ui/login/login_provider.dart';
-import 'package:desktop_erp_4s/ui/login/login_user.dart';
 import 'package:desktop_erp_4s/ui/widgets/background_image_page.dart';
 import 'package:desktop_erp_4s/util/show_message.dart';
 import 'package:desktop_erp_4s/util/validate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/api/api_result.dart';
+import '../../db/SharedPereference.dart';
 import '../../util/Strings.dart';
-import '../../util/navigation.dart';
+import '../../util/shared_data.dart';
 
 class CompanyLogin extends StatefulWidget {
   @override
@@ -18,8 +17,25 @@ class CompanyLogin extends StatefulWidget {
 
 class _CompanyLoginState extends State<CompanyLogin> {
   GlobalKey<FormState> _formKey = GlobalKey();
-  TextEditingController _companyNameController =TextEditingController();
+  TextEditingController _companyNameController = TextEditingController();
 
+  //initialize the controller
+  //initial state
+  @override
+  void initState() {
+    super.initState();
+    print("initState:");
+
+    /*
+
+   later  to fix change url from start it
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      SharedPreferences prefs = SharedPreferences();
+      prefs.clearCompanyInfo();
+    });*/
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +60,6 @@ class _CompanyLoginState extends State<CompanyLogin> {
                 child: Form(
                   key: _formKey,
                   child: TextFormField(
-
                     controller: _companyNameController,
                     decoration: InputDecoration(
                       hintTextDirection: TextDirection.rtl,
@@ -52,7 +67,7 @@ class _CompanyLoginState extends State<CompanyLogin> {
                       fillColor: Colors.white,
                       hintText: Strings.Company_Name,
                       errorStyle: TextStyle(color: Colors.red),
-                      border: OutlineInputBorder()
+                      border: OutlineInputBorder(),
                       /* errorStyle: TextStyle(color: Colors.orange), //Error text color
                     errorBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.red), // error border color
@@ -67,23 +82,29 @@ class _CompanyLoginState extends State<CompanyLogin> {
                   ),
                 ),
               ),
-              SizedBox(height: 10,),
-              MaterialButton(onPressed: () async{
-                if(_formKey.currentState!.validate()){
-                  //do something
-                 await loginProvider.userInfo(context, _companyNameController.text.trim());
-
-                  if(loginProvider.state == APIStatue.loading)
-                    CircularProgressIndicator();
-                  else if(loginProvider.state == APIStatue.error )
-                    ShowMessage().showSnackBar(context, loginProvider.errorMessage!);
-                }
-              },
+              SizedBox(height: 10),
+              MaterialButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    //do something
+                    await loginProvider.userInfo(
+                      context,
+                      _companyNameController.text.trim(),
+                    );
+                    if (loginProvider.state == APIStatue.loading)
+                      CircularProgressIndicator();
+                    else if (loginProvider.state == APIStatue.error)
+                      ShowMessage().showSnackBar(
+                        context,
+                        loginProvider.errorMessage!,
+                      );
+                  }
+                },
                 textColor: Colors.white,
                 child: Text(Strings.Save),
-                color: Color.fromARGB(255, 23, 111, 153),),
-              SizedBox(height: 20,),
-
+                color: Color.fromARGB(255, 23, 111, 153),
+              ),
+              SizedBox(height: 20),
             ],
           ),
         ),

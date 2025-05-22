@@ -8,8 +8,6 @@ class CompanyInfo{
   CompanyInfo({this.clientName, this.loginName, this.serviceName,  this.dbName, this.pubUrl});
 
 
-
-
   factory CompanyInfo.fromJson(Map<String,dynamic> json){
     CompanyInfo c = CompanyInfo();
     c.clientName = json['CLIENT_NAME'];

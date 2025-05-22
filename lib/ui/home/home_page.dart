@@ -1,8 +1,14 @@
+import 'package:desktop_erp_4s/ui/home/home_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../data/api_state.dart';
+import '../../data/models/branch_model.dart';
 import '../../db/SharedPereference.dart';
 import '../../util/navigation.dart';
+import '../../util/show_message.dart';
 import '../../util/strings.dart';
+import 'branches/BranchListDialog.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? authToken;
+
 
   @override
   void initState() {
@@ -24,6 +31,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final homeProvider = Provider.of<HomeProvider>(context);
+
     return  Directionality(textDirection: TextDirection.rtl, child:       Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 23, 111, 153),
@@ -71,7 +80,14 @@ class _HomePageState extends State<HomePage> {
               child: MaterialButton(
                 minWidth: double.infinity,
                 height: 50,
-                onPressed: (){},
+                onPressed: () async {
+                  await homeProvider.transactionStockSpecs(context);
+                  if(homeProvider.state == APIStatue.loading){
+                    print(" APIStatue.loading ${homeProvider.state}");
+                    CircularProgressIndicator();
+                  }else if(homeProvider.state == APIStatue.error )
+                    ShowMessage().showSnackBar(context, homeProvider.errorMessage!);
+ },
                 textColor: Colors.white,
                 child: Text(Strings.store_trans),
                 color: Color.fromARGB(255, 23, 111, 153),),
@@ -80,7 +96,14 @@ class _HomePageState extends State<HomePage> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20), // Set left and right margins to 10
 
-              child: MaterialButton(onPressed: (){},
+              child: MaterialButton(onPressed: () async {
+                await homeProvider.fetchAllDats(context);
+                if(homeProvider.state == APIStatue.loading){
+                  print(" APIStatue.loading ${homeProvider.state}");
+                  CircularProgressIndicator();
+                }else if(homeProvider.state == APIStatue.error)
+                  ShowMessage().showSnackBar(context, homeProvider.errorMessage!);
+              },
                 minWidth: double.infinity,
                 height: 50,
                 textColor: Colors.white,
@@ -92,5 +115,10 @@ class _HomePageState extends State<HomePage> {
       ),
     )
     );
+
   }
+
+
+
+
 }

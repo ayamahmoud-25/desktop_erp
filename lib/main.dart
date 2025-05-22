@@ -1,5 +1,7 @@
+import 'package:desktop_erp_4s/ui/home/home_provider.dart';
 import 'package:desktop_erp_4s/ui/login/login_company.dart';
 import 'package:desktop_erp_4s/ui/login/login_provider.dart';
+import 'package:desktop_erp_4s/ui/stockTransaction/showTransaction/show_transaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +12,18 @@ void main() {
     ChangeNotifierProvider(
       create: (context) => LoginProvider(),
       child: MyApp(), // Your root application widget
+    ),
+  );
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginProvider()), // Register LoginProvider
+        ChangeNotifierProvider(create: (_) => HomeProvider()), // Register HomeProvider
+        ChangeNotifierProvider(create: (_) => ShowTransactionProvider()), // Register ShowTransactionProvider
+
+      ],
+      child: MyApp(),
     ),
   );
 }

@@ -17,7 +17,6 @@ class CompanyInfoResponse{
       'PUB_URL': pubUrl,
     };
   }
-
   factory CompanyInfoResponse.fromJson(Map<String,dynamic> json){
     CompanyInfoResponse c = CompanyInfoResponse();
     c.clientName = json['CLIENT_NAME'];

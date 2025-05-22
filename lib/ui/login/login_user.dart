@@ -37,10 +37,15 @@ class _UserLoginState extends State<UserLogin>{
   @override
   Widget build(BuildContext context) {
     final loginProvider = Provider.of<LoginProvider>(context);
-    return Scaffold(
+    return Scaffold
+      (extendBodyBehindAppBar: true, // Allows the body to extend behind the AppBar
+        appBar: AppBar(
+          backgroundColor: Colors.transparent, // Transparent AppBar
+          elevation: 0, // Remove shadow
+          iconTheme: IconThemeData(color: Colors.white), // Set back button color to white
+        ),
       body: BackgroundImagePage(
         child: Container(
-          margin: EdgeInsets.only(top: 40),
           child: Column(
             children: [
               SizedBox(height: 10),

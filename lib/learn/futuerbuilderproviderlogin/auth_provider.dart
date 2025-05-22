@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'auth_service.dart';
 import 'auth_state.dart';
-import 'home_page.dart';
+import '../../ui/home/home_page.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();

@@ -232,6 +232,7 @@ class StockTransactionListRow extends StatelessWidget {
                               builder: (context) => ShowTransactionList(
                                 selectedBranch: selectedBranch!.code!,
                                 transCode: transactionSpec.trnsCode!,
+                                transName: transactionSpec.trnsDesc!,
                               ),
                             ),
                           );

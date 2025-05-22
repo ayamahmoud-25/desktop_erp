@@ -5,7 +5,7 @@ class Helper{
   String formatDate(String date) {
     try {
       DateTime parsedDate = DateTime.parse(date);
-      return DateFormat('dd/MM/yyyy').format(parsedDate);
+      return DateFormat('yyyy/MM/dd').format(parsedDate);
     } catch (e) {
       return 'Invalid Date';
     }

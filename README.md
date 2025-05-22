@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # desktop_erp_4s
 
 A new Flutter project.
@@ -14,3 +15,6 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# desktop_erp_4s
+>>>>>>> 5bd7b80e5977f02194abce304158642882ab5b69

@@ -9,6 +9,34 @@ class Helper{
     } catch (e) {
       return 'Invalid Date';
     }
+
+  }
+
+  String getNameFromIndex(int index) {
+    // Note: If you update the index here,
+    // you must compare and update also getPartsDataLists(from, to).
+
+    const Map<int, String> fromToIndexList = {
+      0: "لا يوجد",
+      1: "عميل",
+      2: "مورد",
+      3: "جهه",
+      4: "مخزن",
+      5: "جهه تشغيل",
+      6: "اداره",
+      8: "مقاولون",
+      9: "افراد",
+    };
+
+    if (index == 7 || index > 9) {
+      throw RangeError('Index is out of bounds.');
+    }
+
+    // Returns null if index not found, so handle that:
+    if (!fromToIndexList.containsKey(index)) {
+      throw RangeError('Index is out of bounds.');
+    }
+    return fromToIndexList[index]!;
   }
 
 

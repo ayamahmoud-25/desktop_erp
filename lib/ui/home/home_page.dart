@@ -97,7 +97,6 @@ class _HomePageState extends State<HomePage> {
               margin: EdgeInsets.symmetric(horizontal: 20), // Set left and right margins to 10
 
               child: MaterialButton(onPressed: () async {
-                await homeProvider.fetchAllDats(context);
                 if(homeProvider.state == APIStatue.loading){
                   print(" APIStatue.loading ${homeProvider.state}");
                   CircularProgressIndicator();

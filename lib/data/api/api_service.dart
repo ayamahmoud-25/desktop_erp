@@ -132,11 +132,11 @@ class APIService {
   }
 
 
-  Future<APIResult> getAllCustomer() async {
+  Future<APIResult> getAllCustomer(String transType,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
 
-    String loginUrl = APIConstants.GET_ALL_CUSTOMER + authUrl!;
+    String loginUrl = APIConstants.GET_ALL_CUSTOMER + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
     APIResult result = APIResult();
     //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
 
@@ -185,11 +185,11 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllVendors() async {
+  Future<APIResult> getAllVendors(String transType,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
 
-    String loginUrl = APIConstants.GET_ALL_VENDORS + authUrl!;
+    String loginUrl = APIConstants.GET_ALL_VENDORS + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
     //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
 
@@ -236,11 +236,11 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllAgents() async {
+  Future<APIResult> getAllAgents(String transType,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
 
-    String loginUrl = APIConstants.GET_ALL_AGENTS + authUrl!;
+    String loginUrl = APIConstants.GET_ALL_AGENTS + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{
@@ -284,11 +284,11 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllWorkAreas() async {
+  Future<APIResult> getAllWorkAreas(String transType,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
 
-    String loginUrl = APIConstants.GET_ALL_WORK_AREAS + authUrl!;
+    String loginUrl = APIConstants.GET_ALL_WORK_AREAS + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{
@@ -332,11 +332,11 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllPersons() async {
+  Future<APIResult> getAllPersons(String transType,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
 
-    String loginUrl = APIConstants.GET_ALL_PERSONS + authUrl!;
+    String loginUrl = APIConstants.GET_ALL_PERSONS + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{
@@ -380,11 +380,11 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllContactor() async {
+  Future<APIResult> getAllContactor(String transType,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
 
-    String loginUrl = APIConstants.GET_ALL_CONTRACTOR + authUrl!;
+    String loginUrl = APIConstants.GET_ALL_CONTRACTOR + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{

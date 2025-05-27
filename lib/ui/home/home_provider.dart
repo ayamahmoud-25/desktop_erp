@@ -177,7 +177,7 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchAllDats(BuildContext context) async {
+ /* Future<void> fetchAllDats(BuildContext context) async {
     _state = APIStatue.loading;
     notifyListeners();
      //Fetch all data
@@ -205,13 +205,13 @@ class HomeProvider extends ChangeNotifier {
       }
     }
 
-    }
+    }*/
 
   // allCustomer
-  Future<void> allCustomer(BuildContext context) async {
+  Future<void> allCustomer(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllCustomer();
+    final response = await _apiService.getAllCustomer(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -283,10 +283,10 @@ class HomeProvider extends ChangeNotifier {
   }
 
   //All Vendor
-  Future<void> allVendors(BuildContext context) async {
+  Future<void> allVendors(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllVendors();
+    final response = await _apiService.getAllVendors(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -359,12 +359,11 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-
   //All Agents
-  Future<void> allAgents(BuildContext context) async {
+  Future<void> allAgents(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllAgents();
+    final response = await _apiService.getAllAgents(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -442,10 +441,10 @@ class HomeProvider extends ChangeNotifier {
   }
 
   //AllWork Areas
-  Future<void> allWorkAreas(BuildContext context) async {
+  Future<void> allWorkAreas(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllWorkAreas();
+    final response = await _apiService.getAllWorkAreas(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -523,10 +522,10 @@ class HomeProvider extends ChangeNotifier {
   }
 
   //All Persons
-  Future<void> allPersons(BuildContext context) async {
+  Future<void> allPersons(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllPersons();
+    final response = await _apiService.getAllPersons(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -599,10 +598,10 @@ class HomeProvider extends ChangeNotifier {
   }
 
   //All Contractor
-  Future<void> allContractor(BuildContext context) async {
+  Future<void> allContractor(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllContactor();
+    final response = await _apiService.getAllContactor(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;

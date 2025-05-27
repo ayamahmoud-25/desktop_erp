@@ -49,5 +49,15 @@ class Strings{
   static const String APPROVED = "Y";
 
 
+  //Form Stock Transaction
+  static const String NEW = "جديد";
+  static const String UPDATE = "تعديل";
+  static const String BASIC_DATA = "البيانات الأساسية";
+  static const String BRANCH = "الفرع";
+  static const String FROM = "من";
+  static const String TO = "إلى";
+  static const String TRANSACTION_DATE = "تاريخ الحركة";
+
+
 
 }

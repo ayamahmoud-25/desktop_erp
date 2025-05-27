@@ -1,4 +1,5 @@
 import 'package:desktop_erp_4s/ui/stockTransaction/showTransaction/ShowTransactionList.dart';
+import 'package:desktop_erp_4s/ui/stockTransaction/transactionForm/transaction_form.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/branch_model.dart';
@@ -211,7 +212,17 @@ class StockTransactionListRow extends StatelessWidget {
                   if( selectedBranch==null || selectedBranch!.code==null) {
                     CustomAlertDialog().showAlertDialog(context);
                   }else{
-                    //navigate to the transaction creation page
+                    //navigate to transaction form page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TransactionForm(
+                          selectedBranch: selectedBranch!,
+                          transactionSpec: transactionSpec,
+                        ),
+                      ),
+                    );
+
                   }
                 },
                 textColor: Colors.white,

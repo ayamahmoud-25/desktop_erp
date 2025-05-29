@@ -1,5 +1,3 @@
-import 'package:desktop_erp_4s/data/models/response/CompanyInfoResponse.dart';
-import 'package:desktop_erp_4s/db/shared_prefs.dart';
 import 'package:desktop_erp_4s/ui/widgets/background_image_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +5,6 @@ import 'package:desktop_erp_4s/ui/login/login_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/api_state.dart';
-import '../../db/SharedPereference.dart';
 import '../../util/Strings.dart';
 import '../../util/show_message.dart';
 import '../../util/validate.dart';

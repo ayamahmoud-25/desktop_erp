@@ -17,7 +17,6 @@ import 'package:http/http.dart' as http;
 
 import '../../db/SharedPereference.dart';
 import '../models/response/AllCustomer.dart';
-import '../models/response/Pagination.dart';
 import 'api_result.dart';
 
 class APIService {

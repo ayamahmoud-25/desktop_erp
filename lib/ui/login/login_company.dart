@@ -99,6 +99,9 @@ class _CompanyLoginState extends State<CompanyLogin> {
                         loginProvider.errorMessage!,
                       );
                   }
+                  else if (loginProvider.state == APIStatue.success) {
+                    print("Navigation to UserLogin successful");
+                  }
                 },
                 textColor: Colors.white,
                 child: Text(Strings.Save),

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../data/api_state.dart';
 import '../../util/Strings.dart';
-import '../../util/show_message.dart';
+import '../widgets/show_message.dart';
 import '../../util/validate.dart';
 
 class UserLogin extends StatefulWidget{

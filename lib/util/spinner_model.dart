@@ -1,0 +1,26 @@
+class SpinnerModel {
+  String? _id;
+  String? _name;
+
+  SpinnerModel({
+    required String id,
+    required String name,
+  })  : _id = id,
+        _name = name;
+
+  // Getter for id
+  String? get id => _id;
+
+  // Setter for id
+  set id(String? value) {
+    _id = value;
+  }
+
+  // Getter for name
+  String? get name => _name;
+
+  // Setter for name
+  set name(String? value) {
+    _name = value;
+  }
+}

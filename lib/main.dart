@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-
 void main() {
-// Initialize databaseFactory for sqflite_common_ffi
-//flutter run -d chrome --web-browser-flag "--disable-web-security"
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
+  //this comment for web delopy but not working and make conflict with mobile and desktop
+  // Initialize databaseFactory for sqflite_common_ffi
+  //flutter run -d chrome --web-browser-flag "--disable-web-security"
+ // sqfliteFfiInit();
+  //databaseFactory = databaseFactoryFfi;
   // Initialize the database factory for sqflite_common_ffi
   // This is necessary for using sqflite in a desktop environment
   // You can also use the following line if you want to use the default database factory
@@ -26,10 +26,13 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => LoginProvider()), // Register LoginProvider
-        ChangeNotifierProvider(create: (_) => HomeProvider()), // Register HomeProvider
-        ChangeNotifierProvider(create: (_) => ShowTransactionProvider()), // Register ShowTransactionProvider
+        ChangeNotifierProvider(create: (_) => LoginProvider()),
+        // Register LoginProvider
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
+        // Register HomeProvider
+        ChangeNotifierProvider(create: (_) => ShowTransactionProvider()),
 
+        // Register ShowTransactionProvider
       ],
       child: MyApp(),
     ),

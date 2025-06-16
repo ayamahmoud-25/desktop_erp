@@ -6,4 +6,7 @@ class AppConstants{
   static String clientAccessToken ="";
   static const String KEY_ACCESS_TOKEN='access_token';
 
+  static const String TRANS_TYPE_STORE="S"; // "S" for Store Transaction
+  static const String TRANS_TYPE_REC_PAY="R"; //"R" for RecPay Transaction
+
 }

@@ -206,6 +206,9 @@ class HomeProvider extends ChangeNotifier {
     }
 
     }*/
+/*
+   with saved in db
+
 
   // allCustomer
   Future<void> allCustomer(BuildContext context,String transType,String transCode) async {
@@ -674,6 +677,7 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
+*/
 
   }
 

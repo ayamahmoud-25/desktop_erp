@@ -6,7 +6,7 @@ import '../../data/models/branch_model.dart';
 import '../../data/models/response/TransactionSpec.dart';
 import '../../db/SharedPereference.dart';
 import '../../db/database_helper.dart';
-import '../../util/custom_alert_dialog.dart';
+import '../widgets/custom_alert_dialog.dart';
 import '../../util/strings.dart';
 import '../home/branches/BranchListDialog.dart';
 
@@ -32,8 +32,7 @@ class _StockTransactionListState extends State<StockTransactionList> {
       // If a branch was previously selected, you can handle it here
       print('Previously selected branch: $savedSelectedBranch');
       setState(() {
-        this.selectedBranch = savedSelectedBranch;
-      });
+        this.selectedBranch = savedSelectedBranch;});
         });
   }
 

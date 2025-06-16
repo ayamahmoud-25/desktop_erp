@@ -6,7 +6,7 @@ import '../../data/api_state.dart';
 import '../../data/models/branch_model.dart';
 import '../../db/SharedPereference.dart';
 import '../../util/navigation.dart';
-import '../../util/show_message.dart';
+import '../widgets/show_message.dart';
 import '../../util/strings.dart';
 import 'branches/BranchListDialog.dart';
 

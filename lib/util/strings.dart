@@ -25,6 +25,7 @@ class Strings{
   static const String SELECT ="أختر";
   static const String  CHANGE_BRANCH ="تغيير الفرع";
   static const String  SELECT_BRANCH ="أختر الفرع";
+  static const String SEARCH ="بحث...";
 
   //Button
   static const String Save ="حفظ";
@@ -57,6 +58,22 @@ class Strings{
   static const String FROM = "من";
   static const String TO = "إلى";
   static const String TRANSACTION_DATE = "تاريخ الحركة";
+  static const String DATE = "التاريخ";
+  static const String DATE_FORM = "MM/YY";
+  static const String REM = "البيان";
+  static const String GROUPS_ITEMS = " المجموعات والاصناف";
+  static const String ADD_ITEM = "إضافة صنف";
+  static const String GROUP_ITEMS = "مجموعه الأصناف";
+  static const String ITEMS = "أصناف";
+
+  static const int CUSTOMER = 1;
+  static const int VENDORS = 2;
+  static const int AGENTS = 3;
+  static const int STORES = 4;
+  static const int WORK_AREAS = 5;
+  static const int DEPARTS = 6;
+  static const int CONTRACTORS = 8;
+  static const int PERSONS = 9;
 
 
 

@@ -2,9 +2,13 @@ import 'dart:convert' as convert;
 import 'dart:core';
 
 import 'package:desktop_erp_4s/data/api/api_constansts.dart';
+import 'package:desktop_erp_4s/data/app_constants.dart';
 import 'package:desktop_erp_4s/data/models/response/AllAgents.dart';
 import 'package:desktop_erp_4s/data/models/response/AllContractor.dart';
+import 'package:desktop_erp_4s/data/models/response/AllDeparts.dart';
+import 'package:desktop_erp_4s/data/models/response/AllItemsForms.dart';
 import 'package:desktop_erp_4s/data/models/response/AllPersons.dart';
+import 'package:desktop_erp_4s/data/models/response/AllStores.dart';
 import 'package:desktop_erp_4s/data/models/response/AllVendors.dart';
 import 'package:desktop_erp_4s/data/models/response/AllWorkAreas.dart';
 import 'package:desktop_erp_4s/data/models/response/BasicDataListResponse.dart';
@@ -131,10 +135,11 @@ class APIService {
   }
 
 
-  Future<APIResult> getAllCustomer(String transType,String transCode) async {
+
+  Future<APIResult> getAllCustomer(bool isStoreTrans,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
-
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
     String loginUrl = APIConstants.GET_ALL_CUSTOMER + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
     APIResult result = APIResult();
     //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
@@ -184,9 +189,10 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllVendors(String transType,String transCode) async {
+  Future<APIResult> getAllVendors(bool isStoreTrans,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
     String loginUrl = APIConstants.GET_ALL_VENDORS + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
@@ -235,9 +241,10 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllAgents(String transType,String transCode) async {
+  Future<APIResult> getAllAgents(bool isStoreTrans,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
     String loginUrl = APIConstants.GET_ALL_AGENTS + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
@@ -283,9 +290,10 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllWorkAreas(String transType,String transCode) async {
+  Future<APIResult> getAllWorkAreas(bool isStoreTrans,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
     String loginUrl = APIConstants.GET_ALL_WORK_AREAS + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
@@ -331,9 +339,10 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllPersons(String transType,String transCode) async {
+  Future<APIResult> getAllPersons(bool isStoreTrans,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
     String loginUrl = APIConstants.GET_ALL_PERSONS + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
@@ -379,9 +388,10 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllContactor(String transType,String transCode) async {
+  Future<APIResult> getAllContactor(bool isStoreTrans,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
     String loginUrl = APIConstants.GET_ALL_CONTRACTOR + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
     APIResult result = APIResult();
@@ -407,6 +417,163 @@ class APIService {
           data,
           'contractor',
               (json) => AllContractor.fromJson(json),
+        );
+
+        print("dataList: ${dataList.items}"); // Debugging line
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataList,    );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+  }
+  Future<APIResult> getAllStores(bool isStoreTrans,String transCode) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
+
+    String loginUrl = APIConstants.GET_ALL_STORES + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
+    APIResult result = APIResult();
+
+    final response = await http.get(Uri.parse(loginUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        var data = jsonResponse['data'];
+        BasicDataListResponse<AllStores> dataList = BasicDataListResponse<AllStores>.fromJson(
+          data,
+          'stores',
+              (json) => AllStores.fromJson(json),
+        );
+
+        print("dataList: ${dataList.items}"); // Debugging line
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataList,    );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+  }
+  Future<APIResult> getAllDepart(bool isStoreTrans,String transCode) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
+
+    String loginUrl = APIConstants.Get_ALL_DEPART + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
+    APIResult result = APIResult();
+
+    final response = await http.get(Uri.parse(loginUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        var data = jsonResponse['data'];
+        BasicDataListResponse<AllDeparts> dataList = BasicDataListResponse<AllDeparts>.fromJson(
+          data,
+          'departs',
+              (json) => AllDeparts.fromJson(json),
+        );
+
+        print("dataList: ${dataList.items}"); // Debugging line
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataList,    );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+  }
+
+  Future<APIResult> getAllItemsForms() async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+    String loginUrl = APIConstants.GET_ALL_ITEMS_FORMS + authUrl! ;
+    APIResult result = APIResult();
+    //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
+
+    final response = await http.get(Uri.parse(loginUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
+
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        var data = jsonResponse['data'];
+        BasicDataListResponse<AllItemsForms> dataList = BasicDataListResponse<AllItemsForms>.fromJson(
+          data,
+          'itemforms',
+              (json) => AllItemsForms.fromJson(json),
         );
 
         print("dataList: ${dataList.items}"); // Debugging line
@@ -481,7 +648,6 @@ class APIService {
       );
     }
   }
-
 
 
 

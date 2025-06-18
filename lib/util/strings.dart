@@ -36,6 +36,7 @@ class Strings{
 
   //Error
   static const String ERROR_NO_DATA_FIELD ="الحقل فارغ";
+  static const String ERROR_NO_DATA_FOUND =" لا توجد بيانات  ";
 
 
 
@@ -60,12 +61,18 @@ class Strings{
   static const String TRANSACTION_DATE = "تاريخ الحركة";
   static const String DATE = "التاريخ";
   static const String DATE_FORM = "MM/YY";
+  static const String SALES_REP_TEXT = "المندوب";
   static const String REM = "البيان";
   static const String GROUPS_ITEMS = " المجموعات والاصناف";
   static const String ADD_ITEM = "إضافة صنف";
   static const String GROUP_ITEMS = "مجموعه الأصناف";
   static const String ITEMS = "أصناف";
+  static const String DEPENDENCY = "الإعتمادات";
+  static const String ADD_DEPENDENCY = "إضافة إعتماد";
+  static const String FINANCE = "الماليات";
+  static const String PAY_WAY = "طريقة الدفع";
 
+  static const int SALES_REP = -1;
   static const int CUSTOMER = 1;
   static const int VENDORS = 2;
   static const int AGENTS = 3;

@@ -37,7 +37,9 @@ class APIConstants {
   static String GET_ALL_CONTRACTOR= BASE_URL + "Transactions/Get_allcontractor?servicename=";
   static String GET_ALL_STORES= BASE_URL + "Transactions/Get_allstores?servicename=";
   static String Get_ALL_DEPART= BASE_URL + "Transactions/Get_alldepart?servicename=";
+  static String Get_ALL_SALES_REP= BASE_URL + "Transactions/Get_allsalesrep?servicename=";
   static String GET_ALL_ITEMS_FORMS= BASE_URL + "Transactions/Get_allitemforms?servicename=";
+  static String GET_ALL_ITEMS_LIST= BASE_URL + "Transactions/Get_itemslist?servicename=";
 
 
   //Response Codes

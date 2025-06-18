@@ -1,13 +1,7 @@
 class TransactionCreatingModel {
   String? branch;
-
-
   String? trnsCode;
-
   String? itemForm;
-
-
-
   double? trnsVal;
   double? trnsNet;
   double? salesTaxRate;
@@ -21,6 +15,8 @@ class TransactionCreatingModel {
   String? username;
   String? depOnCode;
   String? rem;
+  String? salesRepCode;
+  String? repName;
   int? trnsNo;
   String? trnsDate;
   String? trnsStamp;
@@ -32,6 +28,7 @@ class TransactionCreatingModel {
   List<StoreTrnsOModel>? storeTrnsOModels;
   List<StoreTrnsDepModel>? storeTrnsDepModels;
 
+  //for view
   String? branchName;
   String? fromName;
   String? toName;
@@ -57,6 +54,8 @@ class TransactionCreatingModel {
     this.username,
     this.depOnCode,
     this.rem,
+    this.salesRepCode,
+    this.repName,
     this.trnsNo,
     this.trnsDate,
     this.trnsStamp,
@@ -87,6 +86,8 @@ class TransactionCreatingModel {
       username: json['USERNAME'],
       depOnCode: json['DEP_ON_CODE'],
       rem: json['REM'],
+      salesRepCode: json['SALES_REP_CODE'],
+      repName: json['REP_NAME'],
       trnsNo: json['TRNS_NO'],
       trnsDate: json['TRNS_DATE'],
       trnsStamp: json['TRNS_STAMP'],

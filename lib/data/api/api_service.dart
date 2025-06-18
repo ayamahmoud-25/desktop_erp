@@ -8,11 +8,13 @@ import 'package:desktop_erp_4s/data/models/response/AllContractor.dart';
 import 'package:desktop_erp_4s/data/models/response/AllDeparts.dart';
 import 'package:desktop_erp_4s/data/models/response/AllItemsForms.dart';
 import 'package:desktop_erp_4s/data/models/response/AllPersons.dart';
+import 'package:desktop_erp_4s/data/models/response/AllSalesRep.dart';
 import 'package:desktop_erp_4s/data/models/response/AllStores.dart';
 import 'package:desktop_erp_4s/data/models/response/AllVendors.dart';
 import 'package:desktop_erp_4s/data/models/response/AllWorkAreas.dart';
 import 'package:desktop_erp_4s/data/models/response/BasicDataListResponse.dart';
 import 'package:desktop_erp_4s/data/models/response/CompanyInfoResponse.dart';
+import 'package:desktop_erp_4s/data/models/response/DataItemListResponseModel.dart';
 import 'package:desktop_erp_4s/data/models/response/DataResponseModel.dart';
 import 'package:desktop_erp_4s/data/models/response/Transaction.dart';
 import 'package:desktop_erp_4s/data/models/response/UserInfoResponse.dart';
@@ -134,13 +136,57 @@ class APIService {
     }
   }
 
+  Future<APIResult> getItemList(String itemForm) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+
+    String loginUrl = APIConstants.GET_ALL_ITEMS_LIST + authUrl! +"&_pageSize=10000"+"&item_form="+itemForm;
+    APIResult result = APIResult();
+    DataItemListResponseModel dataResponseModel;
+
+    final response = await http.get(Uri.parse(loginUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        dataResponseModel = DataItemListResponseModel.fromJson(jsonResponse['data']);
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataResponseModel,
+        );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+  }
 
 
   Future<APIResult> getAllCustomer(bool isStoreTrans,String transCode) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
-    String loginUrl = APIConstants.GET_ALL_CUSTOMER + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
+    String loginUrl = APIConstants.GET_ALL_CUSTOMER + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
     APIResult result = APIResult();
     //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
 
@@ -194,7 +240,7 @@ class APIService {
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.GET_ALL_VENDORS + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
+    String loginUrl = APIConstants.GET_ALL_VENDORS + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
     //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
 
@@ -246,7 +292,7 @@ class APIService {
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.GET_ALL_AGENTS + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
+    String loginUrl = APIConstants.GET_ALL_AGENTS + authUrl!+"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{
@@ -295,7 +341,7 @@ class APIService {
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.GET_ALL_WORK_AREAS + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
+    String loginUrl = APIConstants.GET_ALL_WORK_AREAS + authUrl!+"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{
@@ -344,7 +390,7 @@ class APIService {
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.GET_ALL_PERSONS + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;;
+    String loginUrl = APIConstants.GET_ALL_PERSONS + authUrl!+"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;;
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{
@@ -393,7 +439,7 @@ class APIService {
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.GET_ALL_CONTRACTOR + authUrl!+"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
+    String loginUrl = APIConstants.GET_ALL_CONTRACTOR + authUrl!+"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{
@@ -442,7 +488,7 @@ class APIService {
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.GET_ALL_STORES + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
+    String loginUrl = APIConstants.GET_ALL_STORES + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
     APIResult result = APIResult();
 
     final response = await http.get(Uri.parse(loginUrl),
@@ -494,7 +540,7 @@ class APIService {
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.Get_ALL_DEPART + authUrl! +"&_pageSize=1000"+"&trns_code="+transCode+"&trns_type="+transType;
+    String loginUrl = APIConstants.Get_ALL_DEPART + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
     APIResult result = APIResult();
 
     final response = await http.get(Uri.parse(loginUrl),
@@ -574,6 +620,59 @@ class APIService {
           data,
           'itemforms',
               (json) => AllItemsForms.fromJson(json),
+        );
+
+        print("dataList: ${dataList.items}"); // Debugging line
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataList,    );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+
+
+    }
+  }
+  Future<APIResult> getAllSalesRep() async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+    String loginUrl = APIConstants.Get_ALL_SALES_REP + authUrl!+"&_pageSize=10000" ;
+
+    APIResult result = APIResult();
+
+    final response = await http.get(Uri.parse(loginUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        var data = jsonResponse['data'];
+        BasicDataListResponse<AllSalesRep> dataList = BasicDataListResponse<AllSalesRep>.fromJson(
+          data,
+          'salesrep',
+              (json) => AllSalesRep.fromJson(json),
         );
 
         print("dataList: ${dataList.items}"); // Debugging line

@@ -168,8 +168,6 @@ class HomeProvider extends ChangeNotifier {
         print("Unauthorized access");
         // You can navigate to the login screen or show a message
         Navigation().logout(context);
-
-
       }
       _state = APIStatue.error;
       _errorMessage = response.msg;

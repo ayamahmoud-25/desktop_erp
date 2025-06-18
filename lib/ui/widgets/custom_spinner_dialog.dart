@@ -29,7 +29,8 @@ class _CustomSpinnerDialogState extends State<CustomSpinnerDialog> {
     setState(() {
       searchQuery = query;
       filteredModels = widget.spinnerModels
-          .where((item) => item.name.toLowerCase().contains(query.toLowerCase()))
+          .where((item) => item.name.toLowerCase().contains(query.toLowerCase())||
+                          item.id.toString().contains(query))
           .toList();
     });
   }

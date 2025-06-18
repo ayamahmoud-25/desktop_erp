@@ -2,6 +2,7 @@ import 'package:desktop_erp_4s/ui/home/home_provider.dart';
 import 'package:desktop_erp_4s/ui/login/login_company.dart';
 import 'package:desktop_erp_4s/ui/login/login_provider.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/showTransaction/show_transaction_provider.dart';
+import 'package:desktop_erp_4s/ui/stockTransaction/transactionForm/transaction_form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -31,8 +32,9 @@ void main() {
         ChangeNotifierProvider(create: (_) => HomeProvider()),
         // Register HomeProvider
         ChangeNotifierProvider(create: (_) => ShowTransactionProvider()),
-
         // Register ShowTransactionProvider
+        ChangeNotifierProvider(create: (_) => TransactionFormProvider()),
+
       ],
       child: MyApp(),
     ),

@@ -20,4 +20,17 @@ class FormUtils {
 
     return fromToIndexList[index] ?? "لا يوجد";
   }
+  static List<String> getPaymentMethod() {
+    // Note: If you update the index here, you must compare and update also getPartsDataLists(from, to).
+    List<String> fromToIndexList = [
+        "طريقة الدفع",
+        "نقدي",     // Cash
+        "كارت ئتمان",    // Check
+        "اجل",    // Bank Transfer
+        "تحت التحصيل",   // Credit Card
+    ];
+
+    return fromToIndexList;
+  }
+
 }

@@ -1,11 +1,24 @@
 import 'package:desktop_erp_4s/data/api/api_result.dart';
+import 'package:desktop_erp_4s/data/models/response/DataItemListResponseModel.dart';
+import 'package:desktop_erp_4s/data/models/response/TransactionDepOnData.dart';
+import 'package:desktop_erp_4s/data/models/response/store_trans_dep_list_response_model.dart';
+import 'package:desktop_erp_4s/data/models/response/store_trans_list_dependency.dart';
 import 'package:desktop_erp_4s/ui/widgets/show_message.dart';
 import 'package:desktop_erp_4s/util/map_list_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../../../data/api/api_constansts.dart';
 import '../../../data/api/api_service.dart';
+import '../../../data/models/branch_model.dart';
+import '../../../data/models/request/dependency_trans_list.dart';
 import '../../../data/models/request/transaction_creating_model.dart';
+import '../../../data/models/response/ItemList.dart';
+import '../../../data/models/response/StoreTrnsOModel.dart';
+import '../../../data/models/response/TransactionDepOnListResponseModel.dart';
+import '../../../data/models/response/TransactionSpec.dart';
+import '../../../db/SharedPereference.dart';
+import '../../../util/item_form_with_spinner_list.dart';
 import '../../../util/navigation.dart';
 import '../../../util/spinner_model.dart';
 import '../../../util/strings.dart' show Strings;
@@ -26,10 +39,132 @@ class TransactionFormProvider extends ChangeNotifier {
 
   BuildContext? _context;
 
+
+  // getter and setter for spinner model list
+  List<SpinnerModel> _allItemsFormsList = [];
+
+  List<SpinnerModel> get allItemsFormsList => _allItemsFormsList;
+
+  set allItemsFormsList(List<SpinnerModel> spinnerModelList) {
+    _allItemsFormsList = spinnerModelList;
+    // Instead of notifyListeners() directly:
+    notify();
+  }
   BuildContext? get context => _context;
+
+
+ /* bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  set isLoading(bool isLoading) {
+    _isLoading = isLoading;
+    // Instead of notifyListeners() directly:
+    notify();
+  }*/
+
+/*  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }*/
 
   set context(BuildContext? context) {
     _context = context;
+    // Instead of notifyListeners() directly:
+    notify();
+  }
+
+  StoreTrnsOModel storeTransOModel = StoreTrnsOModel();
+  List<StoreTrnsOModel> storeTransOModelList = [];
+  List<DependencyTransList> dependencyTransList = [];
+  List<ItemFormWithSpinnerList> itemFormWithItemList = [];
+
+  // set &  get for transactionSpec
+  TransactionSpec? _transactionSpec;
+
+  TransactionSpec? get transactionSpec => _transactionSpec;
+
+
+  set transactionSpec(TransactionSpec? transactionSpec){
+   //  isLoading = true; // Show loader
+    _transactionSpec = transactionSpec;
+    setValues();
+
+    notify();
+  }
+
+  void setValues(){
+    setAllItemForm();
+    setFromToDstCode();
+
+  }
+
+  void setAllItemForm() {
+     for(var item in allItemsFormsList) {
+      if (item.id == transactionSpec?.itemForm) {
+        transaction.itemForm = item.id;
+        transaction.itemFormName = item.name;
+        break; // Exit loop once the item form is found
+      }
+
+   }
+     notify();
+   }
+  Future<void>  setFromToDstCode()async {
+
+    //3.1 Form
+    transaction.fromDst = transactionSpec?.fromDst;
+    transaction.fromCode = transactionSpec?.fromCode;
+     //3.2 To
+    transaction.toDst = transactionSpec?.toDst;
+    transaction.toCode = transactionSpec?.toCode;
+
+    // Check if fromCode is not null or empty
+
+
+    try {
+      // Your existing async code here
+      // e.g., await some API call or data processing
+      if (transaction.fromCode != null && transaction.fromCode != "") {
+        // Call the method to get spinner model list by index
+        final List<SpinnerModel> spinnerModel = await getSpinnerModelListByIndex(
+            transaction.fromDst!, transaction.trnsCode!);
+        if (spinnerModel.length > 0) {
+          for(var item in spinnerModel) {
+            if (item.id == transaction.fromCode) {
+              transaction.fromName = item.name; // Set the name based on the ID
+              break; // Exit loop once the name is found
+            }
+          }
+        }
+      }
+
+
+      if (transaction.toCode != null && transaction.toCode != "") {
+        // Call the method to get spinner model list by index
+        final List<SpinnerModel> spinnerModel = await getSpinnerModelListByIndex(
+            transaction.toDst!, transaction.trnsCode!);
+        if (spinnerModel.length > 0) {
+          for(var item in spinnerModel) {
+            if (item.id == transaction.toCode) {
+              transaction.toName = item.name; // Set the name based on the ID
+              break; // Exit loop once the name is found
+            }
+          }
+        }
+      }
+
+    } catch (e) {
+      print("Error in setFromToDstCode: $e");
+    } finally {
+     // notify();// Hide loader
+    }
+
+
+
+
   }
 
   Future<List<SpinnerModel>> getSpinnerModelListByIndex(
@@ -94,11 +229,89 @@ class TransactionFormProvider extends ChangeNotifier {
   }
 
   Future<List<SpinnerModel>> getAllItemsForms() async {
-    final apiResult = await APIService().getAllItemsForms();
+    if (_allItemsFormsList.length > 0) {
+      print("initState itemForm: Not call");
+      return _allItemsFormsList;
+    } else {
+      print("initState itemForm:  call");
+      final apiResult = await APIService().getAllItemsForms();
+      if (apiResult.status == true && apiResult.data != null) {
+        // Map API response to SpinnerModel list
+        List<SpinnerModel> spinnerModelList = await MapListModel()
+            .mapGetAllDataListToSpinnerModelList(apiResult.data.items);
+        // Update the allItemsFormsList with the fetched data
+        // Set the spinner model list to the allItemsFormsList
+        _allItemsFormsList = spinnerModelList;
+
+        //set default
+        transaction.itemForm =
+            _allItemsFormsList[0].id; // Set the first item as default
+        transaction.itemFormName =
+            _allItemsFormsList[0].name; // Set the first item as default
+
+        // Notify listeners about the change
+        notify();
+        // Return the spinner model list
+        print("Fetched all items forms successfully");
+        print("Spinner Model List: $spinnerModelList");
+        // Return the spinner model list
+        print("Returning spinnerModelList: $spinnerModelList");
+        // Return the spinner model list
+
+        return allItemsFormsList;
+      } else if (apiResult.code == APIConstants.RESPONSE_CODE_UNAUTHORIZED) {
+        // Handle unauthorized access
+        print("Unauthorized access");
+        ShowMessage().showSnackBar(_context!, apiResult.msg!);
+        // You can navigate to the login screen or show a message
+        Navigation().logout(_context!);
+        return [];
+      } else {
+        // Handle other cases, such as API failure or no data
+        print("API call failed or no data");
+        return [];
+      }
+    }
+  }
+
+  //function get name of item form by itemform code (_allItemsFormsList)
+  String? getItemFormNameByCode(String itemFormCode) {
+    if (_allItemsFormsList.isEmpty) return "";
+    for (var item in _allItemsFormsList) {
+      if (item.id == itemFormCode) {
+        return item.name;
+      }
+    }
+    return ""; // Return empty string if not found
+  }
+
+  Future<List<SpinnerModel>> getAllItemsList(
+    String itemForm,
+    String itemPrice,
+  ) async {
+    final apiResult = await APIService().getItemList(itemForm);
+
     if (apiResult.status == true && apiResult.data != null) {
       // Map API response to SpinnerModel list
+      //List<ItemList> itemList = apiResult.data.items;
+      DataItemListResponseModel dataItemListResponseModel = apiResult.data;
+      List<ItemList>? itemList = dataItemListResponseModel.itemList;
       List<SpinnerModel> spinnerModelList = await MapListModel()
-          .mapGetAllDataListToSpinnerModelList(apiResult.data.items);
+          .mapGetAllDataListToSpinnerModelListItem(itemList!, itemPrice);
+      // Update the allItemsFormsList with the fetched data
+      // Set the spinner model list to the allItemsFormsList
+
+      //set default
+
+      // Notify listeners about the change
+      notify();
+
+      // Return the spinner model list
+      print("Fetched all items forms successfully");
+      print("Spinner Model List: $spinnerModelList");
+      // Return the spinner model list
+      print("Returning spinnerModelList: $spinnerModelList");
+      // Return the spinner model list
       return spinnerModelList;
     } else if (apiResult.code == APIConstants.RESPONSE_CODE_UNAUTHORIZED) {
       // Handle unauthorized access
@@ -106,7 +319,285 @@ class TransactionFormProvider extends ChangeNotifier {
       ShowMessage().showSnackBar(_context!, apiResult.msg!);
       // You can navigate to the login screen or show a message
       Navigation().logout(_context!);
+      return [];
+    } else {
+      // Handle other cases, such as API failure or no data
+      print("API call failed or no data");
+      return [];
     }
-    return [];
   }
+
+
+
+  ///make function take storeTransOModel(StoreTrnsOModel) and add it to storeTransOModelList
+  void addStoreTransOModel(StoreTrnsOModel selectedItem) {
+    StoreTrnsOModel storeTransOModel = StoreTrnsOModel();
+    storeTransOModel.branch = transaction.branch;
+    storeTransOModel.trnsNo = transaction.trnsNo;
+    storeTransOModel.trnsCode = transaction.trnsCode;
+    storeTransOModel.itemForm = transaction.itemForm;
+
+    storeTransOModel.formDesc = getItemFormNameByCode(
+      storeTransOModel.itemForm!,
+    );
+    storeTransOModel.itemDesc = selectedItem.itemDesc;
+    storeTransOModel.itemCode = selectedItem.itemCode;
+    storeTransOModel.qty1 = selectedItem.qty1;
+
+    storeTransOModelList.add(storeTransOModel);
+    notify();
+  }
+
+  void removeStoreTransOModel(int index) {
+    if (index >= 0 && index < storeTransOModelList.length) {
+      storeTransOModelList.removeAt(index);
+      notify();
+    } else {
+      print("Index out of range");
+    }
+  }
+
+
+  /*Future<List<StoreTrnsDepModel>?> getStoreTransDependency() async {
+    final apiResult = await APIService().getStoreTransDependencyList(transaction.branch!,transaction.trnsCode!);
+
+    if (apiResult.status == true && apiResult.data != null) {
+      // Map API response to SpinnerModel list
+      //List<ItemList> itemList = apiResult.data.items;
+      StoreTransDepListResponseModel storeTransListDependency = apiResult.data;
+      List<StoreTransListDependency>? storeTransDepList = storeTransListDependency.storeTransDepList;
+      //loop for evey item in StoreTransListDependency
+      List<StoreTrnsDepModel> storeTransDepModel =[];
+        for(var item in storeTransDepList!) {
+          StoreTrnsDepModel model = StoreTrnsDepModel();
+          model.branch = item.branch;
+          model.depOnBranch = item.branch;
+
+          model.trnsCode = item.trnsCode!;
+          model.depOnTrnsCode = transactionSpec!.depOnTrnsCodeVal;
+
+          model.trnsNo = item.trnsNo;
+          model.depOnTrnsNo = item.trnsNo;
+          storeTransDepModel.add(model);
+        }
+
+
+      *//*List<SpinnerModel> spinnerModelList = await MapListModel()
+          .mapGetAllDataListToSpinnerModelListItem(itemList!, itemPrice);*//*
+      // Update the allItemsFormsList with the fetched data
+      // Set the spinner model list to the allItemsFormsList
+
+      //set default
+
+      // Notify listeners about the change
+      notify();
+
+      // Return the spinner model list
+      print("Fetched all items forms successfully");
+      print("Spinner Model List: $storeTransDepModel");
+      // Return the spinner model list
+      print("Returning spinnerModelList: $storeTransDepModel");
+      // Return the spinner model list
+      return storeTransDepModel;
+    } else if (apiResult.code == APIConstants.RESPONSE_CODE_UNAUTHORIZED) {
+      // Handle unauthorized access
+      print("Unauthorized access");
+      ShowMessage().showSnackBar(_context!, apiResult.msg!);
+      // You can navigate to the login screen or show a message
+      Navigation().logout(_context!);
+      return [];
+    } else {
+      // Handle other cases, such as API failure or no data
+      print("API call failed or no data");
+      return [];
+    }
+  }
+*/
+  Future<List<StoreTransListDependency>?> getStoreTransDependency() async {
+    final apiResult = await APIService().getStoreTransDependencyList(transaction.branch!,transactionSpec!.depOnTrnsCodeVal!);
+
+    if (apiResult.status == true && apiResult.data != null) {
+      // Map API response to SpinnerModel list
+      //List<ItemList> itemList = apiResult.data.items;
+      StoreTransDepListResponseModel storeTransListDependency = apiResult.data;
+      List<StoreTransListDependency>? storeTransDepList = storeTransListDependency.storeTransDepList;
+
+
+      /*List<SpinnerModel> spinnerModelList = await MapListModel()
+          .mapGetAllDataListToSpinnerModelListItem(itemList!, itemPrice);*/
+      // Update the allItemsFormsList with the fetched data
+      // Set the spinner model list to the allItemsFormsList
+
+      //set default
+
+      // Notify listeners about the change
+      notify();
+
+      // Return the spinner model list
+      print("Fetched all items forms successfully");
+      print("Spinner Model List: $storeTransDepList");
+      // Return the spinner model list
+      print("Returning spinnerModelList: $storeTransDepList");
+      // Return the spinner model list
+      return storeTransDepList;
+    } else if (apiResult.code == APIConstants.RESPONSE_CODE_UNAUTHORIZED) {
+      // Handle unauthorized access
+      print("Unauthorized access");
+
+      if (context != null) {
+        ShowMessage().showSnackBar(context!, apiResult.msg!);
+      } else {
+        print("Cannot show snackbar, context is null: ${apiResult.msg}");
+      }
+     // ShowMessage().showSnackBar(_context!, apiResult.msg!);
+      // You can navigate to the login screen or show a message
+      Navigation().logout(context!);
+      return [];
+    } else {
+      ShowMessage().showToast(apiResult.msg!);
+      // Handle other cases, such as API failure or no data
+      print("API call failed or no data");
+      return null;
+    }
+  }
+
+  List<StoreTransListDependency>  getTransWithApprovedToDependOnIt(List<StoreTransListDependency>? storeTransDepList){
+      List<StoreTransListDependency> approvedTransList = [];
+      switch(transactionSpec?.filterApproved){//
+        case Strings.APPROVED_NUMBER :
+          // Filter for approved transactions
+            for(var item in storeTransDepList!){
+              if(item.approved == Strings.APPROVED_DEP) {
+                approvedTransList.add(item);
+              }
+            }
+          break;
+        case Strings.NOT_APPROVED_NUMBER:
+          for(var item in storeTransDepList!){
+            if(item.approved != Strings.APPROVED_DEP) {
+              approvedTransList.add(item);
+            }
+          }
+          break;
+        default:
+          approvedTransList =  storeTransDepList!;
+          break;
+      }
+      return approvedTransList;
+
+  }
+
+  Future<TransactionDepOnData?> getTransactionDepOnList(List<StoreTransListDependency>? storeTransDepList) async {
+
+    final apiResult = await APIService().getListOfTransactionDepOn(mapSelectedDepStoreTransList(storeTransDepList),transactionSpec!.trnsCode!);
+
+    if (apiResult.status == true && apiResult.data != null) {
+      // Map API response to SpinnerModel list
+      //List<ItemList> itemList = apiResult.data.items;
+      //TransactionDepListResponseModel transactionDepListResponseModel = apiResult.data;
+      TransactionDepOnData? transactionDeOnData = apiResult.data;
+
+
+      //Map Data
+      //1.branch
+      List<Branches> branches = (await SharedPreferences().loadBranchesFromPrefs()) as List<Branches>;
+      for (var branch in branches) {
+        if (branch.code == transactionDeOnData!.branch) {
+          transaction.branchName = branch.descr;
+          transaction.branch = branch.code!;
+          break; // Exit loop once the branch is found
+        }
+      }
+
+      //2.date
+      transaction.trnsDate = transactionDeOnData!.trnsDate.toString().substring(0,10);
+      //3.From  & To
+      //3.1 Form
+      transaction.fromDst = transactionDeOnData.fromDst;
+      transaction.fromCode = transactionDeOnData.fromCode;
+      //3.1 To
+      transaction.toDst = transactionDeOnData.toDst;
+      transaction.toCode = transactionDeOnData.toCode;
+      //4.Rem
+      transaction.rem = transactionDeOnData.rem;
+
+      //5.Groups
+      transaction.itemForm = transactionDeOnData.itemForm;
+       for(var item in _allItemsFormsList) {
+         if (transactionDeOnData.itemForm == item.id) {
+           transaction.itemFormName = item.name;
+           break; // Exit loop once the item form is found
+         }
+       }
+      //5.1 Items
+      storeTransOModelList.clear();
+      storeTransOModelList = transactionDeOnData.storeTrnsOModels!;
+
+
+      notify();
+      print("Returning TransactionDepOnData: $transactionDeOnData");
+      print("Returning storeTransOModelList: $storeTransOModelList");
+
+
+      /*List<SpinnerModel> spinnerModelList = await MapListModel()
+          .mapGetAllDataListToSpinnerModelListItem(itemList!, itemPrice);*/
+      // Update the allItemsFormsList with the fetchedI/Choreographer(32738): Skipped 60 frames!  The application may be doing too much work on its main thread. data
+      // Set the spinner model list to the allItemsFormsList
+
+      //set default
+
+      // Notify listeners about the change
+
+      // Return the spinner model list
+      print("Fetched all items forms successfully");
+      print("Spinner Model List: $transactionDeOnData");
+      // Return the spinner model list
+      print("Returning spinnerModelList: $transactionDeOnData");
+      // Return the spinner model list
+      return transactionDeOnData;
+    } else if (apiResult.code == APIConstants.RESPONSE_CODE_UNAUTHORIZED) {
+      // Handle unauthorized access
+      print("Unauthorized access");
+      ShowMessage().showSnackBar(_context!, apiResult.msg!);
+      // You can navigate to the login screen or show a message
+      Navigation().logout(_context!);
+      return TransactionDepOnData();
+    } else {
+      ShowMessage().showToast(apiResult.msg!);
+      // Handle other cases, such as API failure or no data
+      print("API call failed or no data");
+       return TransactionDepOnData();
+      ;
+    }
+  }
+
+
+
+  List<DependencyTransList> mapSelectedDepStoreTransList(List<StoreTransListDependency>? storeTransDepList){
+    dependencyTransList = [];
+    for(var item in storeTransDepList!){
+      DependencyTransList dependencyTrans  = DependencyTransList();
+      dependencyTrans.branch = item.branch;
+      dependencyTrans.trnsCode = item.trnsCode;
+      dependencyTrans.trnsNo = item.trnsNo!;
+      dependencyTrans.dateTime = item.trnsDate.toString().substring(0,10);
+      dependencyTransList.add(dependencyTrans);
+    }
+
+    return dependencyTransList;
+
+
+  }
+
+
+
+  notify() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      //if (!_disposed) {
+        notifyListeners();
+      //}
+    });
+  }
+
+
 }

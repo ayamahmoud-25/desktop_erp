@@ -1,10 +1,12 @@
 class SpinnerModel {
   String? _id;
   String? _name;
+  String? _extraItem;
 
   SpinnerModel({
     required String id,
     required String name,
+    String? extraItem
   })  : _id = id,
         _name = name;
 
@@ -22,5 +24,14 @@ class SpinnerModel {
   // Setter for name
   set name(String? value) {
     _name = value;
+  }
+
+
+  // Getter for extraItem
+  String? get extraItem => _extraItem;
+
+  // Setter for name
+  set extraItem(String? extraItem) {
+    _extraItem = extraItem;
   }
 }

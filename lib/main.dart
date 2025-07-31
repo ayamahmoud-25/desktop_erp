@@ -17,13 +17,13 @@ void main() {
   // This is necessary for using sqflite in a desktop environment
   // You can also use the following line if you want to use the default database factory
 
-  runApp(
+ /* runApp(
     ChangeNotifierProvider(
       create: (context) => LoginProvider(),
       child: MyApp(), // Your root application widget
     ),
   );
-
+*/
   runApp(
     MultiProvider(
       providers: [

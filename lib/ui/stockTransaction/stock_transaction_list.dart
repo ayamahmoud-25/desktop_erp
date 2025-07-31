@@ -1,6 +1,8 @@
 import 'package:desktop_erp_4s/ui/stockTransaction/showTransaction/show_transaction_list.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/transactionForm/transaction_form.dart';
+import 'package:desktop_erp_4s/ui/stockTransaction/transactionForm/transaction_form_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../data/models/branch_model.dart';
 import '../../data/models/response/TransactionSpec.dart';
@@ -212,12 +214,27 @@ class StockTransactionListRow extends StatelessWidget {
                     CustomAlertDialog().showAlertDialog(context);
                   }else{
                     //navigate to transaction form page
-                    Navigator.push(
+                    /*Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => TransactionForm(
                           selectedBranch: selectedBranch!,
                           transactionSpec: transactionSpec,
+                        ),
+                      ),
+                    );*/
+                    //navigate to transaction form page
+                    // Use ChangeNotifierProvider to create a new instance of TransactionFormProvider
+                    // and pass it to the TransactionForm widget
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                          create: (_) => TransactionFormProvider(), // Create a new instance
+                          child: TransactionForm(
+                            selectedBranch: selectedBranch,
+                            transactionSpec: transactionSpec,
+                          ),
                         ),
                       ),
                     );

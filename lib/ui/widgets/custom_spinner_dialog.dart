@@ -98,10 +98,12 @@ class _CustomSpinnerDialogState extends State<CustomSpinnerDialog> {
                       children: [
                         ListTile(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Reduce space
-                          title: Text(item.id.toString() + " - " + item.name.toString()),
+                          title: Text("$index - ${item.name}"),
                           onTap: () {
                             widget.onItemSelected(item);
-                            Navigator.of(context).pop(item);
+                          //  print("item form select: (onItemSelected) ${item.id} - ${item.name} }");
+                            Navigator.of(context).pop();
+                           // print("item form select: (Navigator) ${item.id} - ${item.name} }");
                           },
                         ),
                         if (index < filteredModels.length - 1) Divider(),
@@ -110,7 +112,7 @@ class _CustomSpinnerDialogState extends State<CustomSpinnerDialog> {
                   },
                 ),
               ),
-              SizedBox(height: 10),
+            //  SizedBox(height: 10),
               InkWell(
                 onTap: () {
                   Navigator.of(context).pop(); // Dismiss the dialog

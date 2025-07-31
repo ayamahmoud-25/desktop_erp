@@ -6,6 +6,7 @@ import 'package:desktop_erp_4s/ui/home/home_page.dart';
 import 'package:desktop_erp_4s/util/navigation.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../data/app_constants.dart';
 import 'login_user.dart';
 
 class LoginProvider extends ChangeNotifier{
@@ -24,7 +25,7 @@ class LoginProvider extends ChangeNotifier{
     _state =APIStatue .loading;
     notifyListeners();
     final response = await _apiService.getUserInfo(companyName);
-    if(response.status!){
+    if(response.status==true){
       _state = APIStatue.success;
       SharedPreferences().saveCompanyInfoData(response.data!);
       notifyListeners();
@@ -43,21 +44,22 @@ class LoginProvider extends ChangeNotifier{
     _state =APIStatue .loading;
     notifyListeners();
     final response = await _apiService.loginUserInfo(userName,password);
-    if(response.status!){
-      _state = APIStatue.success;
-      UserInfoResponse userInfo =response.data;
-      SharedPreferences().SaveAccessToken(userInfo.accessToken);
-      SharedPreferences().saveBranchesToPrefs(userInfo.branchesList);
-      notifyListeners();
-    //
-      Navigation().pushNavigation(context, HomePage());
+    if(response.status!=null){
+        _state = APIStatue.success;
+        UserInfoResponse userInfo =response.data;
+        SharedPreferences().SaveAccessToken(userInfo.accessToken);
+        SharedPreferences().saveBranchesToPrefs(userInfo.branchesList);
+        notifyListeners();
+        //
+        Navigation().pushNavigation(context, HomePage());
 
-    }else{
-      _state = APIStatue.error;
-      _errorMessage = response.msg;
-      notifyListeners();
-    }
-
+      }else{
+        _state = APIStatue.error;
+         if(response.msg!=null)
+        _errorMessage = response.msg;
+         else _errorMessage = AppConstants.ERROR_DATA_ORACLE;
+        notifyListeners();
+      }
   }
 
 

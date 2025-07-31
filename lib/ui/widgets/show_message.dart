@@ -19,14 +19,16 @@ class ShowMessage {
   }
 
 
-  void showToast(BuildContext context, String message) {
-    Fluttertoast.showToast(
+  void showToast(String message) {
+    /*Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.black,
       textColor: Colors.white,
       fontSize: 16.0,
-    );
+    );*/
+
+    Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_LONG, gravity: ToastGravity.BOTTOM);
   }
 }

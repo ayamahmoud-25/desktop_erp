@@ -95,7 +95,8 @@ class _CompanyLoginState extends State<CompanyLogin> {
                     else if (loginProvider.state == APIStatue.error)
                       ShowMessage().showSnackBar(
                         context,
-                        loginProvider.errorMessage!,
+                        loginProvider.errorMessage ?? "Unknown error occurred",
+
                       );
                   }
                   else if (loginProvider.state == APIStatue.success) {

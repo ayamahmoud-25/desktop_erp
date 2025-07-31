@@ -33,11 +33,21 @@ class Strings{
   static const String store_trans ="الحركات المخزنية";
   static const String finance_trans ="الحركات المالية";
   static const String Cancel ="إلغاء";
+  static const String Delete ="حذف";
 
-  //Error
+  //Error Message
   static const String ERROR_NO_DATA_FIELD ="الحقل فارغ";
   static const String ERROR_NO_DATA_FOUND =" لا توجد بيانات  ";
-
+  static const String No_DESC_AVAILABLE =" لا يوجد وصف للصنف  ";
+  static const String ERROR_DATA_NOT_COMPLETE ="يجب استكمال البيانات";
+  static const String ITEM_EXIST_BEFORE =" هذا الصنف موجود بالفعل في القائمة";
+  static const String ITEM_ADDED =" تم إضافة الصنف بنجاح";
+  static const String ITEM_UPDATED =" تم تعديل الصنف بنجاح";
+  static const String ERROR_TITLE_MESSAGE = "حذف الأصناف"; //
+  static const String TITLE_DELETE_ITEM = "حذف الصنف"; //
+  static const String ERROR_MESSAGE = " هل أنت متأكد أنك تريد حذف جميع العناصر؟"; //
+  static const String CONTENT_MESSAGE = " هل تريد تعديل أو حذف هذا الصنف ؟"; //
+  static const String NO_TRANS_DEP_ON = "لا توجد حركات للإعتماد عليها"; //
 
 
 //Alert
@@ -54,6 +64,8 @@ class Strings{
   //Form Stock Transaction
   static const String NEW = "جديد";
   static const String UPDATE = "تعديل";
+  static const String ADD = "إضافة";
+
   static const String BASIC_DATA = "البيانات الأساسية";
   static const String BRANCH = "الفرع";
   static const String FROM = "من";
@@ -66,11 +78,35 @@ class Strings{
   static const String GROUPS_ITEMS = " المجموعات والاصناف";
   static const String ADD_ITEM = "إضافة صنف";
   static const String GROUP_ITEMS = "مجموعه الأصناف";
+  static const String GROUP = "المجموعة";
+  static const String ITEM = "الصنف";
   static const String ITEMS = "أصناف";
   static const String DEPENDENCY = "الإعتمادات";
   static const String ADD_DEPENDENCY = "إضافة إعتماد";
   static const String FINANCE = "الماليات";
   static const String PAY_WAY = "طريقة الدفع";
+  static const String TOTAL = " الإجمالي ";
+  static const String TOTAL_NET = "الصافي";
+  static const String SALES = "ضربية قيمة مضافة ";
+  static const String SALES_VALUE = "القيمة";
+  static const String COMM = "ضربية تجارية ";
+  static const String COMM_VALUE = "القيمة";
+  static const String DISCOUNT = "خصم ";
+  static const String ALLOW_DISCOUNT = "خصم مسموح  ";
+  static const String VALUE = "قيمة";
+  static const String PERCENTAGE = "%";
+  static const String PERCENTAGE_TEXT = "نسبة";
+  static const String SELECT_ITEM = "أختر صنف";
+  static const String QTY = "الكمية"; //
+  static const String PRICE = "السعر"; //
+  static const String ITEM_LIST = "الأصناف"; //
+  static const String DELETE_ITEMS = "حذف الأصناف"; //
+  static const String CODE = "الكود"; //
+  static const String NUMBER = "الرقم"; //
+  static const String TIME = "الوقت"; //
+
+
+
 
   static const int SALES_REP = -1;
   static const int CUSTOMER = 1;
@@ -81,7 +117,9 @@ class Strings{
   static const int DEPARTS = 6;
   static const int CONTRACTORS = 8;
   static const int PERSONS = 9;
-
+  static const  String APPROVED_DEP = "Y";
+  static const  String APPROVED_NUMBER = "1";
+  static const  String NOT_APPROVED_NUMBER = "2";
 
 
 }

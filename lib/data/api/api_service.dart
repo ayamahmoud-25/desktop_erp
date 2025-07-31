@@ -22,7 +22,11 @@ import 'package:desktop_erp_4s/ui/login/login_user.dart';
 import 'package:http/http.dart' as http;
 
 import '../../db/SharedPereference.dart';
+import '../models/request/dependency_trans_list.dart';
 import '../models/response/AllCustomer.dart';
+import '../models/response/TransactionDepOnData.dart';
+import '../models/response/TransactionDepOnListResponseModel.dart';
+import '../models/response/store_trans_dep_list_response_model.dart';
 import 'api_result.dart';
 
 class APIService {
@@ -136,50 +140,6 @@ class APIService {
     }
   }
 
-  Future<APIResult> getItemList(String itemForm) async {
-    String? authUrl = await loadCompanyData();
-    String? authToken = await loadAuthToken();
-
-    String loginUrl = APIConstants.GET_ALL_ITEMS_LIST + authUrl! +"&_pageSize=10000"+"&item_form="+itemForm;
-    APIResult result = APIResult();
-    DataItemListResponseModel dataResponseModel;
-
-    final response = await http.get(Uri.parse(loginUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': authToken ?? '', // Add Bearer token
-      },
-
-    );
-
-    if (response.statusCode == 200) {
-      var jsonResponse = convert.jsonDecode(response.body);
-      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
-        return result = APIResult(
-          status: jsonResponse['status'],
-          msg:  jsonResponse['msg'],
-          code: jsonResponse['code'],
-          data: [],
-        );
-      }else{
-        dataResponseModel = DataItemListResponseModel.fromJson(jsonResponse['data']);
-        return result = APIResult(
-          status: jsonResponse['status'],
-          msg:  jsonResponse['msg'],
-          code: jsonResponse['code'],
-          data: dataResponseModel,
-        );
-      }
-
-    } else {
-      return APIResult(
-        status: result.status,
-        msg: result.msg,
-        code: result.code,
-        data: result.data,
-      );
-    }
-  }
 
 
   Future<APIResult> getAllCustomer(bool isStoreTrans,String transCode) async {
@@ -587,7 +547,6 @@ class APIService {
       );
     }
   }
-
   Future<APIResult> getAllItemsForms() async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
@@ -606,8 +565,6 @@ class APIService {
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
       if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
-
-
         return result = APIResult(
           status: jsonResponse['status'],
           msg:  jsonResponse['msg'],
@@ -642,6 +599,51 @@ class APIService {
 
     }
   }
+  Future<APIResult> getItemList(String itemForm) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+
+    String loginUrl = APIConstants.GET_ALL_ITEMS_LIST + authUrl! +"&_pageSize=10000"+"&item_form="+itemForm;
+    APIResult result = APIResult();
+    DataItemListResponseModel dataResponseModel;
+    final response = await http.get(Uri.parse(loginUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        dataResponseModel = DataItemListResponseModel.fromJson(jsonResponse['data']);
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataResponseModel,
+        );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+  }
+
+
   Future<APIResult> getAllSalesRep() async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
@@ -750,6 +752,123 @@ class APIService {
 
 
 
+  Future<APIResult> getStoreTransDependencyList(String branch,String transCode) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+
+    String requestUrl = APIConstants.GET_STORE_TRANS_DEPENDENCY_LIST + authUrl! +"&_pageSize=10000"+"&branch="+branch+"&trns_code=" + transCode;
+    print("requestUrl $requestUrl");
+    APIResult result = APIResult();
+    StoreTransDepListResponseModel dataResponseModel;
+    final response = await http.get(Uri.parse(requestUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+
+    );
+    print("Response status: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      print("Response body: $jsonResponse");
+      print("Response status: ${response.body}");
+      switch (jsonResponse['code']) {
+        case APIConstants.RESPONSE_CODE_UNAUTHORIZED :
+          return result = APIResult(
+            status: jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: [],
+          );
+        case APIConstants.RESPONSE_CODE_SUCCESS :
+          dataResponseModel =
+              StoreTransDepListResponseModel.fromJson(jsonResponse['data']);
+          return result = APIResult(
+            status: jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: dataResponseModel,
+          );
+        default:
+          return APIResult(
+            status:  jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: null,
+          );
+      }
+    } else{
+      print("Error: ${response.statusCode}");
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+
+  }
+
+
+  Future<APIResult> getListOfTransactionDepOn(List<DependencyTransList> dependencyTransList,String transCode) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+
+    String requestUrl = APIConstants.GET_LIST_TRANSACTION_DEP_ON + authUrl! +"&_pageSize=10000"+"&trns_code=" + transCode;
+    print("requestUrl $requestUrl");
+    APIResult result = APIResult();
+    TransactionDepOnData dataResponseModel;
+
+    final response  = await http.post(Uri.parse(requestUrl),
+    headers:  <String,String>{
+      'Content-Type': 'application/json',
+      'Authorization': authToken ?? '', // Add Bearer token
+    },
+      body: convert.jsonEncode(dependencyTransList),
+    );
+    print("Response status: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      print("Response body: $jsonResponse");
+      print("Response status: ${response.body}");
+      switch (jsonResponse['code']) {
+        case APIConstants.RESPONSE_CODE_UNAUTHORIZED :
+          return result = APIResult(
+            status: jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: [],
+          );
+        case APIConstants.RESPONSE_CODE_SUCCESS :
+          dataResponseModel =
+              TransactionDepOnData.fromJson(jsonResponse['data']);
+          return result = APIResult(
+            status: jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: dataResponseModel,
+          );
+        default:
+          return APIResult(
+            status:  jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: null,
+          );
+      }
+    } else{
+      print("Error: ${response.statusCode}");
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+
+  }
 
 
 

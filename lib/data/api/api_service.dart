@@ -23,9 +23,11 @@ import 'package:http/http.dart' as http;
 
 import '../../db/SharedPereference.dart';
 import '../models/request/dependency_trans_list.dart';
+import '../models/request/transaction_creating_model.dart';
 import '../models/response/AllCustomer.dart';
 import '../models/response/TransactionDepOnData.dart';
 import '../models/response/TransactionDepOnListResponseModel.dart';
+import '../models/response/TransactionDetailsResponseModel.dart';
 import '../models/response/store_trans_dep_list_response_model.dart';
 import 'api_result.dart';
 
@@ -874,6 +876,64 @@ class APIService {
 
 
 
+  Future<APIResult> savingOrUpdateTransaction(TransactionCreatingModel transactionCreatingModel,bool isEdit) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+
+    String requestUrl = APIConstants.PUT_SAVING_OR_UPDATE_STORE_TRANS + authUrl! +"&isEdit=" + (isEdit? "1":"0") ;
+    print("requestUrl $requestUrl");
+    APIResult result = APIResult();
+    TransactionDetailsResponseModel dataResponseModel;
+
+    final response  = await http.post(Uri.parse(requestUrl),
+      headers:  <String,String>{
+        'Content-Type': 'application/json',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+      body: convert.jsonEncode(transactionCreatingModel),
+    );
+    print("Response status: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      print("Response body: $jsonResponse");
+      print("Response status: ${response.body}");
+      switch (jsonResponse['code']) {
+        case APIConstants.RESPONSE_CODE_UNAUTHORIZED :
+          return result = APIResult(
+            status: jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: [],
+          );
+        case APIConstants.RESPONSE_CODE_SUCCESS :
+          dataResponseModel =
+              TransactionDetailsResponseModel.fromJson(jsonResponse['data']);
+          return result = APIResult(
+            status: jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: dataResponseModel,
+          );
+        default:
+          return APIResult(
+            status:  jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: null,
+          );
+      }
+    } else{
+      print("Error: ${response.statusCode}");
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+
+  }
 
 
 

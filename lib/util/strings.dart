@@ -49,6 +49,19 @@ class Strings{
   static const String CONTENT_MESSAGE = " هل تريد تعديل أو حذف هذا الصنف ؟"; //
   static const String NO_TRANS_DEP_ON = "لا توجد حركات للإعتماد عليها"; //
 
+  static const String ERROR_SELECT_BRANCH = " يجب إختيار الفرع "; //
+  static const String ERROR_SELECT_DATE = " يجب اختيار تاريخ  "; //
+  static const String ERROR_SELECT_FROM_STORE = "يجب اختيار من"; //
+  static const String ERROR_SELECT_TO_STORE = " يجب اختيار إلي "; //
+  static const String ERROR_SELECT_GROUP_ITEM = " يجب إختيار مجموعة الأصناف "; //
+  static const String ERROR_SELECT_ITEM = "يجب إختيار صنف علي الاقل "; //
+  static const String ERROR_SELECT_SALES_REP = " يجب إختيار مندوب"; //
+  static const String ERROR_SELECT_DEPENDENCY = "يجب اختيار اعتماد "; //
+
+
+
+
+
 
 //Alert
   static const String  ALERT_SELECT_BRANCH = "إختر الفرع أولاً";

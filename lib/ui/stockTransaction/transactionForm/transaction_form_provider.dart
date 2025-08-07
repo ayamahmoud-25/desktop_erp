@@ -1,6 +1,7 @@
 import 'package:desktop_erp_4s/data/api/api_result.dart';
 import 'package:desktop_erp_4s/data/models/response/DataItemListResponseModel.dart';
 import 'package:desktop_erp_4s/data/models/response/TransactionDepOnData.dart';
+import 'package:desktop_erp_4s/data/models/response/TransactionDetailsResponseModel.dart';
 import 'package:desktop_erp_4s/data/models/response/store_trans_dep_list_response_model.dart';
 import 'package:desktop_erp_4s/data/models/response/store_trans_list_dependency.dart';
 import 'package:desktop_erp_4s/ui/widgets/show_message.dart';
@@ -18,6 +19,7 @@ import '../../../data/models/response/StoreTrnsOModel.dart';
 import '../../../data/models/response/TransactionDepOnListResponseModel.dart';
 import '../../../data/models/response/TransactionSpec.dart';
 import '../../../db/SharedPereference.dart';
+import '../../../util/form_utils.dart' show FormUtils;
 import '../../../util/item_form_with_spinner_list.dart';
 import '../../../util/navigation.dart';
 import '../../../util/spinner_model.dart';
@@ -587,6 +589,89 @@ class TransactionFormProvider extends ChangeNotifier {
     return dependencyTransList;
 
 
+  }
+
+  void makeTransaction(){
+    if(validateForm()){
+
+       if(storeTransOModelList.length>0){
+         transaction.storeTrnsOModels = storeTransOModelList;
+       }
+       if(dependencyTransList.length>0){
+         transaction.storeTrnsDepModels = dependencyTransList;
+       }
+      makeTransactionGetDetails();
+
+    }
+  }
+
+  Future<TransactionDetailsResponseModel?> makeTransactionGetDetails() async {
+
+    final apiResult = await APIService().savingOrUpdateTransaction(transaction,false);
+
+    if (apiResult.status == true && apiResult.data != null) {
+      // Map API response to SpinnerModel list
+      //List<ItemList> itemList = apiResult.data.items;
+      //TransactionDepListResponseModel transactionDepListResponseModel = apiResult.data;
+      TransactionDetailsResponseModel? transactionDeOnData = apiResult.data;
+      ShowMessage().showSnackBar(_context!, apiResult.msg!);
+
+      notify();
+      print("Returning TransactionDepOnData: $transactionDeOnData");
+      print("Returning storeTransOModelList: $storeTransOModelList");
+
+      print("Fetched all items forms successfully");
+      print("Spinner Model List: $transactionDeOnData");
+      // Return the spinner model list
+      print("Returning spinnerModelList: $transactionDeOnData");
+      // Return the spinner model list
+      return transactionDeOnData;
+    } else if (apiResult.code == APIConstants.RESPONSE_CODE_UNAUTHORIZED) {
+      // Handle unauthorized access
+      print("Unauthorized access");
+      ShowMessage().showSnackBar(_context!, apiResult.msg!);
+      // You can navigate to the login screen or show a message
+      Navigation().logout(_context!);
+      return TransactionDetailsResponseModel();
+    } else {
+      ShowMessage().showToast(apiResult.msg!);
+      // Handle other cases, such as API failure or no data
+      print("API call failed or no data");
+      return TransactionDetailsResponseModel();
+      ;
+    }
+  }
+
+
+  bool validateForm(){
+    if(transaction.branch == null || transaction.branch == ""){
+      ShowMessage().showSnackBar(_context!, Strings.ERROR_SELECT_BRANCH);
+      return false;
+    }else if(transaction.trnsDate == null || transaction.trnsDate == ""){
+      ShowMessage().showSnackBar(_context!, Strings.ERROR_SELECT_DATE);
+      return false;
+    }else if(transaction.fromDst !=0 && transaction.fromCode==""){
+      ShowMessage().showSnackBar(_context!, Strings.ERROR_SELECT_FROM_STORE + FormUtils.getNameFromIndex(transaction.fromDst!));
+      return false;
+    }else if(transaction.toDst!=0 && transaction.toCode == ""){
+      ShowMessage().showSnackBar(_context!, Strings.ERROR_SELECT_TO_STORE +FormUtils.getNameFromIndex(transaction.toDst!));
+      return false;
+    }else if(transaction.itemForm == null || transaction.itemForm == ""){
+      ShowMessage().showSnackBar(_context!, Strings.ERROR_SELECT_GROUP_ITEM);
+      return false;
+    }else if(storeTransOModelList.length == 0){
+      ShowMessage().showSnackBar(_context!, Strings.ERROR_SELECT_ITEM);
+      return false;
+    }else if(transaction.trnsCode == null || transaction.trnsCode=="") {
+      ShowMessage().showSnackBar(_context!, Strings.ERROR_SELECT_DEPENDENCY);
+    return false;
+    }
+    else if(transaction.salesRepCode == null && transactionSpec?.salesRep == 1){
+      ShowMessage().showSnackBar(_context!, Strings.ERROR_SELECT_SALES_REP);
+      return false;
+    }
+
+   return true;
   }
 
 

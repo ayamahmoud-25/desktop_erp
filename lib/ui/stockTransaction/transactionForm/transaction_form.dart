@@ -34,7 +34,8 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionForm> {
-  var obj = TransactionFormProvider();
+ // var obj = TransactionFormProvider();
+  late TransactionFormProvider obj;
 
   List<StoreTransListDependency>? transListWithDepSelected=[];
   // SpinnerModel? selectedItem;
@@ -44,6 +45,8 @@ class _TransactionScreenState extends State<TransactionForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    obj = Provider.of<TransactionFormProvider>(context, listen: false);
+    obj.transactionSpec = widget.transactionSpec;
     obj.context = context;
    // obj.initial();
 
@@ -97,9 +100,12 @@ class _TransactionScreenState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    obj = Provider.of<TransactionFormProvider>(context);
+
+   /* obj = Provider.of<TransactionFormProvider>(context);
     obj.transactionSpec = widget.transactionSpec;
-    obj.context = context;
+    obj.context = context;*/
+
+
     /*if(obj.isLoading){
       return Center(
         child: CircularProgressIndicator(),
@@ -446,7 +452,9 @@ class _TransactionScreenState extends State<TransactionForm> {
                                               obj.transaction.toCode =
                                               item!.id!;
                                               obj.transaction.toName =
-                                              item.name!;
+                                              item!.name!;
+                                              obj.notify();
+                                              print("obj.transaction.toCode: ${obj.transaction.toCode}");
                                             });
                                           },
                                         ),
@@ -458,6 +466,8 @@ class _TransactionScreenState extends State<TransactionForm> {
                                             obj.transactionSpec!.toDst;*/
                                           obj.transaction.toCode = result.id!;
                                           obj.transaction.toName = result.name!;
+                                          //print("obj.transaction.toCode: ${obj.transaction.toName}");
+obj.notify();
                                         });
                                       }
                                     } else {
@@ -491,9 +501,9 @@ class _TransactionScreenState extends State<TransactionForm> {
                                     MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        obj.transaction.toCode != null && obj.transaction.toCode != ""
+                                      (obj.transaction.toCode != null && obj.transaction.toCode != "")
                                             ? obj.transaction.toName ?? ""
-                                            : FormUtils.getNameFromIndex(
+                                            :  FormUtils.getNameFromIndex(
                                           obj.transaction.toDst!,
                                         ),
                                         style: TextStyle(
@@ -1500,7 +1510,10 @@ class _TransactionScreenState extends State<TransactionForm> {
                 SizedBox(height: 20),
                 InkWell(
                   onTap: () {
-                    Navigator.of(context).pop(); // Dismiss the dialog
+                   // Navigator.of(context).pop(); // Dismiss the dialog
+                    //validate date
+                        obj.makeTransaction();
+
                   },
                   child: Container(
                     margin: EdgeInsets.all(5),

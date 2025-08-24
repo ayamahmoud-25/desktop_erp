@@ -51,7 +51,8 @@ Future<List<SpinnerModel>>  mapGetAllDataListToSpinnerModelListItem(List<ItemLis
   //loadBranchesFromPrefs
   List<SpinnerModel> spinnerModelList = [];
   for (var item in itemList) {
-    final price = getPrice(itemPrice, item);
+    final price
+    = getPrice(itemPrice, item);
     print("mapGetAllDataListToSpinnerModelListItem: item=${item.itemCode}, price=$price"); // Debugging log
     spinnerModelList.add(SpinnerModel(
       id: item.itemCode!,

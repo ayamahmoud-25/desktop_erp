@@ -35,7 +35,9 @@ class AddItemDialog extends StatefulWidget {
 
 class _AddItemDialogState extends State<AddItemDialog> {
 
+  final TextEditingController priceController = TextEditingController();
   final TextEditingController qtyController = TextEditingController();
+  final TextEditingController totalController = TextEditingController();
 
   SpinnerModel? selectedSpinnerModel;
   List<SpinnerModel>? allItemsList;
@@ -59,30 +61,31 @@ class _AddItemDialogState extends State<AddItemDialog> {
    // print("storeTransOModelList: ${widget.transactionFormProvider.storeTransOModelList.length}");
 
     if (widget.editingItem != null) {
-     /* // Prefill selected item and other fields from editingItem
-      selectedItem = SpinnerModel(
-        id: widget.editingItem!.itemCode ?? '',
-        name: widget.editingItem!.itemName ?? ''
-      );*/
-
       itemStoreTrans = widget.editingItem!;
-      //itemStoreTrans!.itemCode = widget.editingItem!.itemCode!;
-      //itemStoreTrans!.itemName = widget.editingItem!.itemCode!;
-
-      // Prefill other fields like quantity, price, discount, etc.
-      // For example, if you have controllers for quantity:
       qtyController.text = itemStoreTrans!.qty1?.toString() ?? '';
-      // Similarly for priceController, discountController, etc.
+      if (itemStoreTrans?.unitPrice != null) {
+        priceController.text = itemStoreTrans!.unitPrice?.toString() ?? '';
+      }
     }
 
+    _updateTotal();
 
 
 
     _setSelectedSpinnerModelById(
       widget.tfProvider.transaction.itemForm,
     ); // Replace "desired_id" with the actual id
+  }
 
-
+  void _updateTotal (){
+    final qty = double.tryParse(qtyController.text) ?? 0;
+    final price = double.tryParse(priceController.text) ?? 0;
+    final total = qty * price;
+    setState(() {
+      totalController.text = total.toString();
+      itemStoreTrans?.total = total;
+      print("Total : ${itemStoreTrans?.total}");
+    });
   }
 
   //  Method to load initial item data
@@ -284,6 +287,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                              // selectedItem = item;
                                               itemStoreTrans?.itemCode = item?.id;
                                               itemStoreTrans?.itemDesc = item?.name;
+                                              itemStoreTrans?.unitPrice = double.tryParse(item.extraItem);
+                                              priceController.text = item.extraItem;
+                                              _updateTotal();
+
                                               /* obj.transaction.itemForm =
                                          item!.id!; // Update the item form
                                          obj.transaction.itemFormName =
@@ -298,6 +305,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                           //selectedItem = result;
                                           itemStoreTrans?.itemCode = result.id;
                                           itemStoreTrans?.itemDesc = result.name;
+                                          itemStoreTrans?.unitPrice = result.extraItem as double?;
+                                          priceController.text = result.extraItem!;
+                                          _updateTotal();
 
                                           /* obj.transaction.itemForm =
                                      result.id!; // Update the item form
@@ -383,6 +393,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               ),
                               SizedBox(height: 3),
                               TextField(
+                                controller: priceController,
+                                onChanged: (value) {
+                                  // Update the price in the transaction model
+                                  setState(() {
+                                    itemStoreTrans?.unitPrice = double.tryParse(value);
+                                    _updateTotal();
+
+                                  });
+                                },
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   filled: true,
@@ -422,6 +441,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 // Update the quantity in the transaction model
                                 setState(() {
                                   itemStoreTrans?.qty1 = double.tryParse(value);
+                                  _updateTotal();
+
                                 });
                               },
                               decoration: InputDecoration(
@@ -547,6 +568,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               ),
                               SizedBox(height: 3),
                               TextField(
+                                controller: totalController,
                                 enabled: false,
                                 decoration: InputDecoration(
                                   filled: true,
@@ -569,6 +591,39 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       // Save Button
                       ElevatedButton(
                         onPressed: () {
+                          // 1. Validation for itemCode
+                          if (itemStoreTrans?.itemCode == null) {
+                            ShowMessage().showToast(Strings.ERROR_DATA_NOT_COMPLETE,);
+                            return; // Dialog does NOT dismiss
+                          }
+                          // 2. Validation for qty1
+                          else if (itemStoreTrans?.qty1 == null) {
+                            ShowMessage().showToast(Strings.ERROR_NO_DATA_FIELD,);
+                            return; // Dialog does NOT dismiss
+                          }
+                          // 3. Main logic
+                          else if (widget.tfProvider.storeTransOModelList.length > 0) {
+                              bool itemExists = widget.tfProvider.storeTransOModelList.any(
+                                    (item) => item.itemCode == itemStoreTrans?.itemCode,
+                              );
+
+                              // CRITICAL CHECK FOR UPDATE:
+                              if (itemExists && widget.editingItem == null) {
+                                ShowMessage().showToast(Strings.ITEM_EXIST_BEFORE);
+                                return; // Dialog does NOT dismiss. This is a likely culprit for "update" issues.
+                              } else {
+                                // This path should be taken for a successful update
+                                ShowMessage().showToast(widget.editingItem != null ? Strings.ITEM_UPDATED : Strings.ITEM_ADDED);
+                                Navigator.of(context).pop(itemStoreTrans); // Dialog SHOULD dismiss
+                              }
+                            } else { // List is empty (only for adding first item)
+                              ShowMessage().showToast(Strings.ITEM_ADDED);
+                              Navigator.of(context).pop(itemStoreTrans); // Dialog SHOULD dismiss
+                            }
+
+                        },
+
+                       /* onPressed: () {
                           // Handle save action
                           //validate
                           print("storeTransOModelList: ${widget.tfProvider.storeTransOModelList.length}");
@@ -591,7 +646,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               }else{
                                // widget.tfProvider.addStoreTransOModel(itemStoreTrans!);
                                 ShowMessage().showToast( widget.editingItem!=null?Strings.ITEM_UPDATED:Strings.ITEM_ADDED);
-                                Navigator.of(context).pop(itemStoreTrans); // Dismiss the dialog
+                                Navigator.of(context).pop(itemStoreTrans);
+                                  // Dismiss the dialog
                               }
                             }else{
                              // widget.tfProvider.addStoreTransOModel(itemStoreTrans!);
@@ -602,7 +658,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
 
                               // Create or update StoreTrnsOModel
-                           /*   StoreTrnsOModel updatedItem = StoreTrnsOModel(
+                           *//*   StoreTrnsOModel updatedItem = StoreTrnsOModel(
                                 itemCode: selectedItem!.id,
                                 itemForm: selectedItemForm,
                                 qty1: double.tryParse(qtyController.text) ?? 0,
@@ -610,12 +666,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 // Set other fields as needed
                               );
 
-                              */
+                              *//*
 
 
                             }
                           }
-                        },
+                        }*/
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromARGB(255, 23, 111, 153),
                           padding: EdgeInsets.symmetric(vertical: 14),

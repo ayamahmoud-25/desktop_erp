@@ -18,7 +18,7 @@ class StoreTransListDependency {
   double? trnsNet;
   double? paidVal;
   double? remainingVal;
-  bool? approved;
+  String? approved;
   TrnsApproveModel? trnsApproveModel;
   bool? isSelected = false;
 
@@ -68,7 +68,7 @@ class StoreTransListDependency {
       trnsNet: (json['TRNS_NET'] != null) ? (json['TRNS_NET'] as num).toDouble() : null,
       paidVal: (json['PAID_VAL'] != null) ? (json['PAID_VAL'] as num).toDouble() : null,
       remainingVal: (json['REMAING_VAL'] != null) ? (json['REMAING_VAL'] as num).toDouble() : null,
-      approved: json['APPROVED'] as bool?,
+      approved: json['APPROVED'] as String?,
       trnsApproveModel: json['TRNS_APPROVE_MODEL'] != null
           ? TrnsApproveModel.fromJson(json['TRNS_APPROVE_MODEL'])
           : null,

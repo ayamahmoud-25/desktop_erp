@@ -1,5 +1,6 @@
 import 'package:desktop_erp_4s/data/api/api_result.dart';
 import 'package:desktop_erp_4s/data/models/response/DataItemListResponseModel.dart';
+import 'package:desktop_erp_4s/data/models/response/StoreTrnsDepModel.dart';
 import 'package:desktop_erp_4s/data/models/response/TransactionDepOnData.dart';
 import 'package:desktop_erp_4s/data/models/response/TransactionDetailsResponseModel.dart';
 import 'package:desktop_erp_4s/data/models/response/store_trans_dep_list_response_model.dart';
@@ -24,6 +25,7 @@ import '../../../util/item_form_with_spinner_list.dart';
 import '../../../util/navigation.dart';
 import '../../../util/spinner_model.dart';
 import '../../../util/strings.dart' show Strings;
+import 'add_item_dialog.dart';
 
 class TransactionFormProvider extends ChangeNotifier {
   // create instance of TransactionCreatingModel
@@ -332,32 +334,65 @@ class TransactionFormProvider extends ChangeNotifier {
 
 
   ///make function take storeTransOModel(StoreTrnsOModel) and add it to storeTransOModelList
-  void addStoreTransOModel(StoreTrnsOModel selectedItem) {
-    StoreTrnsOModel storeTransOModel = StoreTrnsOModel();
-    storeTransOModel.branch = transaction.branch;
-    storeTransOModel.trnsNo = transaction.trnsNo;
-    storeTransOModel.trnsCode = transaction.trnsCode;
-    storeTransOModel.itemForm = transaction.itemForm;
+  void addOrUpdateStoreTransOModel(StoreTrnsOModel selectedItem) {
+    if(storeTransOModelList.length>0){
+      bool isExist = false;
+      for (var item in storeTransOModelList) {
+        if (item.itemCode == selectedItem.itemCode) {
+           isExist = true;
+           // update the item
+          item = selectedItem;
+        }
+      }
+      if(!isExist){
+        storeTransOModelList.add(selectedItem);
+      }
+    }else {
+      StoreTrnsOModel storeTransOModel = StoreTrnsOModel();
+      storeTransOModel.branch = transaction.branch;
+      storeTransOModel.trnsNo = transaction.trnsNo;
+      storeTransOModel.trnsCode = transaction.trnsCode;
+      storeTransOModel.itemForm = transaction.itemForm;
 
-    storeTransOModel.formDesc = getItemFormNameByCode(
-      storeTransOModel.itemForm!,
-    );
-    storeTransOModel.itemDesc = selectedItem.itemDesc;
-    storeTransOModel.itemCode = selectedItem.itemCode;
-    storeTransOModel.qty1 = selectedItem.qty1;
+      storeTransOModel.formDesc = getItemFormNameByCode(
+        storeTransOModel.itemForm!,
+      );
+      storeTransOModel.itemDesc = selectedItem.itemDesc;
+      storeTransOModel.itemCode = selectedItem.itemCode;
+      storeTransOModel.qty1 = selectedItem.qty1;
+      storeTransOModel.unitPrice = selectedItem.unitPrice;
+      storeTransOModel.total = selectedItem.total;
 
-    storeTransOModelList.add(storeTransOModel);
+
+      storeTransOModelList.add(storeTransOModel);
+    }
     notify();
   }
+
+
 
   void removeStoreTransOModel(int index) {
     if (index >= 0 && index < storeTransOModelList.length) {
       storeTransOModelList.removeAt(index);
+      print("Removed item at index $index");
       notify();
     } else {
       print("Index out of range");
     }
   }
+
+  void editStoreTransOModel(StoreTrnsOModel  updateItem) {
+   for(var item in storeTransOModelList){
+     if(item.itemCode == updateItem.itemCode){
+         item = updateItem;
+       break;
+     }
+   }
+   notify();
+
+  }
+
+// Add this method to _TransactionScreenState
 
 
   /*Future<List<StoreTrnsDepModel>?> getStoreTransDependency() async {
@@ -597,8 +632,23 @@ class TransactionFormProvider extends ChangeNotifier {
        if(storeTransOModelList.length>0){
          transaction.storeTrnsOModels = storeTransOModelList;
        }
+
+       List<StoreTrnsDepModel> storeTrnsDepModels = [];
        if(dependencyTransList.length>0){
-         transaction.storeTrnsDepModels = dependencyTransList;
+         for(DependencyTransList item in dependencyTransList){
+                StoreTrnsDepModel depModel = StoreTrnsDepModel();
+                depModel.branch = item.branch;
+                depModel.depOnBranch = item.branch;
+
+                depModel.trnsCode = item.trnsCode;
+                depModel.depOnTrnsCode =transactionSpec!.depOnTrnsCodeVal;
+
+                depModel.trnsNo = item.trnsNo;
+                depModel.depOnTrnsNo = item.trnsNo;
+
+                storeTrnsDepModels.add(depModel);
+         }
+         transaction.storeTrnsDepModels = storeTrnsDepModels;
        }
       makeTransactionGetDetails();
 

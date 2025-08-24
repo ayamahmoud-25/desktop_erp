@@ -8,7 +8,8 @@ class SpinnerModel {
     required String name,
     String? extraItem
   })  : _id = id,
-        _name = name;
+        _name = name,
+    _extraItem = extraItem;
 
   // Getter for id
   String? get id => _id;

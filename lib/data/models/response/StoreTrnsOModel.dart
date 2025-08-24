@@ -19,6 +19,8 @@ class StoreTrnsOModel {
   double? discount;
   double? discountVal;
 
+  double total=0.00;
+
   StoreTrnsOModel({
     this.branch,
     this.descr,
@@ -88,4 +90,5 @@ class StoreTrnsOModel {
       'DISCOUNT_VAL': discountVal,
     };
   }
+
 }

@@ -98,6 +98,7 @@ class _TransactionScreenState extends State<TransactionForm> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -671,9 +672,7 @@ obj.notify();
                           InkWell(
                             onTap: () async {
                               if (obj.allItemsFormsList.isNotEmpty) {
-                                print(
-                                  "AddItemDialog ${obj.transaction.itemForm}",
-                                );
+                                print("AddItemDialog ${obj.transaction.itemForm}",);
 
                                 final updatedItem = await showDialog<StoreTrnsOModel>(
                                   context: context,
@@ -687,20 +686,7 @@ obj.notify();
                                 );
                                 if (updatedItem != null) {
                                   setState(() {
-                                    // Find index of the item in the list and update it
-                                    int index = obj.storeTransOModelList
-                                        .indexWhere(
-                                          (item) =>
-                                      item.itemCode ==
-                                          updatedItem.itemCode,
-                                    );
-                                    if (index != -1) {
-                                      obj.storeTransOModelList[index] =
-                                          updatedItem;
-                                    } else {
-                                      // Or add if not found
-                                      obj.addStoreTransOModel(updatedItem);
-                                    }
+                                    obj.addOrUpdateStoreTransOModel(updatedItem);
                                   });
                                 }
                               } else {
@@ -893,7 +879,19 @@ obj.notify();
                           ],
                         ),
                         SizedBox(height: 1),
-                        StoreTransTable(transactionFormProvider: obj),
+
+                        StoreTransTable(transactionFormProvider: obj, oneEditOrDeleteItemRequested: (index, item, isDelete) => {
+                          setState(()  {
+                            if(isDelete){
+                              obj.removeStoreTransOModel(index);
+                              print("DELETE");
+                            }else{
+                              obj.editStoreTransOModel(item);
+                              print("UPDAET");
+
+                            }
+                          })
+                        }),
                       ],
                     ),
                   ),
@@ -902,7 +900,7 @@ obj.notify();
                 // 7. Dependency
                 Visibility(
                   visible:
-                  (widget.transactionSpec!.depOnTrnsCodeVal == "" ||
+                  (widget.transactionSpec.depOnTrnsCodeVal == "" ||
                       obj.transactionSpec!.depOnTrnsCodeVal == "0")
                       ? false
                       : true,

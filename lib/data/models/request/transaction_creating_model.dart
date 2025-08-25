@@ -5,19 +5,21 @@ class TransactionCreatingModel {
   String? branch;
   String? trnsCode;
   String? itemForm;
-  double? trnsVal;
-  double? trnsNet;
-  double? salesTaxRate;
-  double? salesTaxVal;
-  double? commTaxRate;
-  double? commTaxVal;
+
   int? payMethod;
+  double? trnsVal=0.0;
+  double? trnsNet=0.0;
+  double? salesTaxRate=0.0;
+  double? salesTaxVal=0.0;
+  double? commTaxRate=0.0;
+  double? commTaxVal=0.0;
+  String? rem;
+
   String? approved;
   String? approvedDate;
   String? approvedRem;
   String? username;
   String? depOnCode;
-  String? rem;
   String? salesRepCode;
   String? repName;
   int? trnsNo;

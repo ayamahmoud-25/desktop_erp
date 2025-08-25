@@ -71,7 +71,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
     _updateTotal();
 
 
-
     _setSelectedSpinnerModelById(
       widget.tfProvider.transaction.itemForm,
     ); // Replace "desired_id" with the actual id

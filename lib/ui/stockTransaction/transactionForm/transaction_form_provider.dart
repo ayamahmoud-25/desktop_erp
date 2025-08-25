@@ -366,29 +366,31 @@ class TransactionFormProvider extends ChangeNotifier {
 
       storeTransOModelList.add(storeTransOModel);
     }
+    calculateTotal();
     notify();
   }
 
 
 
-  void removeStoreTransOModel(int index) {
-    if (index >= 0 && index < storeTransOModelList.length) {
-      storeTransOModelList.removeAt(index);
-      print("Removed item at index $index");
-      notify();
-    } else {
-      print("Index out of range");
+  void removeOrEditStoreTransOModel(bool isDelete,int index, StoreTrnsOModel updateItem) {
+    if(isDelete){
+      if (index >= 0 && index < storeTransOModelList.length) {
+        storeTransOModelList.removeAt(index);
+        print("Removed item at index $index");
+        notify();
+      } else {
+        print("Index out of range");
+      }
+    }else{
+      for(var item in storeTransOModelList){
+        if(item.itemCode == updateItem.itemCode){
+          item = updateItem;
+          break;
+        }
+      }
     }
-  }
-
-  void editStoreTransOModel(StoreTrnsOModel  updateItem) {
-   for(var item in storeTransOModelList){
-     if(item.itemCode == updateItem.itemCode){
-         item = updateItem;
-       break;
-     }
-   }
-   notify();
+    calculateTotal();
+    notify();
 
   }
 
@@ -569,7 +571,11 @@ class TransactionFormProvider extends ChangeNotifier {
       //5.1 Items
       storeTransOModelList.clear();
       storeTransOModelList = transactionDeOnData.storeTrnsOModels!;
+      for(var item in storeTransOModelList){
+        item.total = item.qty1! * item.unitPrice!;
+      }
 
+      calculateTotal();
 
       notify();
       print("Returning TransactionDepOnData: $transactionDeOnData");
@@ -724,6 +730,19 @@ class TransactionFormProvider extends ChangeNotifier {
    return true;
   }
 
+
+  //Refactor
+  String calculateTotal() {
+      double total = 0.0;
+      for (var item in storeTransOModelList) {
+         total += item.total;
+            }
+
+      transaction.trnsVal = total;
+      transaction.trnsNet = total;
+
+      return total.toString();
+  }
 
 
   notify() {

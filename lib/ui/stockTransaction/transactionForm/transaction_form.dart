@@ -38,8 +38,17 @@ class _TransactionScreenState extends State<TransactionForm> {
   late TransactionFormProvider obj;
 
   List<StoreTransListDependency>? transListWithDepSelected=[];
-  // SpinnerModel? selectedItem;
+
+
+  //TextEditingController
   TextEditingController remController = TextEditingController();
+  TextEditingController totalController = TextEditingController();
+  TextEditingController totalNetController = TextEditingController();
+  TextEditingController salesTaxRateController = TextEditingController();
+  TextEditingController salesTaxValController = TextEditingController();
+  TextEditingController commTaxRateController = TextEditingController();
+  TextEditingController commTaxValController = TextEditingController();
+
   bool isLoading = false;
   @override
   void initState() {
@@ -57,8 +66,24 @@ class _TransactionScreenState extends State<TransactionForm> {
     _loadSelectedBranch();
     _loadAllItemsForm();
 
-    remController.text =
-        obj.transaction.rem ?? ""; // Initialize with existing value
+    initializeField(); // Initialize with existing value
+
+  }
+
+  // In your _TransactionScreenState class
+  void initializeField() {
+    remController.text = obj.transaction.rem ?? ""; // Good use of ?? for strings
+
+    // Corrected line using null coalescing operator for trnsVal
+    totalController.text = (obj.transaction.trnsVal ?? 0.0).toString();
+
+    totalNetController.text = (obj.transaction.trnsNet ?? 0.0).toString(); // Apply same logic if trnsNet can be null
+    salesTaxRateController.text = (obj.transaction.salesTaxRate ?? 0.0).toString(); // If salesTaxRate can be null
+    salesTaxValController.text = (obj.transaction.salesTaxVal ?? 0.0).toString();   // If salesTaxVal can be null
+    commTaxRateController.text = (obj.transaction.commTaxRate ?? 0.0).toString(); // If commTaxRate can be null
+    commTaxValController.text = (obj.transaction.commTaxVal ?? 0.0).toString();   // If commTaxVal can be null
+
+    print("Total Value: ${obj.transaction.trnsVal ?? 0.0}"); // Also good to use ?? here for printing
   }
 
   Future<void> _loadAllItemsForm() async {
@@ -98,11 +123,17 @@ class _TransactionScreenState extends State<TransactionForm> {
     }
   }
 
+  _updateTotal(){
+    totalController.text = obj.calculateTotal();
+    totalNetController.text = obj.calculateTotal();
+    print("Total Value: ${obj.transaction.trnsVal ?? 0.0}");
+  }
 
   @override
   Widget build(BuildContext context) {
 
    /* obj = Provider.of<TransactionFormProvider>(context);
+    obj.transactionSpec = widget.transactionSpec;
     obj.transactionSpec = widget.transactionSpec;
     obj.context = context;*/
 
@@ -117,7 +148,7 @@ class _TransactionScreenState extends State<TransactionForm> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              "${widget.transactionSpec!.trnsDesc} جديد ", // refactor
+              "${widget.transactionSpec.trnsDesc} جديد ", // refactor
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: const Color.fromARGB(255, 23, 111, 153),
@@ -687,6 +718,8 @@ obj.notify();
                                 if (updatedItem != null) {
                                   setState(() {
                                     obj.addOrUpdateStoreTransOModel(updatedItem);
+                                    _updateTotal();
+
                                   });
                                 }
                               } else {
@@ -865,6 +898,7 @@ obj.notify();
                                 if (confirm == true) {
                                   setState(() {
                                     obj.storeTransOModelList.clear();
+                                    _updateTotal();
                                   });
                                 }
                               },
@@ -882,16 +916,12 @@ obj.notify();
 
                         StoreTransTable(transactionFormProvider: obj, oneEditOrDeleteItemRequested: (index, item, isDelete) => {
                           setState(()  {
-                            if(isDelete){
-                              obj.removeStoreTransOModel(index);
-                              print("DELETE");
-                            }else{
-                              obj.editStoreTransOModel(item);
-                              print("UPDAET");
+                            obj.removeOrEditStoreTransOModel(isDelete, index, item);
+                            _updateTotal();
 
-                            }
                           })
                         }),
+
                       ],
                     ),
                   ),
@@ -922,7 +952,7 @@ obj.notify();
                               onTap: () async{
                                 //display dialog to add dependency
                                 List<StoreTransListDependency>?  storeTransDepList = await obj.getStoreTransDependency();
-                                if(storeTransDepList!=null&&storeTransDepList!.length>0){
+                                if(storeTransDepList!=null&&storeTransDepList.length>0){
                                   // Show dialog with fetched dependency items
                                   List<StoreTransListDependency>? transListWithDepApprove = obj.getTransWithApprovedToDependOnIt(storeTransDepList);
 
@@ -961,8 +991,8 @@ obj.notify();
                                       // Optionally update transListWithDepSelected or other state with result if needed
                                       // For example, if getTransactionDepOnList returns updated list:
                                       if (result != null) {
+                                         _updateTotal();
                                         //transListWithDepSelected = result;
-
                                       }
                                     });
 
@@ -1147,11 +1177,10 @@ obj.notify();
                                 ),
                                 SizedBox(height: 1),
                                 TextField(
-                                  controller: remController,
+                                  controller: totalController,
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) {
-                                    obj.transaction.rem =
-                                        value; // Update the transaction object
+                                    obj.transaction.trnsVal = value as double?;
                                   },
                                   decoration: InputDecoration(
                                     filled: true,
@@ -1181,7 +1210,7 @@ obj.notify();
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
-                                          //4.section total net
+                                          //4.section SALES
                                           Container(
                                             margin: EdgeInsets.all(7),
                                             child: Text(
@@ -1194,11 +1223,11 @@ obj.notify();
                                           ),
                                           SizedBox(height: 1),
                                           TextField(
-                                            controller: remController,
+                                            controller: salesTaxRateController,
                                             keyboardType: TextInputType.number,
                                             onChanged: (value) {
-                                              obj.transaction.rem =
-                                                  value; // Update the transaction object
+                                              // obj.transaction.salesTaxRate = value as double?; // Update the transaction object
+                                               calcSalesTaxValueAndTotalNet(value);
                                             },
                                             decoration: InputDecoration(
                                               filled: true,
@@ -1222,7 +1251,7 @@ obj.notify();
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
-                                          //4.section total net
+                                          //4.section SALES_VALUE
                                           Container(
                                             margin: EdgeInsets.all(7),
                                             child: Text(
@@ -1235,11 +1264,10 @@ obj.notify();
                                           ),
                                           SizedBox(height: 1),
                                           TextField(
-                                            controller: remController,
+                                            controller: salesTaxValController,
                                             keyboardType: TextInputType.number,
                                             onChanged: (value) {
-                                              obj.transaction.rem =
-                                                  value; // Update the transaction object
+                                              obj.transaction.salesTaxVal = value as double?; // Update the transaction object
                                             },
                                             decoration: InputDecoration(
                                               filled: true,
@@ -1274,7 +1302,7 @@ obj.notify();
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
-                                          //4.section total net
+                                          //4.section COMM
                                           Container(
                                             margin: EdgeInsets.all(7),
                                             child: Text(
@@ -1287,11 +1315,10 @@ obj.notify();
                                           ),
                                           SizedBox(height: 1),
                                           TextField(
-                                            controller: remController,
+                                            controller: commTaxRateController,
                                             keyboardType: TextInputType.number,
                                             onChanged: (value) {
-                                              obj.transaction.rem =
-                                                  value; // Update the transaction object
+                                              obj.transaction.commTaxRate = value as double?; // Update the transaction object
                                             },
                                             decoration: InputDecoration(
                                               filled: true,
@@ -1315,7 +1342,7 @@ obj.notify();
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
-                                          //4.section total net
+                                          //4.section COMM_VALUE
                                           Container(
                                             margin: EdgeInsets.all(7),
                                             child: Text(
@@ -1328,11 +1355,10 @@ obj.notify();
                                           ),
                                           SizedBox(height: 1),
                                           TextField(
-                                            controller: remController,
+                                            controller: commTaxValController,
                                             keyboardType: TextInputType.number,
                                             onChanged: (value) {
-                                              obj.transaction.rem =
-                                                  value; // Update the transaction object
+                                              obj.transaction.commTaxVal = value as double?; // Update the transaction object
                                             },
                                             decoration: InputDecoration(
                                               filled: true,
@@ -1356,9 +1382,7 @@ obj.notify();
                             ),
                             Visibility(
                               visible:
-                              obj.transactionSpec?.trnsDiscount != 0
-                                  ? true
-                                  : false,
+                              obj.transactionSpec?.trnsDiscount != 0 ? true : false,
                               child: Container(
                                 child: Row(
                                   children: [
@@ -1368,7 +1392,7 @@ obj.notify();
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
-                                          //4.section total net
+                                          //4.section DISCOUNT
                                           Container(
                                             margin: EdgeInsets.all(7),
                                             child: Text(
@@ -1423,7 +1447,7 @@ obj.notify();
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
-                                          //4.section total net
+                                          //4.section COMM_VALUE
                                           Container(
                                             margin: EdgeInsets.all(7),
                                             child: Text(
@@ -1439,8 +1463,7 @@ obj.notify();
                                             controller: remController,
                                             keyboardType: TextInputType.number,
                                             onChanged: (value) {
-                                              obj.transaction.rem =
-                                                  value; // Update the transaction object
+                                              obj.transaction.rem = value; // Update the transaction object
                                             },
                                             decoration: InputDecoration(
                                               filled: true,
@@ -1479,11 +1502,12 @@ obj.notify();
                                 ),
                                 SizedBox(height: 1),
                                 TextField(
-                                  controller: remController,
+                                  controller: totalNetController,
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) {
-                                    obj.transaction.rem =
-                                        value; // Update the transaction object
+                                    obj.transaction.trnsNet = value as double?;
+
+                                    // totalNetController.text=  obj.transaction.trnsNet as String; // Update the transaction object
                                   },
                                   decoration: InputDecoration(
                                     filled: true,
@@ -1533,6 +1557,21 @@ obj.notify();
         ),
       );
     }
+
+  void calcSalesTaxValueAndTotalNet(String value) {
+    double salesTaxValue = 0.0;
+    double totalNet = 0.0;
+    obj.transaction.salesTaxRate =  double.tryParse(value);
+
+    salesTaxValue = obj.transaction.trnsVal! * (obj.transaction.salesTaxRate! / 100);
+    totalNet = obj.transaction.trnsVal! + salesTaxValue;
+
+    obj.transaction.salesTaxVal = salesTaxValue;
+    obj.transaction.trnsNet = totalNet;
+
+    salesTaxValController.text = salesTaxValue.toString()/*.toStringAsFixed(2)*/;
+    totalNetController.text = totalNet.toString()/*.toStringAsFixed(2)*/;
+  }
 
   }
 

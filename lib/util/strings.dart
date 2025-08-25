@@ -100,6 +100,7 @@ class Strings{
   static const String PAY_WAY = "طريقة الدفع";
   static const String TOTAL = " الإجمالي ";
   static const String TOTAL_NET = "الصافي";
+  static const String ITEM_DISCOUNT = " خصم الأصناف ";
   static const String SALES = "ضربية قيمة مضافة ";
   static const String SALES_VALUE = "القيمة";
   static const String COMM = "ضربية تجارية ";
@@ -107,6 +108,7 @@ class Strings{
   static const String DISCOUNT = "خصم ";
   static const String ALLOW_DISCOUNT = "خصم مسموح  ";
   static const String VALUE = "قيمة";
+  static const String VALUE_NO = "0.00";
   static const String PERCENTAGE = "%";
   static const String PERCENTAGE_TEXT = "نسبة";
   static const String SELECT_ITEM = "أختر صنف";

@@ -120,6 +120,12 @@ class Strings{
   static const String NUMBER = "الرقم"; //
   static const String TIME = "الوقت"; //
 
+  static const String PRINT = "طباعة"; //
+  static const String SEARCH_HINT_TRANS = "بحث برقم الحركة...."; //
+  static const String NO_TRANS_FOUND = "لا يوجد حركات"; //
+  static const String NO_TRANS_MATCH = "لا يوجد بحث متطابق مع الحركات الموجودة"; //
+  static const String LOADING_NO_DATA = "جاى تحميل البيانات ... او لم يتوافر بيانات ..."; //
+
 
 
 

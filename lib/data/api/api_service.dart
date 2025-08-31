@@ -703,7 +703,7 @@ class APIService {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
 
-    String storeTransListUrl = APIConstants.GET_ALL_TRANSACTION_LIST + authUrl! + "&branch=" + selectedBranch + "&trns_code=" + transCode;
+    String storeTransListUrl = APIConstants.GET_ALL_TRANSACTION_LIST + authUrl! + "&branch=" + selectedBranch + "&trns_code=" + transCode+"&_pageSize=10000";
     APIResult result = APIResult();
 
     final response = await http.get(Uri.parse(storeTransListUrl),
@@ -935,9 +935,62 @@ class APIService {
 
   }
 
+  Future<APIResult> getOneStoreTrans(String branch,String transCode,String transNo) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
 
+    String requestUrl = APIConstants.GET_ONE_STORE_TRANS + authUrl! +"&branch="+branch+"&trns_code=" + transCode+"&trns_no=" + transNo;
+    print("requestUrl $requestUrl");
+    APIResult result = APIResult();
+    TransactionCreatingModel dataResponseModel;
+    final response = await http.get(Uri.parse(requestUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
 
+    );
+    print("Response status: ${response.statusCode}");
 
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      print("Response body: $jsonResponse");
+      print("Response status: ${response.body}");
+      switch (jsonResponse['code']) {
+        case APIConstants.RESPONSE_CODE_UNAUTHORIZED :
+          return result = APIResult(
+            status: jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: [],
+          );
+        case APIConstants.RESPONSE_CODE_SUCCESS :
+          dataResponseModel = TransactionCreatingModel.fromJson(jsonResponse['data'] as Map<String, dynamic>);
+          return result = APIResult(
+            status: jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: dataResponseModel,
+          );
+        default:
+          return APIResult(
+            status:  jsonResponse['status'],
+            msg: jsonResponse['msg'],
+            code: jsonResponse['code'],
+            data: null,
+          );
+      }
+    } else{
+      print("Error: ${response.statusCode}");
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+
+  }
 
 
 

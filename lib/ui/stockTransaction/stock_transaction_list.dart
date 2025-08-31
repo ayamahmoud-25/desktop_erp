@@ -42,7 +42,44 @@ class _StockTransactionListState extends State<StockTransactionList> {
   Future<List<TransactionSpec>> fetchTransactionSpecs() async {
     final dbHelper = DatabaseHelper();
     final rows = await dbHelper.getAll('transaction_specs');
-    return rows.map((map) => TransactionSpec.fromJson(map)).toList();
+    List<TransactionSpec> transactionSpecs = rows.map((map) => TransactionSpec.fromJson(map)).toList();
+    print("Before sorting (raw string codes): ${transactionSpecs.map((spec) => spec.trnsCode).toList()}");
+
+    transactionSpecs.sort((a, b) {
+      // Both trnsCode are String?
+      final String? codeA = a.trnsCode;
+      final String? codeB = b.trnsCode;
+
+      // 1. Handle nulls first
+      if (codeA == null && codeB == null) return 0; // Both null, equal
+      if (codeA == null) return -1; // Nulls first (or 1 for nulls last)
+      if (codeB == null) return 1;  // Nulls first (or -1 for nulls last)
+
+      // 2. Attempt to parse strings to integers
+      int? numA = int.tryParse(codeA);
+      int? numB = int.tryParse(codeB);
+
+      // 3. Compare based on successful parsing
+      if (numA != null && numB != null) {
+        // Both are valid numbers, compare them numerically
+        return numA.compareTo(numB);
+      } else if (numA != null && numB == null) {
+        // codeA is a number, codeB is not (or unparseable string). Numbers come first.
+        return -1;
+      } else if (numA == null && numB != null) {
+        // codeB is a number, codeA is not. Numbers come first.
+        return 1;
+      } else {
+        // Neither could be parsed as an int (or they are unparseable strings like "abc").
+        // Fallback to standard string comparison for these non-numeric strings.
+        // This ensures "abc" is sorted relative to "xyz" correctly.
+        return codeA.compareTo(codeB);
+      }
+    });
+
+    print("After sorting (attempted numeric string sort): ${transactionSpecs.map((spec) => spec.trnsCode).toList()}");
+
+    return transactionSpecs;
   }
 
   @override

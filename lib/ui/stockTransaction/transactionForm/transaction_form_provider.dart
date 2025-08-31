@@ -22,6 +22,7 @@ import '../../../data/models/response/TransactionSpec.dart';
 import '../../../db/SharedPereference.dart';
 import '../../../util/form_utils.dart' show FormUtils;
 import '../../../util/item_form_with_spinner_list.dart';
+import '../../../util/loading_service.dart';
 import '../../../util/navigation.dart';
 import '../../../util/spinner_model.dart';
 import '../../../util/strings.dart' show Strings;
@@ -352,11 +353,12 @@ class TransactionFormProvider extends ChangeNotifier {
       storeTransOModel.branch = transaction.branch;
       storeTransOModel.trnsNo = transaction.trnsNo;
       storeTransOModel.trnsCode = transaction.trnsCode;
-      storeTransOModel.itemForm = transaction.itemForm;
+      storeTransOModel.itemForm = selectedItem.itemForm;
+      storeTransOModel.formDesc = selectedItem.formDesc;
 
-      storeTransOModel.formDesc = getItemFormNameByCode(
+     /* storeTransOModel.formDesc = getItemFormNameByCode(
         storeTransOModel.itemForm!,
-      );
+      );*/
       storeTransOModel.itemDesc = selectedItem.itemDesc;
       storeTransOModel.itemCode = selectedItem.itemCode;
       storeTransOModel.qty1 = selectedItem.qty1;
@@ -634,7 +636,7 @@ class TransactionFormProvider extends ChangeNotifier {
 
   void makeTransaction(){
     if(validateForm()){
-
+        showLoading();
        if(storeTransOModelList.length>0){
          transaction.storeTrnsOModels = storeTransOModelList;
        }
@@ -657,7 +659,7 @@ class TransactionFormProvider extends ChangeNotifier {
          transaction.storeTrnsDepModels = storeTrnsDepModels;
        }
       makeTransactionGetDetails();
-
+      hideLoading();
     }
   }
 
@@ -667,10 +669,13 @@ class TransactionFormProvider extends ChangeNotifier {
 
     if (apiResult.status == true && apiResult.data != null) {
       // Map API response to SpinnerModel list
-      //List<ItemList> itemList = apiResult.data.items;
+      //List<ItemList> itemList = apiResult.data.items;`
       //TransactionDepListResponseModel transactionDepListResponseModel = apiResult.data;
       TransactionDetailsResponseModel? transactionDeOnData = apiResult.data;
       ShowMessage().showSnackBar(_context!, apiResult.msg!);
+
+      // Navigate to transaction details
+      //Navigation().navigateToTransactionDetails(context!,_transaction.trnsCode! ,transactionDeOnData!.trnsNo!);
 
       notify();
       print("Returning TransactionDepOnData: $transactionDeOnData");
@@ -697,6 +702,7 @@ class TransactionFormProvider extends ChangeNotifier {
       ;
     }
   }
+
 
 
   bool validateForm(){
@@ -744,6 +750,13 @@ class TransactionFormProvider extends ChangeNotifier {
       return total.toString();
   }
 
+  void showLoading(){
+    LoadingService.showLoading(_context!); // Hide custom loading dialog
+  }
+
+  void hideLoading(){
+    LoadingService.hideLoading(_context!); // Hide custom loading dialog
+  }
 
   notify() {
     WidgetsBinding.instance.addPostFrameCallback((_) {

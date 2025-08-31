@@ -42,7 +42,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   SpinnerModel? selectedSpinnerModel;
   List<SpinnerModel>? allItemsList;
   SpinnerModel? selectedItem;
-  bool isLoading = false; // Loading state
+  //bool isLoading = false; // Loading state
   StoreTrnsOModel? itemStoreTrans= StoreTrnsOModel();
 
   String? selectedItemForm;
@@ -72,7 +72,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
 
     _setSelectedSpinnerModelById(
-      widget.tfProvider.transaction.itemForm,
+        selectedItemForm
     ); // Replace "desired_id" with the actual id
   }
 
@@ -90,16 +90,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
   //  Method to load initial item data
   // This method is called in initState to set the initial selected item
   Future _loadItemListData() async {
-    setState(() {
-      isLoading = true; // Show loader
-    });
+
     allItemsList = await widget.tfProvider.getAllItemsList(
       widget.tfProvider.transactionSpec!.itemForm!,
       widget.tfProvider.transactionSpec!.itemPrice!.toString(),
     );
-    setState(() {
-      isLoading = false; // Hide loader
-    });
+
   }
 
   void _setSelectedSpinnerModelById(String? id) {
@@ -114,9 +110,11 @@ class _AddItemDialogState extends State<AddItemDialog> {
                     name: 'Default',
                   ), // Fallback if the list is empty
     );
-
+    itemStoreTrans?.itemForm = matchingModel.id;
+    itemStoreTrans?.formDesc = matchingModel.name;
     setState(() {
       selectedSpinnerModel = matchingModel;
+
     });
   }
 
@@ -194,9 +192,20 @@ class _AddItemDialogState extends State<AddItemDialog> {
                           onChanged: (SpinnerModel? newValue) {
                             setState(() {
                               selectedSpinnerModel = newValue;
+                              if(selectedSpinnerModel?.id!=selectedItemForm){
+                                 itemStoreTrans?.itemDesc = null;
+                                 itemStoreTrans?.itemCode = null;
+                                 itemStoreTrans?.unitPrice = null;
+                                 priceController.text = '';
+                                 qtyController.text = '';
+                                 _updateTotal();
+                              }
                               selectedItemForm = selectedSpinnerModel?.id;
-                              widget.tfProvider.transaction.itemForm = selectedSpinnerModel?.id;
-                              widget.tfProvider.transaction.itemFormName = selectedSpinnerModel?.name;
+                              itemStoreTrans?.itemForm =selectedSpinnerModel?.id;
+                              itemStoreTrans?.formDesc = selectedSpinnerModel?.name;
+
+                              // widget.tfProvider.transaction.itemForm = selectedSpinnerModel?.id;
+                             //  widget.tfProvider.transaction.itemFormName = selectedSpinnerModel?.name;
                               //print selectedSpinnerModel
                               print(
                                 "Selected Group: ${selectedSpinnerModel?.name} + ${selectedSpinnerModel?.id}",
@@ -225,9 +234,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               GestureDetector(
                                 // Handle item selection
                                 onTap: () async {
-                                  setState(() {
-                                    isLoading = true; // Show loader
-                                  });
+                                  widget.tfProvider.showLoading();
                                   try {
                                     // Fetch spinner models
                                     if(widget.tfProvider.itemFormWithItemList.isEmpty){
@@ -272,9 +279,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                       }
 
                                     }
-                                    setState(() {
-                                      isLoading = false; // Hide loader
-                                    });
+                                    widget.tfProvider.hideLoading();
+
                                     if (allItemsList!.length > 0) {
                                       final result = await showDialog<SpinnerModel>(
                                         context: context,
@@ -323,7 +329,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                     }
                                   } catch (e) {
                                     setState(() {
-                                      isLoading = false; // Hide loader
+                                      widget.tfProvider.hideLoading();
+                                      // Hide loader
                                     });
                                     print("Error fetching spinner models: $e");
                                   }
@@ -367,11 +374,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         ),
 
                       ),
-                      if (isLoading)
-                        Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      SizedBox(height: 3),
+
 
                       //3. Price Field
                       Visibility(
@@ -590,6 +593,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       // Save Button
                       ElevatedButton(
                         onPressed: () {
+                          print(" formDesc button ${itemStoreTrans?.formDesc}");
+                          print(" itemForm button ${itemStoreTrans?.itemForm}");
+
                           // 1. Validation for itemCode
                           if (itemStoreTrans?.itemCode == null) {
                             ShowMessage().showToast(Strings.ERROR_DATA_NOT_COMPLETE,);

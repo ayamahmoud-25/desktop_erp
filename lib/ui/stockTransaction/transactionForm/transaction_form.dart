@@ -12,6 +12,7 @@ import '../../../data/models/response/StoreTrnsOModel.dart';
 import '../../../data/models/response/TransactionSpec.dart';
 import '../../../data/models/response/store_trans_list_dependency.dart';
 import '../../../db/SharedPereference.dart';
+import '../../../util/loading_service.dart';
 import '../../../util/map_list_model.dart';
 import '../../../util/spinner_model.dart';
 import '../../../util/strings.dart' show Strings;
@@ -49,7 +50,6 @@ class _TransactionScreenState extends State<TransactionForm> {
   TextEditingController commTaxRateController = TextEditingController();
   TextEditingController commTaxValController = TextEditingController();
 
-  bool isLoading = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -719,7 +719,6 @@ obj.notify();
                                   setState(() {
                                     obj.addOrUpdateStoreTransOModel(updatedItem);
                                     _updateTotal();
-
                                   });
                                 }
                               } else {
@@ -930,10 +929,7 @@ obj.notify();
                 // 7. Dependency
                 Visibility(
                   visible:
-                  (widget.transactionSpec.depOnTrnsCodeVal == "" ||
-                      obj.transactionSpec!.depOnTrnsCodeVal == "0")
-                      ? false
-                      : true,
+                  (widget.transactionSpec.depOnTrnsCodeVal == "" || obj.transactionSpec!.depOnTrnsCodeVal == "0") ? false : true,
                   child: Container(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -952,6 +948,7 @@ obj.notify();
                               onTap: () async{
                                 //display dialog to add dependency
                                 List<StoreTransListDependency>?  storeTransDepList = await obj.getStoreTransDependency();
+                                obj.showLoading();
                                 if(storeTransDepList!=null&&storeTransDepList.length>0){
                                   // Show dialog with fetched dependency items
                                   List<StoreTransListDependency>? transListWithDepApprove = obj.getTransWithApprovedToDependOnIt(storeTransDepList);
@@ -968,6 +965,8 @@ obj.notify();
                                         }
                                       }
                                     }
+                                    // Hide custom loading dialog
+
                                     //transListWithDepSelected = [];
                                     print("transListWithDepApprove: ${transListWithDepApprove.map((e) =>  e.isSelected).toList()}",);
                                     List<StoreTransListDependency> selectedTransDepList= (await showDialog<List<StoreTransListDependency>>(
@@ -978,7 +977,6 @@ obj.notify();
                                         // obj.transaction.storeTransDepList = selectedTransDepList;
                                         print("selectedTransDep List from dialog: ${selectedTransDepList.map((e) =>  e.trnsNo).toList()}",);
                                         transListWithDepSelected = selectedTransDepList;
-                                        isLoading = true;  // Show loader
                                       });
                                     }
 
@@ -987,7 +985,6 @@ obj.notify();
                                     final result = await obj.getTransactionDepOnList(selectedTransDepList);
 
                                     setState(() {
-                                      isLoading = false; // Hide loader
                                       // Optionally update transListWithDepSelected or other state with result if needed
                                       // For example, if getTransactionDepOnList returns updated list:
                                       if (result != null) {
@@ -1000,11 +997,15 @@ obj.notify();
                                     ShowMessage().showToast(Strings.NO_TRANS_DEP_ON);
                                   }
 
+                                  obj.hideLoading();
 
                                 }else{
                                   if(storeTransDepList!=null)
                                     ShowMessage().showToast(Strings.NO_TRANS_DEP_ON);
+                                  obj.hideLoading();
+
                                 }
+
 
 
                               },
@@ -1533,9 +1534,8 @@ obj.notify();
                 InkWell(
                   onTap: () {
                    // Navigator.of(context).pop(); // Dismiss the dialog
-                    //validate date
-                        obj.makeTransaction();
-
+                   // validate date
+                   obj.makeTransaction();
                   },
                   child: Container(
                     margin: EdgeInsets.all(5),

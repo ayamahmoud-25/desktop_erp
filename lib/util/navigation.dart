@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../ui/login/login_company.dart';
+import '../ui/stockTransaction/detailsTransaction/transaction_details.dart';
 
 
 class Navigation{
@@ -17,5 +18,19 @@ class Navigation{
           (Route<dynamic> route) => false,
     );
   }
+
+  void navigateToTransactionDetails(BuildContext buildContext, String transName,String branch,String transCode ,int transNo) {
+    Navigator.push(
+      buildContext,
+      MaterialPageRoute(
+        builder: (context) => TransactionDetails(
+          transName: transName,
+          branch: branch,
+          transCode: transCode,
+          transNo: transNo,
+        ),
+      ));
+  }
+
 
 }

@@ -43,6 +43,7 @@ class APIConstants {
   static String GET_STORE_TRANS_DEPENDENCY_LIST= BASE_URL + "Transactions/Get_StoreTrnsList_Fordependency?servicename=";
   static String GET_LIST_TRANSACTION_DEP_ON= BASE_URL + "Transactions/get_list_transactions_dep_on?servicename=";
   static String PUT_SAVING_OR_UPDATE_STORE_TRANS= BASE_URL + "Transactions/saving_or_updating_store_transactions?servicename=";
+  static String GET_ONE_STORE_TRANS= BASE_URL + "Transactions/Get_OneStoreTrans?servicename=";
 
 
   //Response Codes

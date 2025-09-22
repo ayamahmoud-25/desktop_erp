@@ -892,6 +892,9 @@ class APIService {
       },
       body: convert.jsonEncode(transactionCreatingModel),
     );
+    final requestBody = convert.jsonEncode(transactionCreatingModel);
+    print("Request body : ${convert.jsonEncode(transactionCreatingModel)}");
+    print("Response body : ${response.body}");
     print("Response status: ${response.statusCode}");
 
     if (response.statusCode == 200) {

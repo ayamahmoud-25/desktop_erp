@@ -101,6 +101,23 @@ class TransactionFormProvider extends ChangeNotifier {
   }
 
   void setValues(){
+    transaction.depOnCode = transactionSpec?.depOnTrnsCodeVal;
+    // transaction.trnsDate = "2025-9-17";
+   // transaction.trnsStamp = "2025-9-17T12:20:00";
+    /* String? depOnCode = transaction.depOnCode;
+    transaction.trnsNo = int.parse(depOnCode!);
+*///
+     if(transactionSpec?.showPrice !=0){
+       //set payMethod default
+
+       SpinnerModel? defaultPayMethod = FormUtils().getSpinnerModelById(FormUtils.getPaymentMethod(), "3");
+       String? payMethodId = defaultPayMethod!.id;
+       transaction.payMethod = int.parse(payMethodId!);
+       transaction.payMethodName = defaultPayMethod.name as String;
+
+     }
+
+
     setAllItemForm();
     setFromToDstCode();
 
@@ -657,6 +674,8 @@ class TransactionFormProvider extends ChangeNotifier {
                 storeTrnsDepModels.add(depModel);
          }
          transaction.storeTrnsDepModels = storeTrnsDepModels;
+       }else{
+         transaction.storeTrnsDepModels = storeTrnsDepModels;
        }
       makeTransactionGetDetails();
       hideLoading();
@@ -672,10 +691,15 @@ class TransactionFormProvider extends ChangeNotifier {
       //List<ItemList> itemList = apiResult.data.items;`
       //TransactionDepListResponseModel transactionDepListResponseModel = apiResult.data;
       TransactionDetailsResponseModel? transactionDeOnData = apiResult.data;
-      ShowMessage().showSnackBar(_context!, apiResult.msg!);
+      //ShowMessage().showSnackBar(_context!, apiResult.msg!);
 
       // Navigate to transaction details
-      //Navigation().navigateToTransactionDetails(context!,_transaction.trnsCode! ,transactionDeOnData!.trnsNo!);
+      Navigation().navigateToTransactionDetails(
+          context!,
+            transactionSpec! ,
+          _transaction.branch!,
+           transactionDeOnData!.trnsCode!,
+          transactionDeOnData.trnsNo!,false);
 
       notify();
       print("Returning TransactionDepOnData: $transactionDeOnData");

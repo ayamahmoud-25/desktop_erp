@@ -1,3 +1,4 @@
+import 'package:desktop_erp_4s/data/models/response/TransactionSpec.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../data/api/api_service.dart';
@@ -75,8 +76,6 @@ class ShowTransactionProvider extends ChangeNotifier {
             return codeB.compareTo(codeA);
           }
         });
-
-
         _state = APIStatue.success;
         notifyListeners();
         return _transactions; // Return the list of transactions
@@ -94,11 +93,12 @@ class ShowTransactionProvider extends ChangeNotifier {
     }
   }
 
-  void navigateToTransactionDetails(BuildContext context,String transName,String branch,String transCode ,int transNo) {
+  void navigateToTransactionDetails(BuildContext context,TransactionSpec transSpec,String branch,String transCode ,int transNo,bool isDetails) {
     // Navigate to the TransactionDetails screen
-    Navigation().navigateToTransactionDetails(context, transName, branch, transCode, transNo);
+    Navigation().navigateToTransactionDetails(context, transSpec, branch, transCode, transNo,isDetails);
   }
 
 }
+
 
 

@@ -3,6 +3,7 @@ import '../response/StoreTrnsOModel.dart';
 
 class TransactionCreatingModel {
   String? branch;
+  String? descr;
   String? trnsCode;
   String? itemForm;
 
@@ -44,6 +45,7 @@ class TransactionCreatingModel {
 
   TransactionCreatingModel({
     this.branch,
+    this.descr,
     this.branchName,
     this.trnsCode,
     this.itemForm,
@@ -67,8 +69,10 @@ class TransactionCreatingModel {
     this.trnsStamp,
     this.fromDst,
     this.fromCode,
+    this.fromName,
     this.toDst,
     this.toCode,
+    this.toName,
     this.trnsType,
     this.storeTrnsOModels,
     this.storeTrnsDepModels,
@@ -77,6 +81,7 @@ class TransactionCreatingModel {
   factory TransactionCreatingModel.fromJson(Map<String, dynamic> json) {
     return TransactionCreatingModel(
       branch: json['BRANCH'],
+      descr: json['DESCR'],
       trnsCode: json['TRNS_CODE'],
       itemForm: json['ITEM_FORM'],
       trnsVal: json['TRNS_VAL'],
@@ -99,8 +104,10 @@ class TransactionCreatingModel {
       trnsStamp: json['TRNS_STAMP'],
       fromDst: json['FROM_DST'],
       fromCode: json['FROM_CODE'],
+      fromName: json['FROM_NAME'],
       toDst: json['TO_DST'],
       toCode: json['TO_CODE'],
+      toName: json['TO_NAME'],
       trnsType: json['TRNS_TYPE'],
       storeTrnsOModels: (json['store_trns_o_models'] as List<dynamic>?)
           ?.map((e) => StoreTrnsOModel.fromJson(e))
@@ -114,6 +121,7 @@ class TransactionCreatingModel {
   Map<String, dynamic> toJson() {
     return {
       'BRANCH': branch,
+      'DESCR': descr,
       'TRNS_CODE': trnsCode,
       'ITEM_FORM': itemForm,
       'TRNS_VAL': trnsVal,
@@ -134,8 +142,10 @@ class TransactionCreatingModel {
       'TRNS_STAMP': trnsStamp,
       'FROM_DST': fromDst,
       'FROM_CODE': fromCode,
+      'FROM_NAME': fromName,
       'TO_DST': toDst,
       'TO_CODE': toCode,
+      'TO_NAME': toName,
       'TRNS_TYPE': trnsType,
       'store_trns_o_models': storeTrnsOModels?.map((e) => e.toJson()).toList(),
       'store_trns_dep_models': storeTrnsDepModels?.map((e) => e.toJson()).toList(),

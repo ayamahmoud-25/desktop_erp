@@ -1,3 +1,4 @@
+import 'package:desktop_erp_4s/data/models/response/TransactionSpec.dart';
 import 'package:flutter/material.dart';
 
 import '../ui/login/login_company.dart';
@@ -19,15 +20,16 @@ class Navigation{
     );
   }
 
-  void navigateToTransactionDetails(BuildContext buildContext, String transName,String branch,String transCode ,int transNo) {
+  void navigateToTransactionDetails(BuildContext buildContext, TransactionSpec transSpec,String branch,String transCode ,int transNo,bool isDetails) {
     Navigator.push(
       buildContext,
       MaterialPageRoute(
         builder: (context) => TransactionDetails(
-          transName: transName,
+          transactionSpec: transSpec,
           branch: branch,
           transCode: transCode,
           transNo: transNo,
+          isDetails: isDetails,
         ),
       ));
   }

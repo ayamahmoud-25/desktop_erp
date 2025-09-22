@@ -34,6 +34,7 @@ class Strings{
   static const String finance_trans ="الحركات المالية";
   static const String Cancel ="إلغاء";
   static const String Delete ="حذف";
+  static const String EDIT_TRANS ="تعديل الحركة";
 
   //Error Message
   static const String ERROR_NO_DATA_FIELD ="الحقل فارغ";
@@ -124,7 +125,10 @@ class Strings{
   static const String SEARCH_HINT_TRANS = "بحث برقم الحركة...."; //
   static const String NO_TRANS_FOUND = "لا يوجد حركات"; //
   static const String NO_TRANS_MATCH = "لا يوجد بحث متطابق مع الحركات الموجودة"; //
+  static const String NO_TRANS_DETAILS = "لا يوجد تفاصيل للحركة او لم يتوافر بيانات"; //
   static const String LOADING_NO_DATA = "جاى تحميل البيانات ... او لم يتوافر بيانات ..."; //
+  static const String SUCCESS_TRANSACTION_DONE = "تمت إنشاء الحركة بنجاج"; //
+  static const String NOT_ALLOW_TO_EDIT_TRANSACTION = "غير مسموح بالتعديل فى الحركة"; //
 
 
 
@@ -141,6 +145,8 @@ class Strings{
   static const  String APPROVED_DEP = "Y";
   static const  String APPROVED_NUMBER = "1";
   static const  String NOT_APPROVED_NUMBER = "2";
+  static const  int NOT_ALLOW_EDIT = 0;
+  static const  int ALLOW_EDIT = 1;
 
 
 }

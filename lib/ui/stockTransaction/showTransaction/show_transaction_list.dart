@@ -1,3 +1,4 @@
+import 'package:desktop_erp_4s/data/models/response/TransactionSpec.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,14 +10,12 @@ import '../../../data/models/response/Transaction.dart';
 
 class ShowTransactionList extends StatefulWidget {
   final String selectedBranch;
-  final String transCode;
-  final String transName;
+  final TransactionSpec transactionSpec;
 
   const ShowTransactionList({
     Key? key,
     required this.selectedBranch,
-    required this.transCode,
-    required this.transName,
+    required this.transactionSpec,
   }) : super(key: key);
 
   @override
@@ -46,7 +45,7 @@ class _ShowTransactionListState extends State<ShowTransactionList> {
       Provider.of<ShowTransactionProvider>(
         context,
         listen: false,
-      ).storeTransactionList(context, widget.selectedBranch, widget.transCode).then((
+      ).storeTransactionList(context, widget.selectedBranch, widget.transactionSpec.trnsCode!).then((
         _,
       ) {
         // After data is fetched, initialize original and filtered lists
@@ -127,7 +126,7 @@ class _ShowTransactionListState extends State<ShowTransactionList> {
                     style: TextStyle(color: Colors.white),
                   )
                   : Text(
-                    widget.transName,
+                   widget.transactionSpec.trnsDesc!,
                     style: TextStyle(color: Colors.white),
                   ),
           actions: <Widget>[
@@ -198,10 +197,11 @@ class _ShowTransactionListState extends State<ShowTransactionList> {
                         listen: false,
                       ).navigateToTransactionDetails(
                         context,
-                         widget.transName,
+                        widget.transactionSpec,
                         transaction.branch!,
                         transaction.trnsCode!,
-                        transaction.trnsNo
+                        transaction.trnsNo,
+                        true,
                       );
                     },
                     child: Card(

@@ -184,8 +184,7 @@ class _TransactionScreenState extends State<TransactionForm> {
                       InkWell(
                         onTap: () async {
                           // Fetch branches dynamically
-                          final List<SpinnerModel> spinnerModel =
-                          await MapListModel().mapListToSpinnerModelList();
+                          final List<SpinnerModel> spinnerModel = await MapListModel().mapListToSpinnerModelList();
                           if (spinnerModel.length > 0) {
                             final result = await showDialog<SpinnerModel>(
                               context: context,
@@ -1133,13 +1132,13 @@ obj.notify();
                                   mainAxisAlignment:
                                   MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      obj.transaction.payMethod != null
+                                    Text("${obj.transaction.payMethodName}"
+                                      /*obj.transaction.payMethod != null
                                           ? obj.transaction.payMethodName!
                                           : (FormUtils().getSpinnerModelById(
                                         FormUtils.getPaymentMethod(),
                                         "3",
-                                      ))!.name!, // refactor
+                                      ))!.name!*/, // refactor
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.black,

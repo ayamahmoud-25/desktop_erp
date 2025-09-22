@@ -295,8 +295,7 @@ class StockTransactionListRow extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => ShowTransactionList(
                                 selectedBranch: selectedBranch!.code!,
-                                transCode: transactionSpec.trnsCode!,
-                                transName: transactionSpec.trnsDesc!,
+                                transactionSpec: transactionSpec,
                               ),
                             ),
                           );

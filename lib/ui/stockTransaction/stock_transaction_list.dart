@@ -11,6 +11,7 @@ import '../../db/database_helper.dart';
 import '../widgets/custom_alert_dialog.dart';
 import '../../util/strings.dart';
 import '../home/branches/BranchListDialog.dart';
+import 'approvedTransaction/approved_transaction.dart';
 
 class StockTransactionList extends StatefulWidget {
 
@@ -306,6 +307,16 @@ class StockTransactionListRow extends StatelessWidget {
                       CustomAlertDialog().showAlertDialog(context);
                     }else{
                       //navigate to the transaction approval page
+                      //navigate to show transaction page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ApprovedTransaction(
+                            selectedBranch: selectedBranch!.code!,
+                            transCode: transactionSpec.trnsCode!,
+                          ),
+                        ),
+                      );
                     }
                   }
                 },

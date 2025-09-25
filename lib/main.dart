@@ -1,6 +1,7 @@
 import 'package:desktop_erp_4s/ui/home/home_provider.dart';
 import 'package:desktop_erp_4s/ui/login/login_company.dart';
 import 'package:desktop_erp_4s/ui/login/login_provider.dart';
+import 'package:desktop_erp_4s/ui/stockTransaction/approvedTransaction/approved_transaction_provider.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/showTransaction/show_transaction_provider.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/transactionForm/transaction_form_provider.dart';
 import 'package:flutter/material.dart';
@@ -27,13 +28,21 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => LoginProvider()),
         // Register LoginProvider
-        ChangeNotifierProvider(create: (_) => HomeProvider()),
+        ChangeNotifierProvider(create: (_) => LoginProvider()),
+
         // Register HomeProvider
-        ChangeNotifierProvider(create: (_) => ShowTransactionProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
+
         // Register ShowTransactionProvider
+        ChangeNotifierProvider(create: (_) => ShowTransactionProvider()),
+
+        // Register TransactionFormProvider
         ChangeNotifierProvider(create: (_) => TransactionFormProvider()),
+
+
+        // Register ApprovedTransactionProvider
+        ChangeNotifierProvider(create: (_) => ApprovedTransactionProvider()),
 
       ],
       child: MyApp(),

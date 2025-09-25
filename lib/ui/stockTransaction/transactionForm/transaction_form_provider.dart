@@ -5,6 +5,7 @@ import 'package:desktop_erp_4s/data/models/response/TransactionDepOnData.dart';
 import 'package:desktop_erp_4s/data/models/response/TransactionDetailsResponseModel.dart';
 import 'package:desktop_erp_4s/data/models/response/store_trans_dep_list_response_model.dart';
 import 'package:desktop_erp_4s/data/models/response/store_trans_list_dependency.dart';
+import 'package:desktop_erp_4s/ui/stockTransaction/detailsTransaction/transaction_details.dart';
 import 'package:desktop_erp_4s/ui/widgets/show_message.dart';
 import 'package:desktop_erp_4s/util/map_list_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -42,6 +43,8 @@ class TransactionFormProvider extends ChangeNotifier {
     _transaction = transaction;
   }
 
+
+
   BuildContext? _context;
 
 
@@ -56,6 +59,7 @@ class TransactionFormProvider extends ChangeNotifier {
     notify();
   }
   BuildContext? get context => _context;
+
 
 
  /* bool _isLoading = false;
@@ -83,6 +87,8 @@ class TransactionFormProvider extends ChangeNotifier {
 
   StoreTrnsOModel storeTransOModel = StoreTrnsOModel();
   List<StoreTrnsOModel> storeTransOModelList = [];
+  List<StoreTrnsDepModel> storeTrnsDepModels = [];
+
   List<DependencyTransList> dependencyTransList = [];
   List<ItemFormWithSpinnerList> itemFormWithItemList = [];
 
@@ -95,12 +101,14 @@ class TransactionFormProvider extends ChangeNotifier {
   set transactionSpec(TransactionSpec? transactionSpec){
    //  isLoading = true; // Show loader
     _transactionSpec = transactionSpec;
+
     setValues();
 
     notify();
   }
 
   void setValues(){
+    transaction.trnsType =  transactionSpec?.trnsType;
     transaction.depOnCode = transactionSpec?.depOnTrnsCodeVal;
     // transaction.trnsDate = "2025-9-17";
    // transaction.trnsStamp = "2025-9-17T12:20:00";
@@ -114,12 +122,33 @@ class TransactionFormProvider extends ChangeNotifier {
        String? payMethodId = defaultPayMethod!.id;
        transaction.payMethod = int.parse(payMethodId!);
        transaction.payMethodName = defaultPayMethod.name as String;
+     }
+
+     if(transaction.trnsNo!=0){
+       if(transaction.storeTrnsOModels!=null&&transaction.storeTrnsOModels!.length>0)
+        storeTransOModelList = transaction.storeTrnsOModels!;
+
+       if(transaction.storeTrnsDepModels!=null&&transaction.storeTrnsDepModels!.length>0){
+         for(var item in transaction.storeTrnsDepModels!){
+            DependencyTransList dependencyTrans = DependencyTransList();
+            dependencyTrans.branch =  item.branch;
+            dependencyTrans.trnsCode =  item.trnsCode;
+            dependencyTrans.trnsNo =  item.trnsNo;
+           // dependencyTransList.dateTime =  item.;
+            dependencyTransList.add(dependencyTrans);
+         }
+       }
+
 
      }
 
 
-    setAllItemForm();
+    if(transaction.trnsNo==null || transaction.trnsNo==0)
+     setAllItemForm();
+
+
     setFromToDstCode();
+
 
   }
 
@@ -139,6 +168,7 @@ class TransactionFormProvider extends ChangeNotifier {
     //3.1 Form
     transaction.fromDst = transactionSpec?.fromDst;
     transaction.fromCode = transactionSpec?.fromCode;
+
      //3.2 To
     transaction.toDst = transactionSpec?.toDst;
     transaction.toCode = transactionSpec?.toCode;
@@ -188,6 +218,8 @@ class TransactionFormProvider extends ChangeNotifier {
 
 
   }
+
+
 
   Future<List<SpinnerModel>> getSpinnerModelListByIndex(
     int indexName,
@@ -658,7 +690,6 @@ class TransactionFormProvider extends ChangeNotifier {
          transaction.storeTrnsOModels = storeTransOModelList;
        }
 
-       List<StoreTrnsDepModel> storeTrnsDepModels = [];
        if(dependencyTransList.length>0){
          for(DependencyTransList item in dependencyTransList){
                 StoreTrnsDepModel depModel = StoreTrnsDepModel();
@@ -683,17 +714,18 @@ class TransactionFormProvider extends ChangeNotifier {
   }
 
   Future<TransactionDetailsResponseModel?> makeTransactionGetDetails() async {
-
-    final apiResult = await APIService().savingOrUpdateTransaction(transaction,false);
+    LoadingService.showLoading(_context!);
+    final apiResult = await APIService().savingOrUpdateTransaction(transaction,(transaction.trnsNo!=null&&transaction.trnsNo!=0)?true:false);
 
     if (apiResult.status == true && apiResult.data != null) {
+      LoadingService.hideLoading(_context!);
+
       // Map API response to SpinnerModel list
       //List<ItemList> itemList = apiResult.data.items;`
       //TransactionDepListResponseModel transactionDepListResponseModel = apiResult.data;
       TransactionDetailsResponseModel? transactionDeOnData = apiResult.data;
       //ShowMessage().showSnackBar(_context!, apiResult.msg!);
 
-      // Navigate to transaction details
       Navigation().navigateToTransactionDetails(
           context!,
             transactionSpec! ,
@@ -719,6 +751,7 @@ class TransactionFormProvider extends ChangeNotifier {
       Navigation().logout(_context!);
       return TransactionDetailsResponseModel();
     } else {
+      LoadingService.hideLoading(_context!);
       ShowMessage().showToast(apiResult.msg!);
       // Handle other cases, such as API failure or no data
       print("API call failed or no data");

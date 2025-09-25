@@ -82,6 +82,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
               _transDetails = apiResult.data as TransactionCreatingModel;
 
               // to refactor
+              widget.selectedBranch = Branches();
               widget.selectedBranch?.code = _transDetails?.branch!;
               widget.selectedBranch?.descr = _transDetails?.descr!;
             });
@@ -184,19 +185,21 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                           ),
                           const SizedBox(height: 8),
                           const Text(
-                            "الفرع-الكود-الرقم",
+                            "الفرع - الكود - الرقم",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           // Safely accessing properties of _transDetails!
                           Text(
-                            "${_transDetails!.branch ?? 'N/A'}-${_transDetails!.trnsCode ?? 'N/A'}-${_transDetails!.trnsNo ?? 'N/A'}",
+                            textAlign:  TextAlign.start ,
+                            textDirection:TextDirection.ltr ,
+                            " ${_transDetails!.trnsNo ?? 'N/A'} - ${_transDetails!.trnsCode ?? 'N/A'} - ${_transDetails!.branch ?? 'N/A'} ",
                           ),
 
                           const Text(
                             "التاريخ",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          Text(_transDetails!.trnsDate?.toString() ?? 'N/A'),
+                          Text(_transDetails!.trnsDate?.toString().substring(0,10) ?? 'N/A'),
 
                           // Format DateTime appropriately
                           Visibility(
@@ -386,6 +389,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                       child: TransactionForm(
                         selectedBranch: widget.selectedBranch,
                         transactionSpec: widget.transactionSpec,
+                        transactionDetails: _transDetails,
                       ),
                     ),
                   ),

@@ -30,6 +30,7 @@ class Strings{
   //Button
   static const String Save ="حفظ";
   static const String New ="جديد";
+  static const String EDIT ="تعديل";
   static const String store_trans ="الحركات المخزنية";
   static const String finance_trans ="الحركات المالية";
   static const String Cancel ="إلغاء";
@@ -127,7 +128,7 @@ class Strings{
   static const String NO_TRANS_MATCH = "لا يوجد بحث متطابق مع الحركات الموجودة"; //
   static const String NO_TRANS_DETAILS = "لا يوجد تفاصيل للحركة او لم يتوافر بيانات"; //
   static const String LOADING_NO_DATA = "جاى تحميل البيانات ... او لم يتوافر بيانات ..."; //
-  static const String SUCCESS_TRANSACTION_DONE = "تمت إنشاء الحركة بنجاج"; //
+  static const String SUCCESS_TRANSACTION_DONE = "تمت بنجاج"; //
   static const String NOT_ALLOW_TO_EDIT_TRANSACTION = "غير مسموح بالتعديل فى الحركة"; //
 
 

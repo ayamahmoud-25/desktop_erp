@@ -1,3 +1,4 @@
+import 'package:desktop_erp_4s/ui/stockTransaction/detailsTransaction/transaction_details.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/transactionForm/dep_store_trans_table.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/transactionForm/store_trans_table.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/transactionForm/transaction_dep_list_dialog.dart';
@@ -23,11 +24,12 @@ import 'add_item_dialog.dart';
 class TransactionForm extends StatefulWidget {
   final Branches? selectedBranch;
   final TransactionSpec transactionSpec;
-
-  const TransactionForm({
+  final TransactionCreatingModel? transactionDetails; // Make it final if it won't change after construction
+   TransactionForm({
     Key? key,
     required this.selectedBranch,
     required this.transactionSpec,
+    this.transactionDetails
   }) : super(key: key);
 
   @override
@@ -55,8 +57,14 @@ class _TransactionScreenState extends State<TransactionForm> {
     // TODO: implement initState
     super.initState();
     obj = Provider.of<TransactionFormProvider>(context, listen: false);
-    obj.transactionSpec = widget.transactionSpec;
     obj.context = context;
+
+    if(widget.transactionDetails!=null)
+      obj.transaction = widget.transactionDetails!;
+
+    obj.transactionSpec = widget.transactionSpec;
+
+
    // obj.initial();
 
     // load selected branch from shared preferences
@@ -148,7 +156,7 @@ class _TransactionScreenState extends State<TransactionForm> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              "${widget.transactionSpec.trnsDesc} جديد ", // refactor
+              "${widget.transactionSpec.trnsDesc}" +" ( "+ ((obj.transaction.trnsNo!=null && obj.transaction.trnsNo!=0) ? Strings.EDIT:Strings.NEW)+" )", // refactor
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: const Color.fromARGB(255, 23, 111, 153),
@@ -299,7 +307,7 @@ class _TransactionScreenState extends State<TransactionForm> {
                             children: [
                               Text(
                                 obj.transaction.trnsDate != null
-                                    ? obj.transaction.trnsDate!
+                                    ? obj.transaction.trnsDate!.substring(0,10)
                                     : Strings.DATE_FORM,
                                 style: TextStyle(
                                   fontSize: 14,
@@ -316,7 +324,7 @@ class _TransactionScreenState extends State<TransactionForm> {
                 ),
 
                 //4.From & To Fields
-                Container(
+               /* Container(
                   child: Row(
                     children: [
                       Visibility(
@@ -417,6 +425,7 @@ class _TransactionScreenState extends State<TransactionForm> {
                                             : FormUtils.getNameFromIndex(
                                           obj.transaction.fromDst!,
                                         ),
+                                        overflow: TextOverflow.ellipsis, // <<<< ADD THIS TO PREVENT TEXT OVERFLOW
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: Colors.black,
@@ -476,10 +485,10 @@ class _TransactionScreenState extends State<TransactionForm> {
                                           spinnerModels: spinnerModel,
                                           onItemSelected: (item) {
                                             setState(() {
-                                              /* obj.transaction.toDst =
+                                              *//* obj.transaction.toDst =
                                                         widget
                                                             .transactionSpec!
-                                                            .toDst;*/
+                                                            .toDst;*//*
                                               obj.transaction.toCode =
                                               item!.id!;
                                               obj.transaction.toName =
@@ -493,8 +502,8 @@ class _TransactionScreenState extends State<TransactionForm> {
 
                                       if (result != null) {
                                         setState(() {
-                                          /*  obj.transaction.toDst =
-                                            obj.transactionSpec!.toDst;*/
+                                          *//*  obj.transaction.toDst =
+                                            obj.transactionSpec!.toDst;*//*
                                           obj.transaction.toCode = result.id!;
                                           obj.transaction.toName = result.name!;
                                           //print("obj.transaction.toCode: ${obj.transaction.toName}");
@@ -540,6 +549,253 @@ obj.notify();
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: Colors.black,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),*/
+                //4.From & To Fields
+                Container(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start, // Align columns to the top if they have different heights
+                    children: [
+                      Visibility(
+                        visible: obj.transaction.fromDst != 0 ? true : false,
+                        child: Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.all(7),
+                                child: Text(
+                                  Strings.FROM +
+                                      " " +
+                                      FormUtils.getNameFromIndex(
+                                        obj.transaction.fromDst!,
+                                      ),
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1),
+                              InkWell(
+                                onTap: () async {
+                                  try {
+                                    // Fetch spinner models
+                                    final List<SpinnerModel> spinnerModel =
+                                    await obj.getSpinnerModelListByIndex(
+                                      obj.transaction.fromDst!,
+                                      obj.transaction.trnsCode!,
+                                    );
+
+                                    if (spinnerModel.length > 0) {
+                                      // Show dialog with fetched spinner models
+                                      final result =
+                                      await showDialog<SpinnerModel>(
+                                        context: context,
+                                        builder:
+                                            (context) => CustomSpinnerDialog(
+                                          spinnerModels: spinnerModel,
+                                          onItemSelected: (item) {
+                                            setState(() {
+                                              obj.transaction.fromDst =
+                                                  widget
+                                                      .transactionSpec
+                                                      .fromDst;
+                                              obj.transaction.fromCode =
+                                              item!.id!;
+                                              obj.transaction.fromName =
+                                              item.name!;
+                                            });
+                                          },
+                                        ),
+                                      );
+
+                                      if (result != null) {
+                                        setState(() {
+                                          obj.transaction.fromDst =
+                                              obj.transactionSpec!.fromDst;
+                                          obj.transaction.fromCode = result.id!;
+                                          obj.transaction.fromName = result.name!;
+                                        });
+                                      }
+                                    } else {
+                                      // Show a message if no items are available
+                                      ShowMessage().showSnackBar(
+                                        context,
+                                        Strings.ERROR_NO_DATA_FOUND,
+                                      );
+                                    }
+                                  } catch (e) {
+                                    print("Error fetching spinner models: $e");
+                                  }
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.all(5),
+                                  // width: double.infinity, // This is okay here because the parent Column's width
+                                  // is controlled by Expanded.
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 15,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFf7f7f7),
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(
+                                      color: Color(0xFFDADADA),
+                                      width: 1.3,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
+                                        child: Text(
+                                          obj.transaction.fromCode != null &&
+                                              obj.transaction.fromCode != ""
+                                              ? obj.transaction.fromName ?? ""
+                                              : FormUtils.getNameFromIndex(
+                                            obj.transaction.fromDst!,
+                                          ),
+                                          overflow: TextOverflow.ellipsis, // Good to keep
+                                          maxLines: 1, // Optional: ensure it's one line
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10), // Add spacing between the two containers
+                      Visibility(
+                        visible: obj.transaction.toDst != 0 ? true : false,
+                        child: Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.all(7),
+                                child: Text(
+                                  Strings.TO +
+                                      " " +
+                                      FormUtils.getNameFromIndex(
+                                        obj.transaction.toDst!,
+                                      ),
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1),
+                              InkWell(
+                                onTap: () async {
+                                  try {
+                                    // Fetch spinner models
+                                    final List<SpinnerModel> spinnerModel =
+                                    await obj.getSpinnerModelListByIndex(
+                                      obj.transaction.toDst!,
+                                      obj.transaction.trnsCode!,
+                                    );
+                                    if (spinnerModel.length > 0) {
+                                      // Show dialog with fetched spinner models
+                                      final result =
+                                      await showDialog<SpinnerModel>(
+                                        context: context,
+                                        builder:
+                                            (context) => CustomSpinnerDialog(
+                                          spinnerModels: spinnerModel,
+                                          onItemSelected: (item) {
+                                            setState(() {
+
+                                              obj.transaction.toCode =
+                                              item!.id!;
+                                              obj.transaction.toName =
+                                              item!.name!;
+                                              obj.notify();
+                                              print("obj.transaction.toCode: ${obj.transaction.toCode}");
+                                            });
+                                          },
+                                        ),
+                                      );
+
+                                      if (result != null) {
+                                        setState(() {
+
+                                          obj.transaction.toCode = result.id!;
+                                          obj.transaction.toName = result.name!;
+                                          //print("obj.transaction.toCode: ${obj.transaction.toName}");
+                                          obj.notify();
+                                        });
+                                      }
+                                    } else {
+                                      // Show a message if no items are available
+                                      ShowMessage().showSnackBar(
+                                        context,
+                                        Strings.ERROR_NO_DATA_FOUND,
+                                      );
+                                    }
+                                  } catch (e) {
+                                    print("Error fetching spinner models: $e");
+                                  }
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.all(5),
+                                  // width: double.infinity, // Okay here
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 15,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFf7f7f7),
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(
+                                      color: Color(0xFFDADADA),
+                                      width: 1.3,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
+                                        child: Text(
+                                          (obj.transaction.toCode != null &&
+                                              obj.transaction.toCode != "")
+                                              ? obj.transaction.toName ?? ""
+                                              : FormUtils.getNameFromIndex(
+                                            obj.transaction.toDst!,
+                                          ),
+                                          overflow: TextOverflow.ellipsis, // << ADD THIS TOO
+                                          maxLines: 1, // Optional: ensure it's one line
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          ),
                                         ),
                                       ),
                                       Icon(
@@ -822,7 +1078,7 @@ obj.notify();
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                obj.transaction.itemForm != null
+                                (obj.transaction.itemForm != null && obj.transaction.itemFormName != null)
                                     ? obj.transaction.itemFormName!
                                     : Strings.ITEMS, // refactor
                                 style: TextStyle(

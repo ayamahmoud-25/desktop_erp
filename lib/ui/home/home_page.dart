@@ -1,10 +1,12 @@
 import 'package:desktop_erp_4s/ui/home/home_provider.dart';
+import 'package:desktop_erp_4s/util/loading_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/api_state.dart';
 import '../../data/models/branch_model.dart';
 import '../../db/SharedPereference.dart';
+import '../../db/database_helper.dart';
 import '../../util/navigation.dart';
 import '../widgets/show_message.dart';
 import '../../util/strings.dart';
@@ -49,7 +51,9 @@ class _HomePageState extends State<HomePage> {
                 // Navigate to Settings
               } else if (value == Strings.POP_MENU_ITEM_LOGOUT) {
                 // Perform logout
+                DatabaseHelper().clearDatabase();
                 Navigation().logout(context);
+                // clear all save data  database helper
               }
             },
             itemBuilder: (BuildContext context) {
@@ -84,7 +88,8 @@ class _HomePageState extends State<HomePage> {
                   await homeProvider.transactionStockSpecs(context);
                   if(homeProvider.state == APIStatue.loading){
                     print(" APIStatue.loading ${homeProvider.state}");
-                    CircularProgressIndicator();
+                    //CircularProgressIndicator();
+                    LoadingService.showLoading(context);
                   }else if(homeProvider.state == APIStatue.error )
                     ShowMessage().showSnackBar(context, homeProvider.errorMessage!);
  },

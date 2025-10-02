@@ -10,6 +10,7 @@ class SharedPrefs{
   static const _accessTokenKey = 'access_token';
   static const _branchesKey = 'branches';
   static const _selectedBranchKey = 'selected_branch';
+  static const _userIdKey = 'user_id';
 
   static Future<void>  saveCompanyInfo(CompanyInfoResponse companyInfo) async {
     final prefs = await SharedPreferences.getInstance();
@@ -44,6 +45,18 @@ class SharedPrefs{
     final prefs = await SharedPreferences.getInstance();
     final String? accessToken = prefs.getString(_accessTokenKey);
     return accessToken;
+  }
+
+  /// Save userId
+  static Future<void>  saveUserId(String? userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userIdKey, userId!);
+  }
+
+  static Future<String?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? userId = prefs.getString(_userIdKey);
+    return userId;
   }
 
 

@@ -14,6 +14,9 @@ class DatabaseHelper {
     return _database!;
   }
 
+
+
+
   Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'app_database.db');
@@ -62,7 +65,7 @@ class DatabaseHelper {
     }
   }
 
-  Future<void> clearDatabase() async {
+ /* Future<void> clearDatabase() async {
     final db = await database;
     final tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
     for (var table in tables) {
@@ -72,6 +75,19 @@ class DatabaseHelper {
       }
     }
   await db.close();
+  }*/
+
+  Future<void> clearDatabase() async {
+    final db = await database;
+    final tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
+    for (var table in tables) {
+      final tableName = table['name'];
+      if (tableName != 'sqlite_sequence') {
+        await db.execute('DROP TABLE IF EXISTS $tableName');
+      }
+    }
+    await db.close();
+    _database = null; // مهم جداً عشان تقدر تفتح db من جديد بعد كده
   }
 
 }

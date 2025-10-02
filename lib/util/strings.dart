@@ -69,7 +69,7 @@ class Strings{
   static const String  ALERT_SELECT_BRANCH = "إختر الفرع أولاً";
   static const String    OK = "موافق";
   //Apps
-  static const String Version_Number =" ( 1.0 ) ";
+  static const String Version_Number =" (2.0 ) ";
   static const String Version_Name = Version_Number + " إصدار  ";
 
   //Value Conditions
@@ -131,7 +131,14 @@ class Strings{
   static const String SUCCESS_TRANSACTION_DONE = "تمت بنجاج"; //
   static const String NOT_ALLOW_TO_EDIT_TRANSACTION = "غير مسموح بالتعديل فى الحركة"; //
 
+  static const String APPROVE_DIALOG_TRANS_TITLE = "الموافقة على الحركة"; //
+  static const String APPROVE_DIALOG_TRANS_MESSAGE = "غير مسموح بالتعديل فى الحركة"; //
+  static const String APPROVE_DIALOG_TRANS_OK = "موافقة"; //
+  static const String APPROVE_DIALOG_TRANS_CANCEL = "الغاء"; //
 
+  String approveDialogMessage(int count) {
+    return "هل ترغب الموافقة على عدد $count من الحركات؟";
+  }
 
 
   static const int SALES_REP = -1;

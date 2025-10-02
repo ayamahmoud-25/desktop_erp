@@ -1,6 +1,7 @@
 
 
 import 'package:desktop_erp_4s/data/api/api_service.dart';
+import 'package:desktop_erp_4s/util/loading_service.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../data/api/api_constansts.dart';
@@ -29,11 +30,14 @@ class HomeProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   Future<void> transactionStockSpecs(BuildContext context) async {
-    _state = APIStatue.loading;
+   // _state = APIStatue.loading;
+    LoadingService.showLoading(context);
     notifyListeners();
     final response = await _apiService.getTransactionSpecs();
 
     if (response.status!) {
+      LoadingService.hideLoading(context);
+
       _state = APIStatue.success;
       DataResponseModel dataResponseModel = response.data;
 
@@ -43,8 +47,8 @@ class HomeProvider extends ChangeNotifier {
       await dbHelper.database; // initialize the database
 
       // Check if the table exists
-      final tableExists = await dbHelper.isTableExists('transaction_specs');
-      if (!tableExists) {
+      bool isTableExist = await dbHelper.isTableExists('transaction_specs');
+      if (!isTableExist) {
         // Table does not exist, create it
         print('Table does not exist');
         dbHelper.createTable("transaction_specs", '''
@@ -163,6 +167,8 @@ class HomeProvider extends ChangeNotifier {
       //
       Navigation().pushNavigation(context, StockTransactionList());
     } else {
+      LoadingService.hideLoading(context);
+
       if(response.code == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
        // Handle unauthorized access
         print("Unauthorized access");

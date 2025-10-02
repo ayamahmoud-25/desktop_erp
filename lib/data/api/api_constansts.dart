@@ -44,10 +44,12 @@ class APIConstants {
   static String GET_LIST_TRANSACTION_DEP_ON= BASE_URL + "Transactions/get_list_transactions_dep_on?servicename=";
   static String PUT_SAVING_OR_UPDATE_STORE_TRANS= BASE_URL + "Transactions/saving_or_updating_store_transactions?servicename=";
   static String GET_ONE_STORE_TRANS= BASE_URL + "Transactions/Get_OneStoreTrans?servicename=";
+  static String POST_APPROVE_TRANSACTION_LIST= BASE_URL + "Transactions/TransactionApproveList?servicename=";
 
 
   //Response Codes
   static const String RESPONSE_CODE_UNAUTHORIZED = "401";
   static const String RESPONSE_CODE_SUCCESS = "100";
+  static const String RESPONSE_CODE_ERROR = "20";
 
 }

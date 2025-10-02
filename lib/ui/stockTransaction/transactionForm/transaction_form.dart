@@ -1436,7 +1436,9 @@ obj.notify();
                                   controller: totalController,
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) {
-                                    obj.transaction.trnsVal = value as double?;
+                                    setState(() {
+                                      obj.transaction.trnsVal =  double.tryParse(value.toString());
+                                    });
                                   },
                                   decoration: InputDecoration(
                                     filled: true,
@@ -1483,7 +1485,10 @@ obj.notify();
                                             keyboardType: TextInputType.number,
                                             onChanged: (value) {
                                               // obj.transaction.salesTaxRate = value as double?; // Update the transaction object
-                                               calcSalesTaxValueAndTotalNet(value);
+
+                                               setState(() {
+                                                 calcSalesTaxValAndUpdateNetTotal(value);
+                                               });
                                             },
                                             decoration: InputDecoration(
                                               filled: true,
@@ -1523,7 +1528,12 @@ obj.notify();
                                             controller: salesTaxValController,
                                             keyboardType: TextInputType.number,
                                             onChanged: (value) {
-                                              obj.transaction.salesTaxVal = value as double?; // Update the transaction object
+                                              setState(() {
+                                             // obj.transaction.salesTaxVal = double.tryParse(value); // Update the transaction object
+
+                                              calcSalesTaxRateAndTotalNet(value);
+
+                                              });
                                             },
                                             decoration: InputDecoration(
                                               filled: true,
@@ -1813,19 +1823,35 @@ obj.notify();
       );
     }
 
-  void calcSalesTaxValueAndTotalNet(String value) {
+  void calcSalesTaxValAndUpdateNetTotal(String value) {
     double salesTaxValue = 0.0;
     double totalNet = 0.0;
     obj.transaction.salesTaxRate =  double.tryParse(value);
 
-    salesTaxValue = obj.transaction.trnsVal! * (obj.transaction.salesTaxRate! / 100);
+    salesTaxValue = (obj.transaction.trnsVal! * obj.transaction.salesTaxRate! ) / 100;
     totalNet = obj.transaction.trnsVal! + salesTaxValue;
 
     obj.transaction.salesTaxVal = salesTaxValue;
     obj.transaction.trnsNet = totalNet;
 
-    salesTaxValController.text = salesTaxValue.toString()/*.toStringAsFixed(2)*/;
-    totalNetController.text = totalNet.toString()/*.toStringAsFixed(2)*/;
+    salesTaxValController.text = salesTaxValue.toStringAsFixed(3);
+    totalNetController.text = totalNet.toStringAsFixed(3);
+  }
+
+
+  void calcSalesTaxRateAndTotalNet(String value) {
+    double salesTaxRate = 0.0;
+    double totalNet = 0.0;
+    obj.transaction.salesTaxVal =  double.tryParse(value);
+
+    salesTaxRate =  (obj.transaction.salesTaxVal! * 100) / (obj.transaction.trnsVal!);
+    totalNet = obj.transaction.trnsVal! + obj.transaction.salesTaxVal!;
+
+    obj.transaction.salesTaxRate = salesTaxRate;
+    obj.transaction.trnsNet = totalNet;
+
+    salesTaxRateController.text = salesTaxRate.toStringAsFixed(3);
+    totalNetController.text = totalNet.toStringAsFixed(3);
   }
 
   }

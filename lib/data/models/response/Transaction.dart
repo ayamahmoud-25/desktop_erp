@@ -22,6 +22,7 @@ class Transaction {
   double? remainingVal;
   String? approved;
   TransactionApproveModel? trnsApproveModel;
+  var isChecked = false;
 
   Transaction({
     this.branch,
@@ -43,7 +44,8 @@ class Transaction {
     this.trnsNet,
     this.paidVal,
     this.remainingVal,
-    this.approved
+    this.approved,
+    this.trnsApproveModel
   });
 
   Map<String, dynamic> toJson() {
@@ -68,6 +70,7 @@ class Transaction {
       'PAID_VAL': paidVal,
       'REMAINING_VAL': remainingVal,
       'APPROVED': approved,
+      'TRNS_APPROVE_MODEL': trnsApproveModel?.toJson() ?? ''
     };
   }
     factory Transaction.fromJson(Map<String, dynamic> json) {
@@ -92,6 +95,9 @@ class Transaction {
       paidVal: (json['PAID_VAL'] ?? 0).toDouble(),
       remainingVal: (json['REMAINING_VAL'] ?? 0).toDouble(),
       approved: json['APPROVED'],
+      trnsApproveModel: json['TRNS_APPROVE_MODEL'] != null
+          ? TransactionApproveModel.fromJson(json['TRNS_APPROVE_MODEL'])
+          : null,
     );
     }
 }

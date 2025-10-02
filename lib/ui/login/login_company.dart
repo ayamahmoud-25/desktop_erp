@@ -26,7 +26,6 @@ class _CompanyLoginState extends State<CompanyLogin> {
   void initState() {
     super.initState();
     print("initState:");
-
   }
 
   @override
@@ -76,11 +75,11 @@ class _CompanyLoginState extends State<CompanyLogin> {
               ),
               SizedBox(height: 10),
               MaterialButton(
-                onPressed: _isLoading ? null : () async { // Disable button when loading
+                onPressed: /*_isLoading ? null : */() async { // Disable button when loading
                   if (_formKey.currentState!.validate()) {
-                    setState(() {
+                   /* setState(() {
                       _isLoading = true; // Start loading
-                    });
+                    });*/
 
                     // It's usually better to handle the UI update based on provider's state
                     // outside the onPressed if the provider notifies listeners.
@@ -108,9 +107,9 @@ class _CompanyLoginState extends State<CompanyLogin> {
                     }
                     // No need to check for APIStatue.loading here, as _isLoading handles the UI
 
-                    setState(() {
+                   /* setState(() {
                       _isLoading = false; // Stop loading
-                    });
+                    });*/
                   }
                 },
                 textColor: MyAppColor.textColorWhite,

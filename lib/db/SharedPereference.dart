@@ -41,6 +41,16 @@ class SharedPreferences{
     return accessToken;
   }
 
+
+  Future<void> saveUserId(String? accessToken) async {
+    await SharedPrefs.saveUserId(accessToken);
+  }
+  // --- Loading ---
+  Future<String?> loadUserId() async {
+    final userId = await SharedPrefs.getUserId();
+    return userId;
+  }
+
   void saveBranchesToPrefs(List<Branches>? branches) async {
     await SharedPrefs.saveBranches(branches);
   }

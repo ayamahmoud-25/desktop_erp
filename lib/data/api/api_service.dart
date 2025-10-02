@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:desktop_erp_4s/data/api/api_constansts.dart';
 import 'package:desktop_erp_4s/data/app_constants.dart';
+import 'package:desktop_erp_4s/data/models/request/transaction_approve_list.dart';
 import 'package:desktop_erp_4s/data/models/response/AllAgents.dart';
 import 'package:desktop_erp_4s/data/models/response/AllContractor.dart';
 import 'package:desktop_erp_4s/data/models/response/AllDeparts.dart';
@@ -25,6 +26,7 @@ import '../../db/SharedPereference.dart';
 import '../models/request/dependency_trans_list.dart';
 import '../models/request/transaction_creating_model.dart';
 import '../models/response/AllCustomer.dart';
+import '../models/response/ApproveTransactionModelResponse.dart';
 import '../models/response/TransactionDepOnData.dart';
 import '../models/response/TransactionDepOnListResponseModel.dart';
 import '../models/response/TransactionDetailsResponseModel.dart';
@@ -995,6 +997,66 @@ class APIService {
 
   }
 
+
+
+  Future<APIResult> postApproveTransList(List<TransactionApproveList> transApproveList) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+
+    String storeTransListUrl = APIConstants.POST_APPROVE_TRANSACTION_LIST + authUrl!;
+    APIResult result = APIResult();
+
+
+    final response = await http.post(Uri.parse(storeTransListUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+      body: convert.jsonEncode(transApproveList),
+
+    );
+    final requestBody = convert.jsonEncode(transApproveList);
+    print("Request body : ${convert.jsonEncode(transApproveList)}");
+    print("Response body : ${response.body}");
+    print("Response status: ${response.statusCode}");
+
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED || !jsonResponse['status']){
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        var data = jsonResponse['data'];
+        BasicDataListResponse<ApproveTransactionModelResponse> dataList = BasicDataListResponse<ApproveTransactionModelResponse>.fromJson(
+          data,
+          'items',
+              (json) => ApproveTransactionModelResponse.fromJson(json),
+        );
+
+        print("dataList: ${dataList.items}"); // Debugging line
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataList,    );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+  }
 
 
 

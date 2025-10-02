@@ -314,6 +314,7 @@ class StockTransactionListRow extends StatelessWidget {
                           builder: (context) => ApprovedTransaction(
                             selectedBranch: selectedBranch!.code!,
                             transCode: transactionSpec.trnsCode!,
+                            transName: transactionSpec.trnsDesc!,
                           ),
                         ),
                       );

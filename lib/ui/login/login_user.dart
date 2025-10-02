@@ -1,4 +1,5 @@
 import 'package:desktop_erp_4s/ui/widgets/background_image_page.dart';
+import 'package:desktop_erp_4s/util/loading_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:desktop_erp_4s/ui/login/login_provider.dart';
@@ -109,7 +110,8 @@ class _UserLoginState extends State<UserLogin>{
                       _passwordNameController.text.trim() );
 
                   if(loginProvider.state == APIStatue.loading)
-                    CircularProgressIndicator();
+                    LoadingService.showLoading(context);
+                   // CircularProgressIndicator();
                   else if(loginProvider.state == APIStatue.error )
                     ShowMessage().showSnackBar(context, loginProvider.errorMessage!);
 

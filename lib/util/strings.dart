@@ -122,6 +122,27 @@ class Strings{
   static const String NUMBER = "الرقم"; //
   static const String TIME = "الوقت"; //
 
+
+  static const String REPORT = "التقارير"; //
+  static const String REPORT_FINANCE_BALANCE = "أرصدة مالية"; //
+  static const String REPORT_FINANCE_BALANCE_DEMO = " Demo: أرصدة مالية"; //
+  static const String REPORT_ABOUT = " تقارير"; //
+  static const String FROM_DATE = " من تاريخ"; //
+  static const String TO_DATE = " إلى تاريخ"; //
+  static const String SHOW_REPORT = "عرض التقارير"; //
+
+
+
+  static const String CUSTOMER_TYPE = "customer";
+  static const String VENDOR_TYPE = "vendor";
+  static const String CONTRACTOR_TYPE = "contractor";
+  static const String AGENT_TYPE = "agent";
+  static const String BANK_TYPE = "bank";
+  static const String TREASURE_BAS_TYPE = "treasur_bas";
+
+
+
+
   static const String PRINT = "طباعة"; //
   static const String SEARCH_HINT_TRANS = "بحث برقم الحركة...."; //
   static const String NO_TRANS_FOUND = "لا يوجد حركات"; //
@@ -155,6 +176,8 @@ class Strings{
   static const  String NOT_APPROVED_NUMBER = "2";
   static const  int NOT_ALLOW_EDIT = 0;
   static const  int ALLOW_EDIT = 1;
+
+
 
 
 }

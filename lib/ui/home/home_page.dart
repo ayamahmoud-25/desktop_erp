@@ -1,4 +1,5 @@
 import 'package:desktop_erp_4s/ui/home/home_provider.dart';
+import 'package:desktop_erp_4s/util/helper.dart';
 import 'package:desktop_erp_4s/util/loading_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,8 @@ import '../../data/models/branch_model.dart';
 import '../../db/SharedPereference.dart';
 import '../../db/database_helper.dart';
 import '../../util/navigation.dart';
+import '../reports/report_type.dart';
+import '../reports/ui/demo/dash_board_page.dart';
 import '../widgets/show_message.dart';
 import '../../util/strings.dart';
 import 'branches/BranchListDialog.dart';
@@ -47,6 +50,19 @@ class _HomePageState extends State<HomePage> {
               // Handle menu item selection
               if (value == Strings.POP_MENU_ITEM_REPORTS) {
                 // Navigate to Profile
+
+                // Navigate to DashboardPage
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReportType(),
+                  ),
+                );
+
+
+
+
+
               } else if (value == Strings.POP_MENU_ITEM_SETTINGS) {
                 // Navigate to Settings
               } else if (value == Strings.POP_MENU_ITEM_LOGOUT) {
@@ -121,6 +137,7 @@ class _HomePageState extends State<HomePage> {
     );
 
   }
+
 
 
 

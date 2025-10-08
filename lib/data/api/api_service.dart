@@ -20,6 +20,7 @@ import 'package:desktop_erp_4s/data/models/response/DataResponseModel.dart';
 import 'package:desktop_erp_4s/data/models/response/Transaction.dart';
 import 'package:desktop_erp_4s/data/models/response/UserInfoResponse.dart';
 import 'package:desktop_erp_4s/ui/login/login_user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import '../../db/SharedPereference.dart';
@@ -146,11 +147,16 @@ class APIService {
 
 
 
-  Future<APIResult> getAllCustomer(bool isStoreTrans,String transCode) async {
+  Future<APIResult> getAllCustomer({bool isStoreTrans = false,String transCode="-1"}) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
-    String loginUrl = APIConstants.GET_ALL_CUSTOMER + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
+    String loginUrl ;
+    if(transCode!="-1"){
+       loginUrl = APIConstants.GET_ALL_CUSTOMER + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
+    }else{
+       loginUrl = APIConstants.GET_ALL_CUSTOMER + authUrl! +"&_pageSize=10000";
+    }
     APIResult result = APIResult();
     //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
 
@@ -199,12 +205,18 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllVendors(bool isStoreTrans,String transCode) async {
+  Future<APIResult> getAllVendors({bool isStoreTrans=true,String transCode="-1"}) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.GET_ALL_VENDORS + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;;
+    String loginUrl;
+    if(transCode!="-1"){
+      loginUrl = APIConstants.GET_ALL_VENDORS + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
+    }else{
+      loginUrl = APIConstants.GET_ALL_VENDORS + authUrl! +"&_pageSize=10000";
+    }
+
     APIResult result = APIResult();
     //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
 
@@ -251,12 +263,18 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllAgents(bool isStoreTrans,String transCode) async {
+  Future<APIResult> getAllAgents({bool isStoreTrans=true,String transCode="-1"}) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.GET_ALL_AGENTS + authUrl!+"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;;
+    String loginUrl;
+    if(transCode!="-1"){
+      loginUrl = APIConstants.GET_ALL_AGENTS + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
+    }else{
+      loginUrl = APIConstants.GET_ALL_AGENTS + authUrl! +"&_pageSize=10000";
+    }
+
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{
@@ -398,12 +416,18 @@ class APIService {
       );
     }
   }
-  Future<APIResult> getAllContactor(bool isStoreTrans,String transCode) async {
+  Future<APIResult> getAllContactor({bool isStoreTrans=true,String transCode="-1"}) async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
     String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
 
-    String loginUrl = APIConstants.GET_ALL_CONTRACTOR + authUrl!+"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
+    String loginUrl;
+    if(transCode!="-1"){
+      loginUrl = APIConstants.GET_ALL_CONTRACTOR + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
+    }else{
+      loginUrl = APIConstants.GET_ALL_CONTRACTOR + authUrl! +"&_pageSize=10000";
+    }
+
     APIResult result = APIResult();
     final response = await http.get(Uri.parse(loginUrl),
       headers: <String, String>{

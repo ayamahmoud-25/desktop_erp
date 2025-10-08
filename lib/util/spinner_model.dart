@@ -1,5 +1,6 @@
 class SpinnerModel {
   String? _id;
+  String? _extraId;
   String? _name;
   String? _extraItem;
 
@@ -11,6 +12,17 @@ class SpinnerModel {
         _name = name,
     _extraItem = extraItem;
 
+  SpinnerModel.DataReportModel({
+    required String id,
+    required String extraId,
+    required String name,
+    required String? extraItem
+  })  : _id = id,
+       _extraId = extraId,
+        _name = name,
+        _extraItem = extraItem;
+
+
   // Getter for id
   String? get id => _id;
 
@@ -19,6 +31,14 @@ class SpinnerModel {
     _id = value;
   }
 
+
+  // Getter for extraId
+  String? get extraId => _extraId;
+
+  // Setter for extraId
+  set extraId(String? value) {
+    _extraId= value;
+  }
   // Getter for name
   String? get name => _name;
 

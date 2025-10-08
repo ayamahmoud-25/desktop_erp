@@ -1,6 +1,7 @@
 import 'package:desktop_erp_4s/ui/home/home_provider.dart';
 import 'package:desktop_erp_4s/ui/login/login_company.dart';
 import 'package:desktop_erp_4s/ui/login/login_provider.dart';
+import 'package:desktop_erp_4s/ui/reports/ui/finance_balance_report_provider.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/approvedTransaction/approved_transaction_provider.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/showTransaction/show_transaction_provider.dart';
 import 'package:desktop_erp_4s/ui/stockTransaction/transactionForm/transaction_form_provider.dart';
@@ -43,6 +44,9 @@ void main() {
 
         // Register ApprovedTransactionProvider
         ChangeNotifierProvider(create: (_) => ApprovedTransactionProvider()),
+
+        // Register FinanceBalanceReportProvider
+        ChangeNotifierProvider(create: (_) => FinanceBalanceReportProvider()),
 
       ],
       child: MyApp(),

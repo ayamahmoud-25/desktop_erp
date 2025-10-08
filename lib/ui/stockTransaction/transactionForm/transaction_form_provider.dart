@@ -221,23 +221,20 @@ class TransactionFormProvider extends ChangeNotifier {
 
 
 
-  Future<List<SpinnerModel>> getSpinnerModelListByIndex(
-    int indexName,
-    String transCode,
-  ) async {
+  Future<List<SpinnerModel>> getSpinnerModelListByIndex(int indexName, String transCode,) async {
     switch (indexName) {
       case Strings.SALES_REP: //Sales Rep
         final apiResult = await APIService().getAllSalesRep();
         return await mapDataList(apiResult);
       case Strings.CUSTOMER: //Customer
-        final apiResult = await APIService().getAllCustomer(true, transCode);
+        final apiResult = await APIService().getAllCustomer(isStoreTrans: true, transCode: transCode);
         return await mapDataList(apiResult);
       case Strings.VENDORS: // Vendor
         // Call API to get all customers
-        final apiResult = await APIService().getAllVendors(true, transCode);
+        final apiResult = await APIService().getAllVendors(isStoreTrans: true,transCode:  transCode);
         return await mapDataList(apiResult);
       case Strings.AGENTS: // Agent
-        final apiResult = await APIService().getAllAgents(true, transCode);
+        final apiResult = await APIService().getAllAgents(isStoreTrans:true, transCode: transCode);
         return await mapDataList(apiResult);
       case Strings.STORES: // Stores
         final apiResult = await APIService().getAllStores(true, transCode);
@@ -249,7 +246,7 @@ class TransactionFormProvider extends ChangeNotifier {
         final apiResult = await APIService().getAllDepart(true, transCode);
         return await mapDataList(apiResult);
       case Strings.CONTRACTORS: //contractors
-        final apiResult = await APIService().getAllContactor(true, transCode);
+        final apiResult = await APIService().getAllContactor(isStoreTrans:true, transCode:transCode);
         return await mapDataList(apiResult);
       case Strings.PERSONS: //persons
         final apiResult = await APIService().getAllPersons(true, transCode);

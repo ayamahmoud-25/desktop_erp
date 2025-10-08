@@ -1,0 +1,537 @@
+import 'package:desktop_erp_4s/util/spinner_model.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../util/strings.dart' show Strings;
+import '../../widgets/custom_spinner_dialog.dart';
+import '../../widgets/show_message.dart';
+import 'finance_balance_report_provider.dart';
+
+class FinanceBalanceReport extends StatefulWidget {
+  const FinanceBalanceReport({super.key});
+
+  @override
+  _FinanceBalanceReportState createState() => _FinanceBalanceReportState();
+}
+
+class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
+  late FinanceBalanceReportProvider provider;
+
+  @override
+  void initState() {
+    super.initState();
+    provider = FinanceBalanceReportProvider();
+    provider.context = context;
+
+    provider.initial().then((_) {
+      setState(() {}); // علشان تعيد بناء الصفحة بعد تحميل البيانات
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "أرصده مالية", // refactor
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: const Color.fromARGB(255, 23, 111, 153),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              //1.report to
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align children to the left
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(7),
+                      child: Text(
+                        Strings.REPORT_ABOUT,
+                        style: TextStyle(fontSize: 17, color: Colors.grey),
+                      ),
+                    ),
+                    SizedBox(height: 1),
+                    InkWell(
+                      onTap: () async {
+                        // Fetch branches dynamically
+                        /* final List<SpinnerModel> spinnerModel = await MapListModel().mapListToSpinnerModelList();
+                         if (spinnerModel.length > 0) {*/
+                        final result = await showDialog<SpinnerModel>(
+                          context: context,
+                          builder:
+                              (context) => CustomSpinnerDialog(
+                                spinnerModels: provider.getReportTypeList(),
+                                onItemSelected: (items) {
+                                  setState(() {
+                                    provider.reportType = items;
+                                  });
+                                },
+                              ),
+                        );
+
+                        if (result != null) {
+                          setState(() {
+                            provider.reportType = result;
+                          });
+                        }
+                        /* else {
+                           // Show a message if no items are available
+                           ShowMessage().showSnackBar(
+                             context,
+                             Strings.ERROR_NO_DATA_FOUND,
+                           );
+                         }*/
+                      },
+                      child: Container(
+                        margin: EdgeInsets.all(5),
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 15,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFf7f7f7),
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: Color(0xFFDADADA),
+                            width: 1.3,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              provider.reportType?.name ?? '',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Icon(Icons.arrow_drop_down, color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 1),
+
+              //2.From & To Date
+              Container(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start, // Align columns to the top if they have different heights
+                  children: [
+                       Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.all(7),
+                              child: Text(
+                                Strings.FROM_DATE,
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 1),
+                            InkWell(
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2100),
+                                );
+                                if (pickedDate != null) {
+                                  setState(() {
+                                    provider.reportDataModel.fromDate =
+                                    "${pickedDate.toLocal()}".split(' ')[0];
+                                  });
+                                }
+                              },
+                              child: Container(
+                                margin: EdgeInsets.all(5),
+                                // width: double.infinity, // This is okay here because the parent Column's width
+                                // is controlled by Expanded.
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 15,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFf7f7f7),
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                    color: Color(0xFFDADADA),
+                                    width: 1.3,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
+                                      child: Text(
+                                        provider.reportDataModel.fromDate == null
+                                            ? ''
+                                            : provider.reportDataModel.fromDate!
+                                            .substring(0, 10)
+                                            .replaceAll('-', '/'),                                        overflow: TextOverflow.ellipsis, // Good to keep
+                                        maxLines: 1, // Optional: ensure it's one line
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                 Icon(Icons.calendar_today, color: Colors.grey),
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    SizedBox(width: 10), // Add spacing between the two containers
+                     Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.all(7),
+                              child: Text(
+                               Strings.TO_DATE,
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 1),
+                            InkWell(
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2100),
+                                );
+                                if (pickedDate != null) {
+                                  setState(() {
+
+                                    provider.reportDataModel.toDate =
+                                    "${pickedDate.toLocal()}".split(' ')[0];
+
+                                  });
+                                }
+                              },
+                              child: Container(
+                                margin: EdgeInsets.all(5),
+                                // width: double.infinity, // Okay here
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 15,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFf7f7f7),
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                    color: Color(0xFFDADADA),
+                                    width: 1.3,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
+                                      child: Text(
+                                        provider.reportDataModel.toDate == null
+                                            ? ''
+                                            : provider.reportDataModel.toDate!
+                                            .substring(0, 10)
+                                            .replaceAll('-', '/')  ,                                      overflow: TextOverflow.ellipsis, // << ADD THIS TOO
+                                        maxLines: 1, // Optional: ensure it's one line
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                              Icon(Icons.calendar_today, color: Colors.grey),
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                  ],
+                ),
+              ),
+              SizedBox(height: 1),
+
+
+              //3.From & To Report Type Fields
+              Container(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start, // Align columns to the top if they have different heights
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.all(7),
+                              child: Text(
+                                "${Strings.FROM} ${provider.reportType?.name ?? ''}",
+
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 1),
+                            InkWell(
+                              onTap: () async {
+
+                                   try {
+                                 // Fetch spinner models
+                                  final List<SpinnerModel> spinnerModel =
+                                  await provider.getSpinnerModelListByIndex();
+
+                                  if (spinnerModel.length > 0) {
+                                    // Show dialog with fetched spinner models
+                                    final result =
+                                    await showDialog<SpinnerModel>(
+                                      context: context,
+                                      builder:
+                                          (context) => CustomSpinnerDialog(
+                                        spinnerModels: spinnerModel,
+                                        onItemSelected: (item) {
+                                          setState(() {
+                                            /*obj.transaction.fromDst =
+                                                widget
+                                                    .transactionSpec
+                                                    .fromDst;
+                                            obj.transaction.fromCode =
+                                            item!.id!;
+                                            obj.transaction.fromName =
+                                            item.name!;*/
+                                          });
+                                        },
+                                      ),
+                                    );
+
+                                    if (result != null) {
+                                      setState(() {
+                                       /* obj.transaction.fromDst =
+                                            obj.transactionSpec!.fromDst;
+                                        obj.transaction.fromCode = result.id!;
+                                        obj.transaction.fromName = result.name!;*/
+                                      });
+                                    }
+                                  } else {
+                                    // Show a message if no items are available
+                                  ShowMessage().showSnackBar(
+                                    context,
+                                    Strings.ERROR_NO_DATA_FOUND,
+                                  );
+                                }
+                                } catch (e) {
+                                  print("Error fetching spinner models: $e");
+                                }
+                              },
+                              child: Container(
+                                margin: EdgeInsets.all(5),
+                                // width: double.infinity, // This is okay here because the parent Column's width
+                                // is controlled by Expanded.
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 15,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFf7f7f7),
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                    color: Color(0xFFDADADA),
+                                    width: 1.3,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
+                                      child: Text(
+                                        Strings.FROM,
+                                        overflow: TextOverflow.ellipsis, // Good to keep
+                                        maxLines: 1, // Optional: ensure it's one line
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    SizedBox(width: 10), // Add spacing between the two containers
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.all(7),
+                              child: Text(
+                                "${Strings.TO} ${provider.reportType?.name ?? ''}",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 1),
+                            InkWell(
+                              onTap: () async {
+                               try {
+                                  // Fetch spinner models
+                                  final List<SpinnerModel> spinnerModel =
+                                  await provider.getSpinnerModelListByIndex();
+                                  if (spinnerModel.length > 0) {
+                                    // Show dialog with fetched spinner models
+                                    final result =
+                                    await showDialog<SpinnerModel>(
+                                      context: context,
+                                      builder:
+                                          (context) => CustomSpinnerDialog(
+                                        spinnerModels: spinnerModel,
+                                        onItemSelected: (item) {
+                                          setState(() {
+/*
+                                            obj.transaction.toCode =
+                                            item!.id!;
+                                            obj.transaction.toName =
+                                            item!.name!;
+                                            obj.notify();
+                                            print("obj.transaction.toCode: ${obj.transaction.toCode}");*/
+                                          });
+                                        },
+                                      ),
+                                    );
+
+                                    if (result != null) {
+                                      setState(() {
+/*
+                                        obj.transaction.toCode = result.id!;
+                                        obj.transaction.toName = result.name!;
+                                        //print("obj.transaction.toCode: ${obj.transaction.toName}");
+                                        obj.notify();*/
+                                      });
+                                    }
+                                  } else {
+                                    // Show a message if no items are available
+                                    ShowMessage().showSnackBar(
+                                      context,
+                                      Strings.ERROR_NO_DATA_FOUND,
+                                    );
+                                  }
+                                } catch (e) {
+                                  print("Error fetching spinner models: $e");
+                                }
+                              },
+                              child: Container(
+                                margin: EdgeInsets.all(5),
+                                // width: double.infinity, // Okay here
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 15,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFf7f7f7),
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                    color: Color(0xFFDADADA),
+                                    width: 1.3,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
+                                      child: Text(
+                                        Strings.TO,
+                                        overflow: TextOverflow.ellipsis, // << ADD THIS TOO
+                                        maxLines: 1, // Optional: ensure it's one line
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 20),
+              InkWell(
+                onTap: () {
+                  // Navigator.of(context).pop(); // Dismiss the dialog
+                  // validate date
+                 // obj.makeTransaction();
+                },
+                child: Container(
+                  margin: EdgeInsets.all(5),
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 23, 111, 153),
+                  ),
+                  child: Text(
+                    Strings.SHOW_REPORT,
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

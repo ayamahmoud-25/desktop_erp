@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../util/report_custom_spinner_dialog.dart';
 import '../../../util/strings.dart' show Strings;
 import '../../widgets/custom_spinner_dialog.dart';
 import '../../widgets/show_message.dart';
@@ -28,7 +29,6 @@ class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
       setState(() {}); // علشان تعيد بناء الصفحة بعد تحميل البيانات
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -130,379 +130,383 @@ class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
               //2.From & To Date
               Container(
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Align columns to the top if they have different heights
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align columns to the top if they have different heights
                   children: [
-                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.all(7),
-                              child: Text(
-                                Strings.FROM_DATE,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.grey,
-                                ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(7),
+                            child: Text(
+                              Strings.FROM_DATE,
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Colors.grey,
                               ),
                             ),
-                            SizedBox(height: 1),
-                            InkWell(
-                              onTap: () async {
-                                DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100),
-                                );
-                                if (pickedDate != null) {
-                                  setState(() {
-                                    provider.reportDataModel.fromDate =
-                                    "${pickedDate.toLocal()}".split(' ')[0];
-                                  });
-                                }
-                              },
-                              child: Container(
-                                margin: EdgeInsets.all(5),
-                                // width: double.infinity, // This is okay here because the parent Column's width
-                                // is controlled by Expanded.
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 15,
+                          ),
+                          SizedBox(height: 1),
+                          InkWell(
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100),
+                              );
+                              if (pickedDate != null) {
+                                setState(() {
+                                  provider.reportDataModel.fromDate =
+                                      "${pickedDate.toLocal()}".split(' ')[0];
+                                });
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(5),
+                              // width: double.infinity, // This is okay here because the parent Column's width
+                              // is controlled by Expanded.
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Color(0xFFf7f7f7),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Color(0xFFDADADA),
+                                  width: 1.3,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFf7f7f7),
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                    color: Color(0xFFDADADA),
-                                    width: 1.3,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
-                                      child: Text(
-                                        provider.reportDataModel.fromDate == null
-                                            ? ''
-                                            : provider.reportDataModel.fromDate!
-                                            .substring(0, 10)
-                                            .replaceAll('-', '/'),                                        overflow: TextOverflow.ellipsis, // Good to keep
-                                        maxLines: 1, // Optional: ensure it's one line
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                        ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    // << WRAP TEXT WIDGET WITH EXPANDED
+                                    child: Text(
+                                      provider.reportDataModel.fromDate == null
+                                          ? ''
+                                          : provider.reportDataModel.fromDate!
+                                              .substring(0, 10)
+                                              .replaceAll('-', '/'),
+                                      overflow: TextOverflow.ellipsis,
+                                      // Good to keep
+                                      maxLines: 1,
+                                      // Optional: ensure it's one line
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
                                       ),
                                     ),
-                                 Icon(Icons.calendar_today, color: Colors.grey),
-
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    SizedBox(width: 10), // Add spacing between the two containers
-                     Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.all(7),
-                              child: Text(
-                               Strings.TO_DATE,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 1),
-                            InkWell(
-                              onTap: () async {
-                                DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100),
-                                );
-                                if (pickedDate != null) {
-                                  setState(() {
-
-                                    provider.reportDataModel.toDate =
-                                    "${pickedDate.toLocal()}".split(' ')[0];
-
-                                  });
-                                }
-                              },
-                              child: Container(
-                                margin: EdgeInsets.all(5),
-                                // width: double.infinity, // Okay here
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 15,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFf7f7f7),
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                    color: Color(0xFFDADADA),
-                                    width: 1.3,
                                   ),
+                                  Icon(
+                                    Icons.calendar_today,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(width: 10),
+                    // Add spacing between the two containers
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(7),
+                            child: Text(
+                              Strings.TO_DATE,
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 1),
+                          InkWell(
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100),
+                              );
+                              if (pickedDate != null) {
+                                setState(() {
+                                  provider.reportDataModel.toDate =
+                                      "${pickedDate.toLocal()}".split(' ')[0];
+                                });
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(5),
+                              // width: double.infinity, // Okay here
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Color(0xFFf7f7f7),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Color(0xFFDADADA),
+                                  width: 1.3,
                                 ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
-                                      child: Text(
-                                        provider.reportDataModel.toDate == null
-                                            ? ''
-                                            : provider.reportDataModel.toDate!
-                                            .substring(0, 10)
-                                            .replaceAll('-', '/')  ,                                      overflow: TextOverflow.ellipsis, // << ADD THIS TOO
-                                        maxLines: 1, // Optional: ensure it's one line
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                        ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    // << WRAP TEXT WIDGET WITH EXPANDED
+                                    child: Text(
+                                      provider.reportDataModel.toDate == null
+                                          ? ''
+                                          : provider.reportDataModel.toDate!
+                                              .substring(0, 10)
+                                              .replaceAll('-', '/'),
+                                      overflow: TextOverflow.ellipsis,
+                                      // << ADD THIS TOO
+                                      maxLines: 1,
+                                      // Optional: ensure it's one line
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
                                       ),
                                     ),
-                              Icon(Icons.calendar_today, color: Colors.grey),
-
-                                  ],
-                                ),
+                                  ),
+                                  Icon(
+                                    Icons.calendar_today,
+                                    color: Colors.grey,
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-
+                    ),
                   ],
                 ),
               ),
               SizedBox(height: 1),
 
-
               //3.From & To Report Type Fields
               Container(
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Align columns to the top if they have different heights
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // Align columns to the top if they have different heights
                   children: [
                     Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.all(7),
-                              child: Text(
-                                "${Strings.FROM} ${provider.reportType?.name ?? ''}",
-
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.grey,
-                                ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(7),
+                            child: Text(
+                              "${Strings.FROM} ${provider.reportType?.name ?? ''}",
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Colors.grey,
                               ),
                             ),
-                            SizedBox(height: 1),
-                            InkWell(
-                              onTap: () async {
+                          ),
+                          SizedBox(height: 1),
+                          InkWell(
+                            onTap: () async {
+                              try {
+                                final List<SpinnerModel> spinnerModel =
+                                    await provider.getSpinnerModelListByIndex();
 
-                                   try {
-                                 // Fetch spinner models
-                                  final List<SpinnerModel> spinnerModel =
-                                  await provider.getSpinnerModelListByIndex();
-
-                                  if (spinnerModel.length > 0) {
-                                    // Show dialog with fetched spinner models
-                                    final result =
-                                    await showDialog<SpinnerModel>(
-                                      context: context,
-                                      builder:
-                                          (context) => CustomSpinnerDialog(
+                                if (spinnerModel.isNotEmpty) {
+                                  // Use dialogContext here
+                                  final result = await showDialog<SpinnerModel>(
+                                    useRootNavigator: false, // ✅ key change
+                                    context: context,
+                                    builder: (BuildContext dialogContext) {
+                                      return ReportCustomSpinnerDialog(
                                         spinnerModels: spinnerModel,
                                         onItemSelected: (item) {
-                                          setState(() {
-                                            /*obj.transaction.fromDst =
-                                                widget
-                                                    .transactionSpec
-                                                    .fromDst;
-                                            obj.transaction.fromCode =
-                                            item!.id!;
-                                            obj.transaction.fromName =
-                                            item.name!;*/
-                                          });
-                                        },
-                                      ),
-                                    );
+                                          provider.reportDataModel.fromName =
+                                              item.name;
+                                          provider.reportDataModel.fromCode =
+                                              item.id;
 
-                                    if (result != null) {
-                                      setState(() {
-                                       /* obj.transaction.fromDst =
-                                            obj.transactionSpec!.fromDst;
-                                        obj.transaction.fromCode = result.id!;
-                                        obj.transaction.fromName = result.name!;*/
-                                      });
-                                    }
-                                  } else {
-                                    // Show a message if no items are available
+                                        }, // no use now
+                                      );
+                                    },
+                                  );
+
+                                  if (result != null) {
+                                    setState(() {
+                                      provider.reportDataModel.fromName =
+                                          result.name;
+                                      provider.reportDataModel.fromCode =
+                                          result.id;
+
+                                    });
+                                  }
+                                } else {
                                   ShowMessage().showSnackBar(
                                     context,
                                     Strings.ERROR_NO_DATA_FOUND,
                                   );
                                 }
-                                } catch (e) {
-                                  print("Error fetching spinner models: $e");
-                                }
-                              },
-                              child: Container(
-                                margin: EdgeInsets.all(5),
-                                // width: double.infinity, // This is okay here because the parent Column's width
-                                // is controlled by Expanded.
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 15,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFf7f7f7),
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                    color: Color(0xFFDADADA),
-                                    width: 1.3,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
-                                      child: Text(
-                                        Strings.FROM,
-                                        overflow: TextOverflow.ellipsis, // Good to keep
-                                        maxLines: 1, // Optional: ensure it's one line
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_drop_down,
-                                      color: Colors.grey,
-                                    ),
-                                  ],
+                              } catch (e) {
+                                print("Error fetching spinner models: $e");
+                              }
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFf7f7f7),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: const Color(0xFFDADADA),
+                                  width: 1.3,
                                 ),
                               ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      Strings.FROM,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    SizedBox(width: 10), // Add spacing between the two containers
+                    ),
+                    SizedBox(width: 10),
+                    // Add spacing between the two containers
                     Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.all(7),
-                              child: Text(
-                                "${Strings.TO} ${provider.reportType?.name ?? ''}",
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.grey,
-                                ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(7),
+                            child: Text(
+                              "${Strings.TO} ${provider.reportType?.name ?? ''}",
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Colors.grey,
                               ),
                             ),
-                            SizedBox(height: 1),
-                            InkWell(
-                              onTap: () async {
-                               try {
-                                  // Fetch spinner models
-                                  final List<SpinnerModel> spinnerModel =
-                                  await provider.getSpinnerModelListByIndex();
-                                  if (spinnerModel.length > 0) {
-                                    // Show dialog with fetched spinner models
-                                    final result =
-                                    await showDialog<SpinnerModel>(
-                                      context: context,
-                                      builder:
-                                          (context) => CustomSpinnerDialog(
-                                        spinnerModels: spinnerModel,
-                                        onItemSelected: (item) {
-                                          setState(() {
-/*
-                                            obj.transaction.toCode =
-                                            item!.id!;
-                                            obj.transaction.toName =
-                                            item!.name!;
-                                            obj.notify();
-                                            print("obj.transaction.toCode: ${obj.transaction.toCode}");*/
-                                          });
-                                        },
-                                      ),
-                                    );
-
-                                    if (result != null) {
-                                      setState(() {
-/*
-                                        obj.transaction.toCode = result.id!;
-                                        obj.transaction.toName = result.name!;
-                                        //print("obj.transaction.toCode: ${obj.transaction.toName}");
-                                        obj.notify();*/
-                                      });
-                                    }
-                                  } else {
-                                    // Show a message if no items are available
-                                    ShowMessage().showSnackBar(
-                                      context,
-                                      Strings.ERROR_NO_DATA_FOUND,
-                                    );
-                                  }
-                                } catch (e) {
-                                  print("Error fetching spinner models: $e");
-                                }
-                              },
-                              child: Container(
-                                margin: EdgeInsets.all(5),
-                                // width: double.infinity, // Okay here
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 15,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFf7f7f7),
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                    color: Color(0xFFDADADA),
-                                    width: 1.3,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded( // << WRAP TEXT WIDGET WITH EXPANDED
-                                      child: Text(
-                                        Strings.TO,
-                                        overflow: TextOverflow.ellipsis, // << ADD THIS TOO
-                                        maxLines: 1, // Optional: ensure it's one line
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
+                          ),
+                          SizedBox(height: 1),
+                          InkWell(
+                            onTap: () async {
+                              try {
+                                // Fetch spinner models
+                                final List<SpinnerModel> spinnerModel =
+                                    await provider.getSpinnerModelListByIndex();
+                                if (spinnerModel.length > 0) {
+                                  // Show dialog with fetched spinner models
+                                  final result = await showDialog<SpinnerModel>(
+                                    context: context,
+                                    builder:
+                                        (context) => CustomSpinnerDialog(
+                                          spinnerModels: spinnerModel,
+                                          onItemSelected: (item) {
+                                            setState(() {
+                                              provider.reportDataModel.toName =
+                                                  item.name;
+                                              provider.reportDataModel.toCode =
+                                                  item.id;
+                                            });
+                                          },
                                         ),
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_drop_down,
-                                      color: Colors.grey,
-                                    ),
-                                  ],
+                                  );
+
+                                  if (result != null) {
+                                    setState(() {
+                                      provider.reportDataModel.toName =
+                                          result.name;
+                                      provider.reportDataModel.toCode =
+                                          result.id;
+                                    });
+                                  }
+                                } else {
+                                  // Show a message if no items are available
+                                  ShowMessage().showSnackBar(
+                                    context,
+                                    Strings.ERROR_NO_DATA_FOUND,
+                                  );
+                                }
+                              } catch (e) {
+                                print("Error fetching spinner models: $e");
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(5),
+                              // width: double.infinity, // Okay here
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Color(0xFFf7f7f7),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Color(0xFFDADADA),
+                                  width: 1.3,
                                 ),
                               ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    // << WRAP TEXT WIDGET WITH EXPANDED
+                                    child: Text(
+                                      Strings.TO,
+                                      overflow: TextOverflow.ellipsis,
+                                      // << ADD THIS TOO
+                                      maxLines: 1,
+                                      // Optional: ensure it's one line
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-
+                    ),
                   ],
                 ),
               ),
@@ -512,7 +516,9 @@ class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
                 onTap: () {
                   // Navigator.of(context).pop(); // Dismiss the dialog
                   // validate date
-                 // obj.makeTransaction();
+                  // obj.makeTransaction()
+                  provider.getFinanceBalanceReport();
+
                 },
                 child: Container(
                   margin: EdgeInsets.all(5),
@@ -527,7 +533,7 @@ class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

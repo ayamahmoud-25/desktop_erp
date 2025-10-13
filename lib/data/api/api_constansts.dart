@@ -38,6 +38,9 @@ class APIConstants {
   static String GET_ALL_STORES= BASE_URL + "Transactions/Get_allstores?servicename=";
   static String Get_ALL_DEPART= BASE_URL + "Transactions/Get_alldepart?servicename=";
   static String Get_ALL_SALES_REP= BASE_URL + "Transactions/Get_allsalesrep?servicename=";
+  static String GET_ALL_BANKS = BASE_URL + "Transactions/Get_allbanks?servicename=";
+  static String GET_ALL_TREASURE_BAS= BASE_URL + "Transactions/Get_allTreasurs?servicename=";
+
   static String GET_ALL_ITEMS_FORMS= BASE_URL + "Transactions/Get_allitemforms?servicename=";
   static String GET_ALL_ITEMS_LIST= BASE_URL + "Transactions/Get_itemslist?servicename=";
   static String GET_STORE_TRANS_DEPENDENCY_LIST= BASE_URL + "Transactions/Get_StoreTrnsList_Fordependency?servicename=";
@@ -45,6 +48,7 @@ class APIConstants {
   static String PUT_SAVING_OR_UPDATE_STORE_TRANS= BASE_URL + "Transactions/saving_or_updating_store_transactions?servicename=";
   static String GET_ONE_STORE_TRANS= BASE_URL + "Transactions/Get_OneStoreTrans?servicename=";
   static String POST_APPROVE_TRANSACTION_LIST= BASE_URL + "Transactions/TransactionApproveList?servicename=";
+  static String GET_FINANCE_BALANCE_REPORT_LIST= BASE_URL + "Reports/Getagentbalancereport?servicename=";
 
 
   //Response Codes

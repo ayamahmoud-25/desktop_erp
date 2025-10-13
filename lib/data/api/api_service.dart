@@ -5,6 +5,7 @@ import 'package:desktop_erp_4s/data/api/api_constansts.dart';
 import 'package:desktop_erp_4s/data/app_constants.dart';
 import 'package:desktop_erp_4s/data/models/request/transaction_approve_list.dart';
 import 'package:desktop_erp_4s/data/models/response/AllAgents.dart';
+import 'package:desktop_erp_4s/data/models/response/AllBanks.dart';
 import 'package:desktop_erp_4s/data/models/response/AllContractor.dart';
 import 'package:desktop_erp_4s/data/models/response/AllDeparts.dart';
 import 'package:desktop_erp_4s/data/models/response/AllItemsForms.dart';
@@ -17,9 +18,11 @@ import 'package:desktop_erp_4s/data/models/response/BasicDataListResponse.dart';
 import 'package:desktop_erp_4s/data/models/response/CompanyInfoResponse.dart';
 import 'package:desktop_erp_4s/data/models/response/DataItemListResponseModel.dart';
 import 'package:desktop_erp_4s/data/models/response/DataResponseModel.dart';
+import 'package:desktop_erp_4s/data/models/response/FinanceBalanceReportResponse.dart';
 import 'package:desktop_erp_4s/data/models/response/Transaction.dart';
 import 'package:desktop_erp_4s/data/models/response/UserInfoResponse.dart';
 import 'package:desktop_erp_4s/ui/login/login_user.dart';
+import 'package:desktop_erp_4s/ui/reports/model/report_data_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -27,6 +30,7 @@ import '../../db/SharedPereference.dart';
 import '../models/request/dependency_trans_list.dart';
 import '../models/request/transaction_creating_model.dart';
 import '../models/response/AllCustomer.dart';
+import '../models/response/AllTreasure.dart';
 import '../models/response/ApproveTransactionModelResponse.dart';
 import '../models/response/TransactionDepOnData.dart';
 import '../models/response/TransactionDepOnListResponseModel.dart';
@@ -575,6 +579,129 @@ class APIService {
       );
     }
   }
+  Future<APIResult> getAllBank({bool isStoreTrans = false,String transCode="-1"}) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
+    String loginUrl ;
+    if(transCode!="-1"){
+      loginUrl = APIConstants.GET_ALL_BANKS + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
+    }else{
+      loginUrl = APIConstants.GET_ALL_BANKS + authUrl! +"&_pageSize=10000";
+    }
+    APIResult result = APIResult();
+    //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
+
+    final response = await http.get(Uri.parse(loginUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
+
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        var data = jsonResponse['data'];
+        BasicDataListResponse<AllBanks> dataList = BasicDataListResponse<AllBanks>.fromJson(
+          data,
+          'banks',
+              (json) => AllBanks.fromJson(json),
+        );
+
+        print("dataList: ${dataList.items}"); // Debugging line
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataList,    );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+  }
+  Future<APIResult> getAllTreasures({bool isStoreTrans = false,String transCode="-1"}) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+    String transType = isStoreTrans ? AppConstants.TRANS_TYPE_STORE : AppConstants.TRANS_TYPE_REC_PAY; // Determine transaction type based on isStoreTrans
+    String loginUrl ;
+    if(transCode!="-1"){
+      loginUrl = APIConstants.GET_ALL_TREASURE_BAS + authUrl! +"&_pageSize=10000"+"&trns_code="+transCode+"&trns_type="+transType;
+    }else{
+      loginUrl = APIConstants.GET_ALL_TREASURE_BAS + authUrl! +"&_pageSize=10000";
+    }
+    APIResult result = APIResult();
+    //Data<AllCustomer> allCustomerList = [] as Data<AllCustomer>;
+
+    final response = await http.get(Uri.parse(loginUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
+
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        var data = jsonResponse['data'];
+        BasicDataListResponse<AllTreasure> dataList = BasicDataListResponse<AllTreasure>.fromJson(
+          data,
+          'TREASUR',
+              (json) => AllTreasure.fromJson(json),
+        );
+
+        print("dataList: ${dataList.items}"); // Debugging line
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataList,    );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+  }
+
+
+
+
+
+
+
   Future<APIResult> getAllItemsForms() async {
     String? authUrl = await loadCompanyData();
     String? authToken = await loadAuthToken();
@@ -1082,6 +1209,64 @@ class APIService {
     }
   }
 
+  Future<APIResult> getFinanceBalanceReport (ReportDataModel reportDataModel) async {
+    String? authUrl = await loadCompanyData();
+    String? authToken = await loadAuthToken();
+
+    String financeBalanceReportListUrl = APIConstants.GET_FINANCE_BALANCE_REPORT_LIST + authUrl!;
+    APIResult result = APIResult();
+
+
+    final response = await http.post(Uri.parse(financeBalanceReportListUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': authToken ?? '', // Add Bearer token
+      },
+      body: convert.jsonEncode(reportDataModel),
+
+    );
+    final requestBody = convert.jsonEncode(reportDataModel);
+    print("Request body : ${convert.jsonEncode(reportDataModel)}");
+    print("Response body : ${response.body}");
+    print("Response status: ${response.statusCode}");
+
+
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      if(jsonResponse['code'] == APIConstants.RESPONSE_CODE_UNAUTHORIZED || !jsonResponse['status']){
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: [],
+        );
+      }else{
+        var data = jsonResponse['data'];
+        BasicDataListResponse<FinanceBalanceReportResponse> dataList = BasicDataListResponse<FinanceBalanceReportResponse>.fromJson(
+          data,
+          'data',
+              (json) => FinanceBalanceReportResponse.fromJson(json),
+        );
+
+        print("dataList: ${dataList.items}"); // Debugging line
+
+        return result = APIResult(
+          status: jsonResponse['status'],
+          msg:  jsonResponse['msg'],
+          code: jsonResponse['code'],
+          data: dataList,    );
+      }
+
+    } else {
+      return APIResult(
+        status: result.status,
+        msg: result.msg,
+        code: result.code,
+        data: result.data,
+      );
+    }
+  }
 
 
   Future<String?> loadCompanyData() async {

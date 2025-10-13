@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import '../../../data/api/api_constansts.dart';
 import '../../../data/api/api_result.dart';
 import '../../../data/api/api_service.dart';
+import '../../../data/models/response/FinanceBalanceReportResponse.dart';
 import '../../../util/Strings.dart';
 import '../../../util/loading_service.dart';
 import '../../../util/map_list_model.dart';
@@ -62,7 +63,7 @@ class FinanceBalanceReportProvider extends ChangeNotifier {
 
 
   Future<List<SpinnerModel>> getSpinnerModelListByIndex() async {
-    LoadingService.showLoading(_context!);
+    //LoadingService.showLoading(_context!);
     switch (reportType!.id) {
       case Strings.CUSTOMER_TYPE: //Customer
         final apiResult = await APIService().getAllCustomer();
@@ -77,6 +78,12 @@ class FinanceBalanceReportProvider extends ChangeNotifier {
       case Strings.AGENT_TYPE: // Agent
         final apiResult = await APIService().getAllAgents();
         return await mapDataList(apiResult);
+      case Strings.BANK_TYPE: // Agent
+        final apiResult = await APIService().getAllBank();
+        return await mapDataList(apiResult);
+      case Strings.TREASURE_BAS_TYPE: // Agent
+        final apiResult = await APIService().getAllTreasures();
+        return await mapDataList(apiResult);
 
       default:
         throw Exception("Invalid index");
@@ -84,7 +91,7 @@ class FinanceBalanceReportProvider extends ChangeNotifier {
   }
 
   Future<List<SpinnerModel>> mapDataList(APIResult apiResult) async {
-    LoadingService.hideLoading(_context!);
+    //LoadingService.hideLoading(_context!);
     if (apiResult.status == true && apiResult.data != null) {
       // Map API response to SpinnerModel list
       List<SpinnerModel> spinnerModelList = await MapListModel().mapGetAllDataListToSpinnerModelList(apiResult.data.items);
@@ -105,6 +112,58 @@ class FinanceBalanceReportProvider extends ChangeNotifier {
     }
   }
 
+
+
+
+  Future<List<FinanceBalanceReportResponse>> getFinanceBalanceReport() async {
+    LoadingService.showLoading(_context!);
+    final apiResult = await APIService().getFinanceBalanceReport(reportDataModel);
+
+    if (apiResult.status == true && apiResult.data != null) {
+      LoadingService.hideLoading(_context!);
+
+      // Map API response to SpinnerModel list
+      //List<ItemList> itemList = apiResult.data.items;`
+      //TransactionDepListResponseModel transactionDepListResponseModel = apiResult.data;
+      //TransactionDetailsResponseModel? transaction = apiResult.data;
+      //ShowMessage().showSnackBar(_context!, apiResult.msg!);
+     List<FinanceBalanceReportResponse> financeBalanceReportList = apiResult.data.items;
+
+
+
+
+      notify();
+      print("Returning TransactionDepOnData: $financeBalanceReportList");
+      print("Returning storeTransOModelList: $financeBalanceReportList");
+
+      print("Fetched all items forms successfully");
+      print("Spinner Model List: $financeBalanceReportList");
+      // Return the spinner model list
+      print("Returning spinnerModelList: $financeBalanceReportList");
+      // Return the spinner model list
+      return financeBalanceReportList;
+    } else if (apiResult.code == APIConstants.RESPONSE_CODE_UNAUTHORIZED) {
+      // Handle unauthorized access
+      print("Unauthorized access");
+      ShowMessage().showSnackBar(_context!, apiResult.msg!);
+      // You can navigate to the login screen or show a message
+      Navigation().logout(_context!);
+      return [];
+    }else if(apiResult.code==APIConstants.RESPONSE_CODE_ERROR){
+      LoadingService.hideLoading(_context!);
+      ShowMessage().showSnackBar(_context!, apiResult.msg!);
+
+      return  [];
+
+    } else  {
+      LoadingService.hideLoading(_context!);
+      ShowMessage().showSnackBar(_context!,apiResult.msg!);
+      // Handle other cases, such as API failure or no data
+      print("API call failed or no data");
+      return  [];
+      ;
+    }
+  }
 
 
 

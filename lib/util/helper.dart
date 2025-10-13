@@ -196,7 +196,7 @@ class Helper{
   List<SpinnerModel> getReportTypeList() {
     return [
       SpinnerModel.DataReportModel(id: Strings.CUSTOMER_TYPE,extraId: "العميل", name: "عميل", extraItem: "أرصدة العملاء بالحركة"),
-      SpinnerModel.DataReportModel(id:Strings.VENDOR_TYPE,extraId: "الموارد", name:"مورد", extraItem:"أرصدة الموردين بالحركة"),
+      SpinnerModel.DataReportModel(id:Strings.VENDOR_TYPE,extraId: "المورد", name:"مورد", extraItem:"أرصدة الموردين بالحركة"),
       SpinnerModel.DataReportModel(id:Strings.CONTRACTOR_TYPE, extraId:"المقاول", name:"مقاول", extraItem:""),
       SpinnerModel.DataReportModel(id:Strings.AGENT_TYPE, extraId:"الجهه", name:"جهه", extraItem:"أرصدة الجهات بالحركة"),
       SpinnerModel.DataReportModel(id:Strings.BANK_TYPE,extraId: "البنك", name:"بنوك",extraItem: "أرصدة البنوك"),

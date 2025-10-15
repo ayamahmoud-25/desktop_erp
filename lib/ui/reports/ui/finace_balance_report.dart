@@ -1,3 +1,4 @@
+import 'package:desktop_erp_4s/ui/reports/ui/PieChartReport.dart';
 import 'package:desktop_erp_4s/util/spinner_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import '../../../util/report_custom_spinner_dialog.dart';
 import '../../../util/strings.dart' show Strings;
 import '../../widgets/custom_spinner_dialog.dart';
 import '../../widgets/show_message.dart';
+import 'SyncfusionPieChartReport.dart';
 import 'finance_balance_report_provider.dart';
 
 class FinanceBalanceReport extends StatefulWidget {
@@ -328,7 +330,7 @@ class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
                                 if (spinnerModel.isNotEmpty) {
                                   // Use dialogContext here
                                   final result = await showDialog<SpinnerModel>(
-                                    useRootNavigator: false, // ✅ key change
+                                    useRootNavigator: false, //
                                     context: context,
                                     builder: (BuildContext dialogContext) {
                                       return ReportCustomSpinnerDialog(
@@ -383,7 +385,8 @@ class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      Strings.FROM,
+                              "${provider.reportDataModel.fromName?? "${Strings.FROM} ${provider.reportType?.name ?? ''}"}",
+
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: const TextStyle(
@@ -485,7 +488,7 @@ class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
                                   Expanded(
                                     // << WRAP TEXT WIDGET WITH EXPANDED
                                     child: Text(
-                                      Strings.TO,
+                                      "${provider.reportDataModel.toName?? "${Strings.TO} ${provider.reportType?.name ?? ''}"}",
                                       overflow: TextOverflow.ellipsis,
                                       // << ADD THIS TOO
                                       maxLines: 1,
@@ -513,13 +516,59 @@ class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
 
               SizedBox(height: 20),
               InkWell(
-                onTap: () {
-                  // Navigator.of(context).pop(); // Dismiss the dialog
-                  // validate date
-                  // obj.makeTransaction()
-                  provider.getFinanceBalanceReport();
+                onTap: () async {
+                  if (provider.validateForm()) {
+                    // استني لما الداتا ترجع
+                    await provider.getFinanceBalanceReport();
 
+                    // استخدمي WidgetsBinding علشان تضمني إن الـ UI خلص بناءه
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (mounted) setState(() {});
+                    });
+                  }
                 },
+                child: Container(
+                  margin: EdgeInsets.all(5),
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 23, 111, 153),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    Strings.SHOW_REPORT,
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+
+// ✅ الرسم البياني داخل Box ثابت
+              if (provider.financeBalanceReportList.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Center(
+                    child: SizedBox(
+                      height: 300,
+                      width: 300, // ✅ مهم جدًا
+                      child: SyncfusionPieChartReport(agents: provider.financeBalanceReportList),
+                    ),
+                  ),
+                ),
+
+              /*   InkWell(
+                  onTap: () async {
+                    if (provider.validateForm()) {
+                      await provider.getFinanceBalanceReport(); // ✅ استنى الداتا
+                      if (mounted) setState(() {}); // ✅ بعد ما الداتا تجهز، ارسم الصفحة
+                    }
+                  },
+                *//*onTap: () async {
+                  if (provider.validateForm()) {
+                    await provider.getFinanceBalanceReport();
+                    setState(() {});
+                  }
+                }*//*
                 child: Container(
                   margin: EdgeInsets.all(5),
                   width: double.infinity,
@@ -534,6 +583,13 @@ class _FinanceBalanceReportState extends State<FinanceBalanceReport> {
                   ),
                 ),
               ),
+              Visibility(
+                visible: provider.financeBalanceReportList.isNotEmpty,
+                child: SizedBox(
+                  height: 300, // ✅ حددّي حجم واضح للـ Chart
+                  child: PieChartReport(data: provider.financeBalanceReportList),
+                ),
+              )*/
             ],
           ),
         ),

@@ -19,7 +19,7 @@ class FinanceBalanceReportProvider extends ChangeNotifier {
 
   BuildContext? _context;
   ReportDataModel reportDataModel = ReportDataModel();
-
+  List<FinanceBalanceReportResponse> financeBalanceReportList = [];
 
 
   SpinnerModel? _reportType;
@@ -28,8 +28,18 @@ class FinanceBalanceReportProvider extends ChangeNotifier {
 
   set reportType(SpinnerModel? value) {
     _reportType = value;
+
+    if(reportDataModel.agentType!=null && reportDataModel.agentType!=value?.id){
+      reportDataModel.fromCode = null;
+      reportDataModel.fromName = null;
+
+      reportDataModel.toName = null;
+      reportDataModel.toCode = null;
+    }
+
     reportDataModel.agentType = value?.id;
     print("reportType: ${reportDataModel.agentType}");
+
     notifyListeners(); // المفروض تكون notifyListeners() مش notify()
   }
 
@@ -113,6 +123,24 @@ class FinanceBalanceReportProvider extends ChangeNotifier {
   }
 
 
+  bool validateForm(){
+    if(reportDataModel.fromCode == null || reportDataModel.fromCode == ""){
+      ShowMessage().showSnackBar(
+        _context!,
+        '${Strings.ERROR_SELECT_FROM_STORE} ${reportType!.name}',
+      );
+      return false;
+    }else if(reportDataModel.toCode == null || reportDataModel.toCode == ""){
+      ShowMessage().showSnackBar(
+        _context!,
+        '${Strings.ERROR_SELECT_TO_STORE} ${reportType!.name}',
+      );
+      return false;
+    }
+
+    return true;
+  }
+
 
 
   Future<List<FinanceBalanceReportResponse>> getFinanceBalanceReport() async {
@@ -127,9 +155,9 @@ class FinanceBalanceReportProvider extends ChangeNotifier {
       //TransactionDepListResponseModel transactionDepListResponseModel = apiResult.data;
       //TransactionDetailsResponseModel? transaction = apiResult.data;
       //ShowMessage().showSnackBar(_context!, apiResult.msg!);
-     List<FinanceBalanceReportResponse> financeBalanceReportList = apiResult.data.items;
+      financeBalanceReportList = apiResult.data;
 
-
+         //
 
 
       notify();
@@ -164,6 +192,7 @@ class FinanceBalanceReportProvider extends ChangeNotifier {
       ;
     }
   }
+
 
 
 

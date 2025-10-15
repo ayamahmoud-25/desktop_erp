@@ -1243,19 +1243,26 @@ class APIService {
         );
       }else{
         var data = jsonResponse['data'];
-        BasicDataListResponse<FinanceBalanceReportResponse> dataList = BasicDataListResponse<FinanceBalanceReportResponse>.fromJson(
+        //List<FinanceBalanceReportResponse> dataList = FinanceBalanceReportResponse.fromJson(data) as List<FinanceBalanceReportResponse>;
+
+        List<FinanceBalanceReportResponse> dataList =
+        (data as List).map((item) => FinanceBalanceReportResponse.fromJson(item)).toList();
+
+
+      /*  BasicDataListResponse<FinanceBalanceReportResponse> dataList = BasicDataListResponse<FinanceBalanceReportResponse>.fromJson(
           data,
           'data',
               (json) => FinanceBalanceReportResponse.fromJson(json),
         );
 
-        print("dataList: ${dataList.items}"); // Debugging line
+        print("dataList: ${dataList.items}"); // Debugging line*/
 
         return result = APIResult(
           status: jsonResponse['status'],
           msg:  jsonResponse['msg'],
           code: jsonResponse['code'],
-          data: dataList,    );
+          data: dataList
+           );
       }
 
     } else {

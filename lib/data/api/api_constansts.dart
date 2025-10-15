@@ -4,8 +4,8 @@ class APIConstants {
 
   //URL
   static String STATIC_BASE_URL = "http://196.219.86.38:1212/api/";
- // static String COMPANY_PUB_URL = SharedData().getPubUrl().toString();
- //check if shared data get pub url null or not
+  // static String COMPANY_PUB_URL = SharedData().getPubUrl().toString();
+  //check if shared data get pub url null or not
   //check getPubUrl() is not null
   //if null then return static base url
   //if not null then return the pub url

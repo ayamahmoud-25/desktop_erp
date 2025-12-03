@@ -1,11 +1,12 @@
-import 'package:desktop_erp_4s/util/shared_data.dart';
 
 class APIConstants {
 
   //URL
-  static String STATIC_BASE_URL = "http://196.219.86.38:1212/api/";
- // static String COMPANY_PUB_URL = SharedData().getPubUrl().toString();
- //check if shared data get pub url null or not
+ // static String STATIC_BASE_URL = "http://196.219.86.38:1212/api/"; //4S
+  static String STATIC_BASE_URL = "http://184.168.120.48:1212/api/"; //4S
+
+  // static String COMPANY_PUB_URL = SharedData().getPubUrl().toString();
+  //check if shared data get pub url null or not
   //check getPubUrl() is not null
   //if null then return static base url
   //if not null then return the pub url
@@ -35,9 +36,25 @@ class APIConstants {
   static String GET_ALL_WORK_AREAS= BASE_URL + "Transactions/Get_allworkarea?servicename=";
   static String GET_ALL_PERSONS= BASE_URL + "Transactions/Get_allpersons?servicename=";
   static String GET_ALL_CONTRACTOR= BASE_URL + "Transactions/Get_allcontractor?servicename=";
+  static String GET_ALL_STORES= BASE_URL + "Transactions/Get_allstores?servicename=";
+  static String Get_ALL_DEPART= BASE_URL + "Transactions/Get_alldepart?servicename=";
+  static String Get_ALL_SALES_REP= BASE_URL + "Transactions/Get_allsalesrep?servicename=";
+  static String GET_ALL_BANKS = BASE_URL + "Transactions/Get_allbanks?servicename=";
+  static String GET_ALL_TREASURE_BAS= BASE_URL + "Transactions/Get_allTreasurs?servicename=";
+
+  static String GET_ALL_ITEMS_FORMS= BASE_URL + "Transactions/Get_allitemforms?servicename=";
+  static String GET_ALL_ITEMS_LIST= BASE_URL + "Transactions/Get_itemslist?servicename=";
+  static String GET_STORE_TRANS_DEPENDENCY_LIST= BASE_URL + "Transactions/Get_StoreTrnsList_Fordependency?servicename=";
+  static String GET_LIST_TRANSACTION_DEP_ON= BASE_URL + "Transactions/get_list_transactions_dep_on?servicename=";
+  static String PUT_SAVING_OR_UPDATE_STORE_TRANS= BASE_URL + "Transactions/saving_or_updating_store_transactions?servicename=";
+  static String GET_ONE_STORE_TRANS= BASE_URL + "Transactions/Get_OneStoreTrans?servicename=";
+  static String POST_APPROVE_TRANSACTION_LIST= BASE_URL + "Transactions/TransactionApproveList?servicename=";
+  static String GET_FINANCE_BALANCE_REPORT_LIST= BASE_URL + "Reports/Getagentbalancereport?servicename=";
 
 
   //Response Codes
   static const String RESPONSE_CODE_UNAUTHORIZED = "401";
+  static const String RESPONSE_CODE_SUCCESS = "100";
+  static const String RESPONSE_CODE_ERROR = "20";
 
 }

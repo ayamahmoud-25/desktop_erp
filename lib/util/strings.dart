@@ -25,28 +25,160 @@ class Strings{
   static const String SELECT ="أختر";
   static const String  CHANGE_BRANCH ="تغيير الفرع";
   static const String  SELECT_BRANCH ="أختر الفرع";
+  static const String SEARCH ="بحث...";
 
   //Button
   static const String Save ="حفظ";
   static const String New ="جديد";
+  static const String EDIT ="تعديل";
   static const String store_trans ="الحركات المخزنية";
   static const String finance_trans ="الحركات المالية";
   static const String Cancel ="إلغاء";
+  static const String Delete ="حذف";
+  static const String EDIT_TRANS ="تعديل الحركة";
 
-  //Error
+  //Error Message
   static const String ERROR_NO_DATA_FIELD ="الحقل فارغ";
+  static const String ERROR_NO_DATA_FOUND =" لا توجد بيانات  ";
+  static const String No_DESC_AVAILABLE =" لا يوجد وصف للصنف  ";
+  static const String ERROR_DATA_NOT_COMPLETE ="يجب استكمال البيانات";
+  static const String ITEM_EXIST_BEFORE =" هذا الصنف موجود بالفعل في القائمة";
+  static const String ITEM_ADDED =" تم إضافة الصنف بنجاح";
+  static const String ITEM_UPDATED =" تم تعديل الصنف بنجاح";
+  static const String ERROR_TITLE_MESSAGE = "حذف الأصناف"; //
+  static const String TITLE_DELETE_ITEM = "حذف الصنف"; //
+  static const String ERROR_MESSAGE = " هل أنت متأكد أنك تريد حذف جميع العناصر؟"; //
+  static const String CONTENT_MESSAGE = " هل تريد تعديل أو حذف هذا الصنف ؟"; //
+  static const String NO_TRANS_DEP_ON = "لا توجد حركات للإعتماد عليها"; //
+
+  static const String ERROR_SELECT_BRANCH = " يجب إختيار الفرع "; //
+  static const String ERROR_SELECT_DATE = " يجب اختيار تاريخ  "; //
+  static const String ERROR_SELECT_FROM_STORE = "يجب اختيار من"; //
+  static const String ERROR_SELECT_TO_STORE = " يجب اختيار إلي "; //
+  static const String ERROR_SELECT_GROUP_ITEM = " يجب إختيار مجموعة الأصناف "; //
+  static const String ERROR_SELECT_ITEM = "يجب إختيار صنف علي الاقل "; //
+  static const String ERROR_SELECT_SALES_REP = " يجب إختيار مندوب"; //
+  static const String ERROR_SELECT_DEPENDENCY = "يجب اختيار اعتماد "; //
+
+
+
 
 
 
 //Alert
   static const String  ALERT_SELECT_BRANCH = "إختر الفرع أولاً";
   static const String    OK = "موافق";
+
+
   //Apps
-  static const String Version_Number =" ( 1.0 ) ";
+  static const String Version_Number =" (2.0 ) ";
   static const String Version_Name = Version_Number + " إصدار  ";
 
   //Value Conditions
   static const String APPROVED = "Y";
+
+
+  //Form Stock Transaction
+  static const String NEW = "جديد";
+  static const String UPDATE = "تعديل";
+  static const String ADD = "إضافة";
+
+  static const String BASIC_DATA = "البيانات الأساسية";
+  static const String BRANCH = "الفرع";
+  static const String FROM = "من";
+  static const String TO = "إلى";
+  static const String TRANSACTION_DATE = "تاريخ الحركة";
+  static const String DATE = "التاريخ";
+  static const String DATE_FORM = "MM/YY";
+  static const String SALES_REP_TEXT = "المندوب";
+  static const String REM = "البيان";
+  static const String GROUPS_ITEMS = " المجموعات والاصناف";
+  static const String ADD_ITEM = "إضافة صنف";
+  static const String GROUP_ITEMS = "مجموعه الأصناف";
+  static const String GROUP = "المجموعة";
+  static const String ITEM = "الصنف";
+  static const String ITEMS = "أصناف";
+  static const String DEPENDENCY = "الإعتمادات";
+  static const String ADD_DEPENDENCY = "إضافة إعتماد";
+  static const String FINANCE = "الماليات";
+  static const String PAY_WAY = "طريقة الدفع";
+  static const String TOTAL = " الإجمالي ";
+  static const String TOTAL_NET = "الصافي";
+  static const String ITEM_DISCOUNT = " خصم الأصناف ";
+  static const String SALES = "ضربية قيمة مضافة ";
+  static const String SALES_VALUE = "القيمة";
+  static const String COMM = "ضربية تجارية ";
+  static const String COMM_VALUE = "القيمة";
+  static const String DISCOUNT = "خصم ";
+  static const String ALLOW_DISCOUNT = "خصم مسموح  ";
+  static const String VALUE = "قيمة";
+  static const String VALUE_NO = "0.00";
+  static const String PERCENTAGE = "%";
+  static const String PERCENTAGE_TEXT = "نسبة";
+  static const String SELECT_ITEM = "أختر صنف";
+  static const String QTY = "الكمية"; //
+  static const String PRICE = "السعر"; //
+  static const String ITEM_LIST = "الأصناف"; //
+  static const String DELETE_ITEMS = "حذف الأصناف"; //
+  static const String CODE = "الكود"; //
+  static const String NUMBER = "الرقم"; //
+  static const String TIME = "الوقت"; //
+
+
+  static const String REPORT = "التقارير"; //
+  static const String REPORT_FINANCE_BALANCE = "أرصدة مالية"; //
+  static const String REPORT_FINANCE_BALANCE_DEMO = " Demo: أرصدة مالية"; //
+  static const String REPORT_ABOUT = " تقارير"; //
+  static const String FROM_DATE = " من تاريخ"; //
+  static const String TO_DATE = " إلى تاريخ"; //
+  static const String SHOW_REPORT = "عرض التقارير"; //
+
+
+
+  static const String CUSTOMER_TYPE = "customer";
+  static const String VENDOR_TYPE = "vendor";
+  static const String CONTRACTOR_TYPE = "contractor";
+  static const String AGENT_TYPE = "agent";
+  static const String BANK_TYPE = "bank";
+  static const String TREASURE_BAS_TYPE = "treasur_bas";
+
+
+
+
+  static const String PRINT = "طباعة"; //
+  static const String SEARCH_HINT_TRANS = "بحث برقم الحركة...."; //
+  static const String NO_TRANS_FOUND = "لا يوجد حركات"; //
+  static const String NO_TRANS_MATCH = "لا يوجد بحث متطابق مع الحركات الموجودة"; //
+  static const String NO_TRANS_DETAILS = "لا يوجد تفاصيل للحركة او لم يتوافر بيانات"; //
+  static const String LOADING_NO_DATA = "جاى تحميل البيانات ... او لم يتوافر بيانات ..."; //
+  static const String SUCCESS_TRANSACTION_DONE = "تمت بنجاج"; //
+  static const String NOT_ALLOW_TO_EDIT_TRANSACTION = "غير مسموح بالتعديل فى الحركة"; //
+
+  static const String APPROVE_DIALOG_TRANS_TITLE = "الموافقة على الحركة"; //
+  static const String APPROVE_DIALOG_TRANS_MESSAGE = "غير مسموح بالتعديل فى الحركة"; //
+  static const String APPROVE_DIALOG_TRANS_OK = "موافقة"; //
+  static const String APPROVE_DIALOG_TRANS_CANCEL = "الغاء"; //
+
+  String approveDialogMessage(int count) {
+    return "هل ترغب الموافقة على عدد $count من الحركات؟";
+  }
+
+
+  static const int SALES_REP = -1;
+  static const int CUSTOMER = 1;
+  static const int VENDORS = 2;
+  static const int AGENTS = 3;
+  static const int STORES = 4;
+  static const int WORK_AREAS = 5;
+  static const int DEPARTS = 6;
+  static const int CONTRACTORS = 8;
+  static const int PERSONS = 9;
+  static const  String APPROVED_DEP = "Y";
+  static const  String APPROVED_NUMBER = "1";
+  static const  String NOT_APPROVED_NUMBER = "2";
+  static const  int NOT_ALLOW_EDIT = 0;
+  static const  int ALLOW_EDIT = 1;
+
 
 
 

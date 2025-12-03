@@ -1,4 +1,5 @@
-import 'package:desktop_erp_4s/data/models/branch_model.dart';
+
+import '../branch_model.dart';
 
 class UserInfoResponse{
   String? accessToken; //access_token

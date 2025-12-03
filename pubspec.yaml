@@ -1,4 +1,4 @@
-name: desktop_erp_4s
+name: desktop_erp
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.8.1
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -39,17 +39,23 @@ dependencies:
   shared_preferences: ^2.5.3
   flutter_localization: ^0.3.2
   sqflite: ^2.4.2
+  sqflite_common_ffi: any
+  fluttertoast: ^8.2.12
+  fl_chart: ^0.68.0
+  syncfusion_flutter_charts: ^31.1.19
+  intl: ^0.20.2
+
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.3
 
 flutter_launcher_icons:
-    android: "launcher_icon"
-    ios: true
-    image_path: "images/ic_4s_logo.png"
-    min_sdk_android: 21
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/ic_4s_logo.png"
+  min_sdk_android: 21
 
-flutter_test:
+  flutter_test:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -57,7 +63,7 @@ flutter_test:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-flutter_lints: ^5.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -72,10 +78,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-      - images/ic_4s_logo.png
-      - images/ic_4s_logo_small.png
-      - images/ic_background.png
-      - images/sad.png
+    - images/ic_4s_logo.png
+    - images/ic_4s_logo_small.png
+    - images/ic_background.png
+    - images/sad.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

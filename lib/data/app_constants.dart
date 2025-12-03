@@ -3,7 +3,12 @@ class AppConstants{
   static const int ERROR_NO_CONNECTION_CODE = 1000;
   static const int ERROR_NO_BODY_PARSING_CODE = 2000;
 
+  static String ERROR_DATA_ORACLE ="  An error has occurred  OracleException";
+
   static String clientAccessToken ="";
   static const String KEY_ACCESS_TOKEN='access_token';
+
+  static const String TRANS_TYPE_STORE="S"; // "S" for Store Transaction
+  static const String TRANS_TYPE_REC_PAY="R"; //"R" for RecPay Transaction
 
 }

@@ -1,4 +1,5 @@
-import 'package:desktop_erp_4s/db/shared_prefs.dart';
+
+import 'package:desktop_erp/db/shared_prefs.dart';
 
 import '../data/models/branch_model.dart';
 import '../data/models/response/CompanyInfoResponse.dart';
@@ -39,6 +40,25 @@ class SharedPreferences{
   Future<String?> loadAccessToken() async {
     final accessToken = await SharedPrefs.getAccessToken();
     return accessToken;
+  }
+
+
+  Future<void> saveUserId(String? accessToken) async {
+    await SharedPrefs.saveUserId(accessToken);
+  }
+  // --- Loading ---
+  Future<String?> loadUserId() async {
+    final userId = await SharedPrefs.getUserId();
+    return userId;
+  }
+
+  Future<void> saveUserNameId(String? userNameId) async {
+    await SharedPrefs.saveUserNameId(userNameId);
+  }
+  // --- Loading ---
+  Future<String?> loadUserNameId() async {
+    final userNameId = await SharedPrefs.getUserNameId();
+    return userNameId;
   }
 
   void saveBranchesToPrefs(List<Branches>? branches) async {

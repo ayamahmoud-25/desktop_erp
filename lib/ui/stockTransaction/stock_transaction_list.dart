@@ -1,13 +1,17 @@
-import 'package:desktop_erp_4s/ui/stockTransaction/showTransaction/ShowTransactionList.dart';
+import 'package:desktop_erp/ui/stockTransaction/showTransaction/show_transaction_list.dart';
+import 'package:desktop_erp/ui/stockTransaction/transactionForm/transaction_form.dart';
+import 'package:desktop_erp/ui/stockTransaction/transactionForm/transaction_form_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../data/models/branch_model.dart';
 import '../../data/models/response/TransactionSpec.dart';
 import '../../db/SharedPereference.dart';
 import '../../db/database_helper.dart';
-import '../../util/custom_alert_dialog.dart';
+import '../widgets/custom_alert_dialog.dart';
 import '../../util/strings.dart';
 import '../home/branches/BranchListDialog.dart';
+import 'approvedTransaction/approved_transaction.dart';
 
 class StockTransactionList extends StatefulWidget {
 
@@ -31,8 +35,7 @@ class _StockTransactionListState extends State<StockTransactionList> {
       // If a branch was previously selected, you can handle it here
       print('Previously selected branch: $savedSelectedBranch');
       setState(() {
-        this.selectedBranch = savedSelectedBranch;
-      });
+        this.selectedBranch = savedSelectedBranch;});
         });
   }
 
@@ -40,7 +43,44 @@ class _StockTransactionListState extends State<StockTransactionList> {
   Future<List<TransactionSpec>> fetchTransactionSpecs() async {
     final dbHelper = DatabaseHelper();
     final rows = await dbHelper.getAll('transaction_specs');
-    return rows.map((map) => TransactionSpec.fromJson(map)).toList();
+    List<TransactionSpec> transactionSpecs = rows.map((map) => TransactionSpec.fromJson(map)).toList();
+    print("Before sorting (raw string codes): ${transactionSpecs.map((spec) => spec.trnsCode).toList()}");
+
+    transactionSpecs.sort((a, b) {
+      // Both trnsCode are String?
+      final String? codeA = a.trnsCode;
+      final String? codeB = b.trnsCode;
+
+      // 1. Handle nulls first
+      if (codeA == null && codeB == null) return 0; // Both null, equal
+      if (codeA == null) return -1; // Nulls first (or 1 for nulls last)
+      if (codeB == null) return 1;  // Nulls first (or -1 for nulls last)
+
+      // 2. Attempt to parse strings to integers
+      int? numA = int.tryParse(codeA);
+      int? numB = int.tryParse(codeB);
+
+      // 3. Compare based on successful parsing
+      if (numA != null && numB != null) {
+        // Both are valid numbers, compare them numerically
+        return numA.compareTo(numB);
+      } else if (numA != null && numB == null) {
+        // codeA is a number, codeB is not (or unparseable string). Numbers come first.
+        return -1;
+      } else if (numA == null && numB != null) {
+        // codeB is a number, codeA is not. Numbers come first.
+        return 1;
+      } else {
+        // Neither could be parsed as an int (or they are unparseable strings like "abc").
+        // Fallback to standard string comparison for these non-numeric strings.
+        // This ensures "abc" is sorted relative to "xyz" correctly.
+        return codeA.compareTo(codeB);
+      }
+    });
+
+    print("After sorting (attempted numeric string sort): ${transactionSpecs.map((spec) => spec.trnsCode).toList()}");
+
+    return transactionSpecs;
   }
 
   @override
@@ -211,7 +251,32 @@ class StockTransactionListRow extends StatelessWidget {
                   if( selectedBranch==null || selectedBranch!.code==null) {
                     CustomAlertDialog().showAlertDialog(context);
                   }else{
-                    //navigate to the transaction creation page
+                    //navigate to transaction form page
+                    /*Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TransactionForm(
+                          selectedBranch: selectedBranch!,
+                          transactionSpec: transactionSpec,
+                        ),
+                      ),
+                    );*/
+                    //navigate to transaction form page
+                    // Use ChangeNotifierProvider to create a new instance of TransactionFormProvider
+                    // and pass it to the TransactionForm widget
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                          create: (_) => TransactionFormProvider(), // Create a new instance
+                          child: TransactionForm(
+                            selectedBranch: selectedBranch,
+                            transactionSpec: transactionSpec,
+                          ),
+                        ),
+                      ),
+                    );
+
                   }
                 },
                 textColor: Colors.white,
@@ -231,8 +296,7 @@ class StockTransactionListRow extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => ShowTransactionList(
                                 selectedBranch: selectedBranch!.code!,
-                                transCode: transactionSpec.trnsCode!,
-                                transName: transactionSpec.trnsDesc!,
+                                transactionSpec: transactionSpec,
                               ),
                             ),
                           );
@@ -243,6 +307,17 @@ class StockTransactionListRow extends StatelessWidget {
                       CustomAlertDialog().showAlertDialog(context);
                     }else{
                       //navigate to the transaction approval page
+                      //navigate to show transaction page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ApprovedTransaction(
+                            selectedBranch: selectedBranch!.code!,
+                            transCode: transactionSpec.trnsCode!,
+                            transName: transactionSpec.trnsDesc!,
+                          ),
+                        ),
+                      );
                     }
                   }
                 },

@@ -1,15 +1,17 @@
 import 'dart:convert';
 
-import 'package:desktop_erp_4s/data/models/response/CompanyInfoResponse.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/models/branch_model.dart';
+import '../data/models/response/CompanyInfoResponse.dart';
 
 class SharedPrefs{
   static const _companyInfoKey = 'company_info';
   static const _accessTokenKey = 'access_token';
+  static const _userNameIdKey= 'user_name_id';
   static const _branchesKey = 'branches';
   static const _selectedBranchKey = 'selected_branch';
+  static const _userIdKey = 'user_id';
 
   static Future<void>  saveCompanyInfo(CompanyInfoResponse companyInfo) async {
     final prefs = await SharedPreferences.getInstance();
@@ -45,6 +47,33 @@ class SharedPrefs{
     final String? accessToken = prefs.getString(_accessTokenKey);
     return accessToken;
   }
+
+  /// Save userId
+  static Future<void>  saveUserId(String? userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userIdKey, userId!);
+  }
+
+  static Future<String?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? userId = prefs.getString(_userIdKey);
+    return userId;
+  }
+
+
+  /// Save user Name (user id)
+  static Future<void>  saveUserNameId(String? userNameId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userNameIdKey, userNameId!);
+  }
+
+  static Future<String?> getUserNameId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? userNameId = prefs.getString(_userNameIdKey);
+    return userNameId;
+  }
+
+
 
 
   static Future<void> saveBranches(List<Branches>? branches) async {

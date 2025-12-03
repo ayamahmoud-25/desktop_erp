@@ -1,14 +1,19 @@
-import 'package:desktop_erp_4s/ui/home/home_provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/api_state.dart';
 import '../../data/models/branch_model.dart';
 import '../../db/SharedPereference.dart';
+import '../../db/database_helper.dart';
+import '../../util/loading_service.dart';
 import '../../util/navigation.dart';
-import '../../util/show_message.dart';
+import '../reports/report_type.dart';
+import '../reports/ui/demo/dash_board_page.dart';
+import '../widgets/show_message.dart';
 import '../../util/strings.dart';
 import 'branches/BranchListDialog.dart';
+import 'home_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -17,17 +22,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? authToken;
+  String? username;
+  String? userId;
 
 
   @override
   void initState() {
     super.initState();
-    getToken();
+    initialValue();
+
   }
-  void getToken() async {
+
+  void initialValue()async {
     authToken = await SharedPreferences().loadAccessToken();
+    username = await SharedPreferences().loadUserNameId();
+    userId = await SharedPreferences().loadUserId();
+
     setState(() {}); // Update the UI after fetching the token
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,36 +55,58 @@ class _HomePageState extends State<HomePage> {
 
         title: Text(Strings.HOME_TITLE,style: TextStyle(color: Colors.white),),
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              // Handle menu item selection
-              if (value == Strings.POP_MENU_ITEM_REPORTS) {
-                // Navigate to Profile
-              } else if (value == Strings.POP_MENU_ITEM_SETTINGS) {
-                // Navigate to Settings
-              } else if (value == Strings.POP_MENU_ITEM_LOGOUT) {
-                // Perform logout
-                Navigation().logout(context);
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(
-                  value: Strings.POP_MENU_ITEM_REPORTS,
-                  child: Text(Strings.POP_MENU_ITEM_REPORTS),
+            Row(
+              children: [
+
+                SizedBox(width: 8),
+                Column(
+                  children: [
+                    Text(
+                      username ?? "Loading...",  // your username
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    Text(
+                      userId ?? "Loading...",  // your username
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ],
                 ),
+                SizedBox(width: 16),
+              CircleAvatar(
+                radius: 16,
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person,
+                    color: Color.fromARGB(255, 23, 111, 153)),
+              ),
+              ],
+            ),
+
+            // your existing menu
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == Strings.POP_MENU_ITEM_REPORTS) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => ReportType()));
+                } else if (value == Strings.POP_MENU_ITEM_LOGOUT) {
+                  DatabaseHelper().clearDatabase();
+                  Navigation().logout(context);
+                }
+              },
+              itemBuilder: (_) => [
                 PopupMenuItem(
-                  value: Strings.POP_MENU_ITEM_SETTINGS,
-                  child: Text(Strings.POP_MENU_ITEM_SETTINGS),
-                ),
+                    value: Strings.POP_MENU_ITEM_REPORTS,
+                    child: Text(Strings.POP_MENU_ITEM_REPORTS)),
                 PopupMenuItem(
-                  value: Strings.POP_MENU_ITEM_LOGOUT,
-                  child: Text(Strings.POP_MENU_ITEM_LOGOUT),
-                ),
-              ];
-            },
-          ),
-        ],
+                    value: Strings.POP_MENU_ITEM_SETTINGS,
+                    child: Text(Strings.POP_MENU_ITEM_SETTINGS)),
+                PopupMenuItem(
+                    value: Strings.POP_MENU_ITEM_LOGOUT,
+                    child: Text(Strings.POP_MENU_ITEM_LOGOUT)),
+              ],
+            ),
+          ],
+
+
       ),
       body: Center(
         child: Column(
@@ -84,7 +121,8 @@ class _HomePageState extends State<HomePage> {
                   await homeProvider.transactionStockSpecs(context);
                   if(homeProvider.state == APIStatue.loading){
                     print(" APIStatue.loading ${homeProvider.state}");
-                    CircularProgressIndicator();
+                    //CircularProgressIndicator();
+                    LoadingService.showLoading(context);
                   }else if(homeProvider.state == APIStatue.error )
                     ShowMessage().showSnackBar(context, homeProvider.errorMessage!);
  },
@@ -97,7 +135,6 @@ class _HomePageState extends State<HomePage> {
               margin: EdgeInsets.symmetric(horizontal: 20), // Set left and right margins to 10
 
               child: MaterialButton(onPressed: () async {
-                await homeProvider.fetchAllDats(context);
                 if(homeProvider.state == APIStatue.loading){
                   print(" APIStatue.loading ${homeProvider.state}");
                   CircularProgressIndicator();
@@ -117,6 +154,9 @@ class _HomePageState extends State<HomePage> {
     );
 
   }
+
+
+
 
 
 

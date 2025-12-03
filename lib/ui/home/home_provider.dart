@@ -1,9 +1,9 @@
 
 
-import 'package:desktop_erp_4s/data/api/api_service.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../data/api/api_constansts.dart';
+import '../../data/api/api_service.dart';
 import '../../data/api_state.dart';
 import '../../data/models/response/AllAgents.dart';
 import '../../data/models/response/AllContractor.dart';
@@ -14,7 +14,9 @@ import '../../data/models/response/AllWorkAreas.dart';
 import '../../data/models/response/BasicDataListResponse.dart';
 import '../../data/models/response/DataResponseModel.dart';
 import '../../data/models/response/TransactionSpec.dart';
+import '../../db/SharedPereference.dart';
 import '../../db/database_helper.dart';
+import '../../util/loading_service.dart';
 import '../../util/navigation.dart';
 import '../stockTransaction/stock_transaction_list.dart';
 
@@ -28,12 +30,17 @@ class HomeProvider extends ChangeNotifier {
 
   String? get errorMessage => _errorMessage;
 
+
+
   Future<void> transactionStockSpecs(BuildContext context) async {
-    _state = APIStatue.loading;
+   // _state = APIStatue.loading;
+    LoadingService.showLoading(context);
     notifyListeners();
     final response = await _apiService.getTransactionSpecs();
 
     if (response.status!) {
+      LoadingService.hideLoading(context);
+
       _state = APIStatue.success;
       DataResponseModel dataResponseModel = response.data;
 
@@ -43,8 +50,8 @@ class HomeProvider extends ChangeNotifier {
       await dbHelper.database; // initialize the database
 
       // Check if the table exists
-      final tableExists = await dbHelper.isTableExists('transaction_specs');
-      if (!tableExists) {
+      bool isTableExist = await dbHelper.isTableExists('transaction_specs');
+      if (!isTableExist) {
         // Table does not exist, create it
         print('Table does not exist');
         dbHelper.createTable("transaction_specs", '''
@@ -163,13 +170,13 @@ class HomeProvider extends ChangeNotifier {
       //
       Navigation().pushNavigation(context, StockTransactionList());
     } else {
+      LoadingService.hideLoading(context);
+
       if(response.code == APIConstants.RESPONSE_CODE_UNAUTHORIZED){
        // Handle unauthorized access
         print("Unauthorized access");
         // You can navigate to the login screen or show a message
         Navigation().logout(context);
-
-
       }
       _state = APIStatue.error;
       _errorMessage = response.msg;
@@ -177,7 +184,7 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchAllDats(BuildContext context) async {
+ /* Future<void> fetchAllDats(BuildContext context) async {
     _state = APIStatue.loading;
     notifyListeners();
      //Fetch all data
@@ -205,13 +212,16 @@ class HomeProvider extends ChangeNotifier {
       }
     }
 
-    }
+    }*/
+/*
+   with saved in db
+
 
   // allCustomer
-  Future<void> allCustomer(BuildContext context) async {
+  Future<void> allCustomer(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllCustomer();
+    final response = await _apiService.getAllCustomer(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -283,10 +293,10 @@ class HomeProvider extends ChangeNotifier {
   }
 
   //All Vendor
-  Future<void> allVendors(BuildContext context) async {
+  Future<void> allVendors(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllVendors();
+    final response = await _apiService.getAllVendors(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -359,12 +369,11 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-
   //All Agents
-  Future<void> allAgents(BuildContext context) async {
+  Future<void> allAgents(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllAgents();
+    final response = await _apiService.getAllAgents(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -442,10 +451,10 @@ class HomeProvider extends ChangeNotifier {
   }
 
   //AllWork Areas
-  Future<void> allWorkAreas(BuildContext context) async {
+  Future<void> allWorkAreas(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllWorkAreas();
+    final response = await _apiService.getAllWorkAreas(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -523,10 +532,10 @@ class HomeProvider extends ChangeNotifier {
   }
 
   //All Persons
-  Future<void> allPersons(BuildContext context) async {
+  Future<void> allPersons(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllPersons();
+    final response = await _apiService.getAllPersons(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -599,10 +608,10 @@ class HomeProvider extends ChangeNotifier {
   }
 
   //All Contractor
-  Future<void> allContractor(BuildContext context) async {
+  Future<void> allContractor(BuildContext context,String transType,String transCode) async {
     _state = APIStatue.loading;
     notifyListeners();
-    final response = await _apiService.getAllContactor();
+    final response = await _apiService.getAllContactor(transType,transCode);
 
     if (response.status!) {
       _state = APIStatue.success;
@@ -675,6 +684,7 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
+*/
 
   }
 

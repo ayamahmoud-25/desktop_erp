@@ -1,6 +1,6 @@
 {
-    "name": "desktop_erp_4s",
-    "short_name": "desktop_erp_4s",
+    "name": "desktop_erp",
+    "short_name": "desktop_erp",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

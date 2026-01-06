@@ -1,5 +1,6 @@
-import 'package:desktop_erp_4s/util/strings.dart';
 import 'package:flutter/material.dart';
+
+import 'Strings.dart';
 
 class CustomAlertDialog {
   void showAlertDialog(BuildContext context) {

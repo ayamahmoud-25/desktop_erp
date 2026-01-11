@@ -7,7 +7,6 @@ import 'package:desktop_erp/ui/stockTransaction/showTransaction/show_transaction
 import 'package:desktop_erp/ui/stockTransaction/transactionForm/transaction_form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
   //this comment for web delopy but not working and make conflict with mobile and desktop
